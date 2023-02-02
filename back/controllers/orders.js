@@ -61,8 +61,6 @@ export const createOrder = async (req, res) => {
 
 export const paidOrders = async (req, res) => {
   try {
-    console.log(req.body);
-
     let result = await orders.findById(req.params.id);
     result = result.toObject();
     if (req.body.productId === '') {
@@ -85,11 +83,16 @@ export const paidOrders = async (req, res) => {
         return item;
       });
 
-      await orders.findByIdAndUpdate(req.params.id, result, { new: true });
+      const newResult = await orders
+        .findByIdAndUpdate(req.params.id, result, { new: true })
+        .populate('products.productId', '-status')
+        .populate('addressId', '-status -userId')
+        .populate('bankId', '-status -userId');
 
       res.status(200).json({
         success: true,
         message: '',
+        result: newResult,
       });
     }
   } catch (error) {
@@ -120,7 +123,7 @@ export const getMyBuyOrders = async (req, res) => {
 export const getMySellOrder = async (req, res) => {
   try {
     let result = await orders
-      .find()
+      .find({ userId: req.user._id })
       .populate({
         path: 'products.productId',
         select: '-status',

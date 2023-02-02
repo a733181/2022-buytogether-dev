@@ -62,47 +62,47 @@
       <div>
         <p class="mb-4">
           訂單編號：
-          <span>{{ modelData.list._id }}</span>
+          <span>{{ showProduct.list._id }}</span>
         </p>
         <p class="mb-4">
           是否付款：
-          <span v-if="truePaid(modelData.list.products)"
-            >{{ truePaid(modelData.list.products) }}筆已付款</span
+          <span v-if="truePaid(showProduct.list.products)"
+            >{{ truePaid(showProduct.list.products) }}筆已付款</span
           >
           <span
-            v-if="falsePaid(modelData.list.products)"
+            v-if="falsePaid(showProduct.list.products)"
             class="ml-10 text-red-400"
-            >{{ falsePaid(modelData.list.products) }}筆未付款</span
+            >{{ falsePaid(showProduct.list.products) }}筆未付款</span
           >
         </p>
         <p class="mb-">收件地址：</p>
         <p>
           姓名：
-          <span>{{ modelData.list.addressId.name }}</span>
+          <span>{{ showProduct.list.addressId.name }}</span>
         </p>
         <p>
           地址：
           <span>
-            {{ modelData.list.addressId.code }}
-            {{ modelData.list.addressId.city }}
-            {{ modelData.list.addressId.districts }}
-            {{ modelData.list.addressId.street }}
+            {{ showProduct.list.addressId.code }}
+            {{ showProduct.list.addressId.city }}
+            {{ showProduct.list.addressId.districts }}
+            {{ showProduct.list.addressId.street }}
           </span>
         </p>
         <p>
           電話：
-          <span>{{ modelData.list.addressId.phone }}</span>
+          <span>{{ showProduct.list.addressId.phone }}</span>
         </p>
 
         <p class="mt-4">
           付款帳戶：
           <span
-            >{{ modelData.list.bankId.bankName }}
-            {{ modelData.list.bankId.bankNumber }}</span
+            >{{ showProduct.list.bankId.bankName }}
+            {{ showProduct.list.bankId.bankNumber }}</span
           >
         </p>
         <div
-          v-for="item in modelData.list.products"
+          v-for="item in showProduct.list.products"
           :key="item._id"
           class="flex flex-col lg:flex-row gap-6 mb-10 items-center lg:justify-center mt-8"
         >
@@ -127,7 +127,7 @@
               :class="{ 'disabled: opacity-50': item.paid.isPaid }"
               @click="
                 paidHandler({
-                  orderId: modelData.list._id,
+                  orderId: showProduct.list._id,
                   productId: item.productId._id,
                 })
               "
@@ -150,14 +150,9 @@ import { useOrderStore } from '@/stores/orders';
 import { useModelStore } from '@/stores/model';
 
 const order = useOrderStore();
-const { orderBuy } = storeToRefs(order);
+const { orderBuy, showProduct } = storeToRefs(order);
 const { paidHandler } = order;
 const { toggleShow } = storeToRefs(useModelStore());
-
-const modelData = reactive({
-  list: {},
-});
-
 const countyNum = (data) =>
   data.reduce((total, current) => total + current.quantity, 0);
 
@@ -185,14 +180,14 @@ const falsePaid = (data) => {
 
 const viewOrder = (data) => {
   toggleShow.value = true;
-  modelData.list = data;
+  showProduct.value.list = data;
 };
 
 watch(
   () => toggleShow.value,
   (value) => {
     if (!value) {
-      modelData.list = {};
+      showProduct.value.list = {};
     }
   }
 );

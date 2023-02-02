@@ -30,9 +30,11 @@
       </div>
     </div>
     <h2 class="text-4xl">聯絡我們</h2>
+    <SendMessage />
   </div>
 </template>
 
 <script setup>
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
+import SendMessage from '@/components/ui/SendProductMessage.vue';
 </script>

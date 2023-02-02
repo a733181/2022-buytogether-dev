@@ -9,7 +9,6 @@ import { useUserStore } from '@/stores/users';
 
 export const useProductsStore = defineStore('products', () => {
   const user = useUserStore();
-  const { isLoginHandler } = useUserStore();
   const { swalSuccess, swalError } = useSwalStore();
 
   const product = reactive({
@@ -206,7 +205,7 @@ export const useProductsStore = defineStore('products', () => {
   };
 
   const clickLikesHandler = async (productId) => {
-    if (!isLoginHandler()) return;
+    if (!user.isLoginHandler()) return;
 
     try {
       await apiAuth.post('/products/likes', { productId });

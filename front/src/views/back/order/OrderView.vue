@@ -1,9 +1,9 @@
 <template>
   <div class="container py-20">
-    <Breadcrumbs>
-      <p>訂單管理</p>
+    <Breadcrumbs class="mb-10">
+      <p>帳戶</p>
     </Breadcrumbs>
-    <div class="flex gap-8 mt-10">
+    <div class="flex gap-8 mb-10">
       <Tab
         tab="購買"
         class="w-1/2 text-center"
@@ -25,9 +25,9 @@
 <script setup>
 import { ref } from 'vue';
 
-import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Tab from '@/components/ui/TheTab.vue';
-import BuyOrder from '@/components/back/BuyOrder.vue';
+import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
+import BuyOrder from '@/components/back/buyOrder.vue';
 import SellOrder from '@/components/back/SellOrder.vue';
 
 import { useOrderStore } from '@/stores/orders';

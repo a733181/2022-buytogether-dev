@@ -19,6 +19,10 @@ export const useOrderStore = defineStore('orders', () => {
     },
   });
 
+  const showProduct = reactive({
+    list: {},
+  });
+
   const orderPaid = computed(() => order.paid);
   const orderBuy = computed(() => order.buyList);
   const orderSell = computed(() => order.sellList);
@@ -43,9 +47,11 @@ export const useOrderStore = defineStore('orders', () => {
 
   const paidHandler = async ({ orderId, productId }) => {
     try {
-      await apiAuth.post(`/orders/paid/${orderId}`, { productId });
+      const { data } = await apiAuth.post(`/orders/paid/${orderId}`, {
+        productId,
+      });
 
-      if (productId !== '') {
+      if (productId !== '' && order.paid.list.length > 0) {
         const index = order.paid.list.findIndex(
           (item) => item.productId._id === productId
         );
@@ -57,6 +63,18 @@ export const useOrderStore = defineStore('orders', () => {
       if (productId === '') {
         router.push('/member/order');
       }
+
+      if (order.buyList.length) {
+        const index = order.buyList.findIndex(
+          (item) => item._id === data.result._id
+        );
+        order.buyList[index] = data.result;
+        if (!!showProduct.list) {
+          showProduct.list = data.result;
+        }
+      }
+
+      await getMemberSellOrderHandler();
       swalSuccess('付款成功');
     } catch (error) {
       swalError(error);
@@ -85,6 +103,7 @@ export const useOrderStore = defineStore('orders', () => {
     orderPaid,
     orderBuy,
     orderSell,
+    showProduct,
     checkoutHandler,
     paidHandler,
     getMemberBuyOrderHandler,
