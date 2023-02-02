@@ -9,6 +9,7 @@ import { useAddressStore } from '@/stores/address';
 import { useCartStore } from '@/stores/carts';
 import { useSwalStore } from '@/stores/swal';
 import { useProductsStore } from '@/stores/products';
+import { useMessageStore } from '@/stores/messages';
 
 export const useUserStore = defineStore(
   'user',
@@ -19,6 +20,7 @@ export const useUserStore = defineStore(
     const { getAllAddressHandler } = useAddressStore();
     const { cart } = storeToRefs(useCartStore());
     const products = useProductsStore();
+    const { getAllMemberProductMessageHanlder } = useMessageStore();
 
     const isLogin = ref(true);
 
@@ -107,6 +109,7 @@ export const useUserStore = defineStore(
         cart.value.length = data.result.cart;
         await getAllBankHandler();
         await getAllAddressHandler();
+        await getAllMemberProductMessageHanlder();
         swalSuccess('登入成功');
         router.push('/member/order');
       } catch (error) {
@@ -137,6 +140,7 @@ export const useUserStore = defineStore(
         cart.value.length = data.result.cart;
         await getAllBankHandler();
         await getAllAddressHandler();
+        await getAllMemberProductMessageHanlder();
       } catch (error) {
         logoutHandler();
       }

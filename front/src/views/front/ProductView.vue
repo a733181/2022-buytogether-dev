@@ -74,20 +74,21 @@
       </div>
     </div>
     <div v-if="activeTab === '問與答'">
-      <form @submit.prevent="submitHandler">
-        <div class="mb-6">
-          <Textarea
-            v-model="form.message"
-            title="訊息"
-            :error="error.message.error"
-            :errorText="error.message.value"
-            @click="inputText"
-          />
-        </div>
-        <div class="w-1/3 ml-auto">
-          <Btn status="submit" text="確定" class="w-full" />
-        </div>
-      </form>
+      <ul v-if="messageProduct.length" class="mb-6">
+        <li
+          v-for="item in messageProduct"
+          :key="item._id"
+          class="border-2 rounded-lg mb-2 px-4 py-2"
+        >
+          <p class="mb-2 w-4/5">
+            問：<span class="ml-2">{{ item.message }}</span>
+          </p>
+          <p class="ml-auto w-4/5 text-end">
+            團主答：<span class="ml-2">{{ item.reply || '' }}</span>
+          </p>
+        </li>
+      </ul>
+      <SendMessage @message="submitHandler" />
     </div>
   </div>
 </template>
@@ -95,34 +96,33 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { ref, reactive } from 'vue';
-import validator from 'validator';
+import { ref } from 'vue';
 
-import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Btn from '@/components/ui/TheBtn.vue';
+import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Tab from '@/components/ui/TheTab.vue';
 import Youtube from '@/components/ui/YouToLink.vue';
-import Textarea from '@/components/ui/TheTextarea.vue';
+import SendMessage from '@/components/ui/SendProductMessage.vue';
 
 import { useProductsStore } from '@/stores/products';
 import { useCartStore } from '@/stores/carts';
-import { useUserStore } from '@/stores/users';
 import { useMessageStore } from '@/stores/messages';
 
 const route = useRoute();
 
 const { clickAddCartHandler } = useCartStore();
 const product = useProductsStore();
+const message = useMessageStore();
 const { getSellProdctHander } = product;
 const { sellProdcut } = storeToRefs(product);
-const { sumbitMessageHandler } = useMessageStore();
+const { sumbitMessageHandler, getProductMessageHandler } = message;
+const { messageProduct } = storeToRefs(message);
 getSellProdctHander(route.params.id);
-
-const { isLoginHandler } = useUserStore();
+getProductMessageHandler(route.params.id);
 
 const quantity = ref(1);
 
-const activeTab = ref('問與答');
+const activeTab = ref('商品詳情');
 
 const changeQuantity = (num) => {
   if (quantity.value + num <= 0) {
@@ -136,34 +136,11 @@ const changeQuantity = (num) => {
   quantity.value += num;
 };
 
-const error = reactive({
-  message: {
-    error: false,
-    value: '',
-  },
-});
-
-const form = reactive({
-  message: '',
-  prodcutId: route.params.id,
-});
-
-const inputText = () => {
-  isLoginHandler();
-  error.message.error = false;
-};
-
-const validatorFormHandler = () => {
-  if (validator.isEmpty(form.message)) {
-    error.message.value = '為必填';
-    error.message.error = true;
-    return true;
-  }
-  return false;
-};
-
-const submitHandler = () => {
-  if (validatorFormHandler()) return;
-  sumbitMessageHandler(form);
+const submitHandler = (form) => {
+  const newFrom = {
+    message: form.message,
+    prodcutId: route.params.id,
+  };
+  sumbitMessageHandler(newFrom);
 };
 </script>

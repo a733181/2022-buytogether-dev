@@ -1,4 +1,5 @@
-import message from '../models/messages.js';
+import messages from '../models/messages.js';
+import products from '../models/products.js';
 
 const showError = (error, res) => {
   if (error.name === 'ValidationError') {
@@ -13,13 +14,12 @@ const showError = (error, res) => {
 };
 
 export const createMessage = async (req, res) => {
-  const result = await message.create({
+  const result = await messages.create({
     userId: req.user._id,
     prodcutId: req.body.prodcutId,
     message: req.body.message,
   });
 
-  console.log(result);
   res.status(200).json({
     success: true,
     message: '',
@@ -30,6 +30,74 @@ export const createMessage = async (req, res) => {
     },
   });
   try {
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const getProductMessage = async (req, res) => {
+  try {
+    const result = await messages
+      .find({ prodcutId: req.params.id, isShow: true })
+      .select('-isShow');
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result,
+    });
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const getMemberProductMessage = async (req, res) => {
+  try {
+    const result = await messages
+      .find({ prodcutId: req.params.id, userId: req.user._id })
+      .select('-isShow -createDate');
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result,
+    });
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const getMemberAllProductMessage = async (req, res) => {
+  try {
+    const userProduct = await products.find({ userId: req.user._id }).select('_id ');
+
+    const result = await messages
+      .find({ prodcutId: userProduct, reply: '' })
+      .select('-isShow')
+      .populate('prodcutId', 'name image');
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result,
+    });
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const replayMessage = async (req, res) => {
+  try {
+    await messages.findByIdAndUpdate(
+      req.params.id,
+      { reply: req.body.reply, isShow: true },
+      { new: true },
+    );
+
+    res.status(200).json({
+      success: true,
+      message: '',
+    });
   } catch (error) {
     showError(error, res);
   }

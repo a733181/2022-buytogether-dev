@@ -47,7 +47,12 @@
               class="w-full mt-6"
               :disabled="item.productId?.paid"
               :class="{ 'disabled: opacity-50': item.productId.paid }"
-              @click="paidHandler(item.productId._id)"
+              @click="
+                paidHandler({
+                  orderId: orderPaid._id,
+                  productId: item.productId._id,
+                })
+              "
             />
           </td>
         </tr>
@@ -77,7 +82,11 @@
         <tr>
           <td colspan="5"></td>
           <td colspan="2">
-            <Btn text="全部付款" class="w-full mt-6" @click="paidHandler('')" />
+            <Btn
+              text="全部付款"
+              class="w-full mt-6"
+              @click="paidHandler({ orderId: orderPaid._id, productId: '' })"
+            />
           </td>
         </tr>
       </tbody>

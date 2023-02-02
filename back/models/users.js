@@ -29,10 +29,10 @@ const userSchema = new Schema(
     },
     name: {
       type: String,
+      sparse: true,
       unique: true,
-      maxlength: [12, '名稱太長'],
-      default: '',
       trim: true,
+      maxlength: [12, '名稱太長'],
     },
     password: {
       type: String,
@@ -41,14 +41,14 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      unique: true,
       trim: true,
+      sparse: true,
+      unique: true,
       vaildate: {
         validator(email) {
           return validator.isEmail(email);
         },
       },
-      default: '',
     },
     favorites: {
       type: [

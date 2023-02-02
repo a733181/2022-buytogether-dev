@@ -317,7 +317,9 @@ const submitHandler = () => {
   fd.append('category', form.category);
 
   const youtubeId = getVideoId(form.youtubeVideoLink);
-  fd.append('youtubeId', youtubeId);
+  if (youtubeId) {
+    fd.append('youtubeId', youtubeId);
+  }
 
   if (form.images.length >= 1) {
     form.images.forEach((item) => {

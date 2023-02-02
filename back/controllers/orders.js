@@ -61,6 +61,8 @@ export const createOrder = async (req, res) => {
 
 export const paidOrders = async (req, res) => {
   try {
+    console.log(req.body);
+
     let result = await orders.findById(req.params.id);
     result = result.toObject();
     if (req.body.productId === '') {

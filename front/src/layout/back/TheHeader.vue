@@ -28,6 +28,20 @@
               >商品管理</RouterLink
             >
           </li>
+          <li class="relative">
+            <RouterLink
+              to="/member/qanda"
+              class="px-3 py-2 rounded-lg"
+              :class="activeClass('/member/qanda')"
+              >問與答</RouterLink
+            >
+            <p
+              class="absolute -top-4 -right-2 bg-red-400 rounded-full px-2"
+              v-if="messageAllProduct.length"
+            >
+              {{ messageAllProduct.length }}
+            </p>
+          </li>
           <li>
             <RouterLink
               to="/member/membership"
@@ -53,12 +67,16 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
+
 import { useUserStore } from '@/stores/users';
+import { useMessageStore } from '@/stores/messages';
 
 const route = useRoute();
 
 const user = useUserStore();
 const { logoutHandler } = user;
+const { messageAllProduct } = storeToRefs(useMessageStore());
 
 const activeClass = (active) => {
   return route.path === active ? 'text-gray-500 bg-white' : null;

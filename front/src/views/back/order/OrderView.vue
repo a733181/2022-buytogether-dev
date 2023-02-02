@@ -23,8 +23,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue';
-import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Tab from '@/components/ui/TheTab.vue';
@@ -32,7 +31,6 @@ import BuyOrder from '@/components/back/BuyOrder.vue';
 import SellOrder from '@/components/back/SellOrder.vue';
 
 import { useOrderStore } from '@/stores/orders';
-import { useModelStore } from '@/stores/model';
 
 const order = useOrderStore();
 const { getMemberBuyOrderHandler, getMemberSellOrderHandler } = order;

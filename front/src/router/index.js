@@ -218,6 +218,16 @@ const router = createRouter({
             admin: false,
           },
         },
+        {
+          path: 'qanda',
+          name: 'qanda',
+          component: () => import('@/views/back/qanda/QAandA.vue'),
+          meta: {
+            title: '團購趣 | 問與答',
+            member: true,
+            admin: false,
+          },
+        },
       ],
     },
     {

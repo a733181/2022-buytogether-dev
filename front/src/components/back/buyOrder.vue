@@ -125,7 +125,12 @@
               class="w-full mt-6"
               :disabled="item.paid.isPaid"
               :class="{ 'disabled: opacity-50': item.paid.isPaid }"
-              @click="paidHandler(item.productId._id)"
+              @click="
+                paidHandler({
+                  orderId: modelData.list._id,
+                  productId: item.productId._id,
+                })
+              "
             />
           </div>
         </div>
@@ -163,7 +168,7 @@ const countyPrice = (data) => {
 
 const truePaid = (data) => {
   return data.reduce((total, current) => {
-    if (current.paid) {
+    if (current.paid.isPaid) {
       total++;
     }
     return total;
@@ -171,7 +176,7 @@ const truePaid = (data) => {
 };
 const falsePaid = (data) => {
   return data.reduce((total, current) => {
-    if (!current.paid) {
+    if (!current.paid.isPaid) {
       total++;
     }
     return total;

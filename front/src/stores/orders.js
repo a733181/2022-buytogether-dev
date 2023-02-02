@@ -41,9 +41,9 @@ export const useOrderStore = defineStore('orders', () => {
     }
   };
 
-  const paidHandler = async (productId) => {
+  const paidHandler = async ({ orderId, productId }) => {
     try {
-      await apiAuth.post(`/orders/paid/${order.paid._id}`, { productId });
+      await apiAuth.post(`/orders/paid/${orderId}`, { productId });
 
       if (productId !== '') {
         const index = order.paid.list.findIndex(

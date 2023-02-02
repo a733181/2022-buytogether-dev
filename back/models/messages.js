@@ -17,10 +17,15 @@ const messagesShema = new Schema(
     reply: {
       type: String,
       trim: true,
+      default: '',
     },
     isShow: {
       type: Boolean,
       default: false,
+    },
+    createDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   { versionKey: false },

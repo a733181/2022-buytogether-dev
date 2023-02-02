@@ -163,7 +163,7 @@ const countyPrice = (data) => {
 
 const truePaid = (data) => {
   return data.reduce((total, current) => {
-    if (current.paid) {
+    if (current.paid.isPaid) {
       total++;
     }
     return total;
@@ -171,7 +171,7 @@ const truePaid = (data) => {
 };
 const falsePaid = (data) => {
   return data.reduce((total, current) => {
-    if (!current.paid) {
+    if (!current.paid.isPaid) {
       total++;
     }
     return total;

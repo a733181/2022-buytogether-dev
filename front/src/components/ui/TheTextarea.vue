@@ -37,6 +37,12 @@ const proxy = ref(props.modelValue);
 watch(proxy, (value) => {
   emit('update:modelValue', value);
 });
+
+watch(props, (value) => {
+  if (value.modelValue !== proxy) {
+    proxy.value = value.modelValue;
+  }
+});
 </script>
 
 <style scoped>
