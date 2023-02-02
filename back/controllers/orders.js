@@ -123,7 +123,7 @@ export const getMyBuyOrders = async (req, res) => {
 export const getMySellOrder = async (req, res) => {
   try {
     let result = await orders
-      .find({ userId: req.user._id })
+      .find()
       .populate({
         path: 'products.productId',
         select: '-status',
@@ -138,9 +138,10 @@ export const getMySellOrder = async (req, res) => {
 
     result = result.filter((item) => {
       item.products = item.products.filter((prod) => {
+        console.log(prod.productId.userId._id.toString() === req.user._id.toString());
         return prod.productId.userId._id.toString() === req.user._id.toString();
       });
-      return item;
+      return item.products.length > 0;
     });
 
     res.status(200).json({ success: true, message: '', result });

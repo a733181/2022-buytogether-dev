@@ -41,10 +41,19 @@ export const getProductMessage = async (req, res) => {
       .find({ prodcutId: req.params.id, isShow: true })
       .select('-isShow');
 
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 5;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     res.status(200).json({
       success: true,
       message: '',
-      result,
+      result: {
+        data: result.slice(startIndex, endIndex),
+        totalPages: Math.ceil(result.length / limit),
+      },
     });
   } catch (error) {
     showError(error, res);
@@ -53,6 +62,12 @@ export const getProductMessage = async (req, res) => {
 
 export const getMemberProductMessage = async (req, res) => {
   try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 5;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     const result = await messages
       .find({ prodcutId: req.params.id, userId: req.user._id })
       .select('-isShow -createDate');
@@ -60,7 +75,10 @@ export const getMemberProductMessage = async (req, res) => {
     res.status(200).json({
       success: true,
       message: '',
-      result,
+      result: {
+        data: result.slice(startIndex, endIndex),
+        totalPages: Math.ceil(result.length / limit),
+      },
     });
   } catch (error) {
     showError(error, res);

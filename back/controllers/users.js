@@ -160,6 +160,7 @@ export const toggleFatorite = async (req, res) => {
 
 export const toggleList = async (req, res) => {
   try {
+    console.log(req.body.id);
     if (req.body.id === req.user._id.toString()) {
       res.status(500).json({ success: false, message: '未知錯誤' });
       return;
@@ -195,9 +196,9 @@ export const toggleList = async (req, res) => {
     res.status(200).json({
       success: true,
       message: '',
-      result: {},
     });
   } catch (error) {
+    console.log(error);
     showError(error, res);
   }
 };
@@ -226,6 +227,7 @@ export const getBlackList = async (req, res) => {
       result: result.black,
     });
   } catch (error) {
+    console.log(error);
     showError(error, res);
   }
 };

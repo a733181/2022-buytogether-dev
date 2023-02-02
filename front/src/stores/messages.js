@@ -15,6 +15,11 @@ export const useMessageStore = defineStore('messages', () => {
     allProduct: [],
   });
 
+  const messagePage = reactive({
+    total: 1,
+    current: 1,
+  });
+
   const messageProduct = computed(() => message.product);
   const messageAllProduct = computed(() => message.allProduct);
 
@@ -35,13 +40,20 @@ export const useMessageStore = defineStore('messages', () => {
   const getProductMessageHandler = async (productId) => {
     try {
       if (user.isMember) {
-        const { data } = await apiAuth.get(`/messages/member/${productId}`);
-        message.product = data.result;
+        const { data } = await apiAuth.get(
+          `/messages/member/${productId}?page=${messagePage.current}`
+        );
+        message.product = data.result.data;
+        messagePage.total = data.result.totalPages;
         return;
       }
 
-      const { data } = await api.get(`/messages/${productId}`);
-      message.product = data.result;
+      const { data } = await api.get(
+        `/messages/${productId}?page=${messagePage.current}`
+      );
+      message.product = data.result.data;
+      messagePage.total = data.result.totalPages;
+      return;
     } catch (error) {
       swalError(error);
     }
@@ -74,6 +86,7 @@ export const useMessageStore = defineStore('messages', () => {
   return {
     messageProduct,
     messageAllProduct,
+    messagePage,
     sumbitMessageHandler,
     getProductMessageHandler,
     getAllMemberProductMessageHanlder,

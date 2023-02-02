@@ -75,31 +75,46 @@
             >{{ falsePaid(showProduct.list.products) }}筆未收款</span
           >
         </p>
-        <p class="mb-">收件地址：</p>
-        <p>
-          姓名：
-          <span>{{ showProduct.list.addressId.name }}</span>
-        </p>
-        <p>
-          地址：
-          <span>
-            {{ showProduct.list.addressId.code }}
-            {{ showProduct.list.addressId.city }}
-            {{ showProduct.list.addressId.districts }}
-            {{ showProduct.list.addressId.street }}
-          </span>
-        </p>
-        <p>
-          電話：
-          <span>{{ showProduct.list.addressId.phone }}</span>
-        </p>
-        <p class="mt-4">
-          付款帳戶：
-          <span
-            >{{ showProduct.list.bankId.bankName }}
-            {{ showProduct.list.bankId.bankNumber }}</span
-          >
-        </p>
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="mb-">收件地址：</p>
+            <p>
+              姓名：
+              <span>{{ showProduct.list.addressId.name }}</span>
+            </p>
+            <p>
+              地址：
+              <span>
+                {{ showProduct.list.addressId.code }}
+                {{ showProduct.list.addressId.city }}
+                {{ showProduct.list.addressId.districts }}
+                {{ showProduct.list.addressId.street }}
+              </span>
+            </p>
+            <p>
+              電話：
+              <span>{{ showProduct.list.addressId.phone }}</span>
+            </p>
+            <p class="mt-4">
+              付款帳戶：
+              <span
+                >{{ showProduct.list.bankId.bankName }}
+                {{ showProduct.list.bankId.bankNumber }}</span
+              >
+            </p>
+          </div>
+          <Btn
+            :text="blackBtnText"
+            className="btn-outline"
+            class="mr-4"
+            @click="
+              clickListHandler({
+                id: showProduct.list.userId,
+                type: 'black',
+              })
+            "
+          />
+        </div>
         <div
           v-for="item in showProduct.list.products"
           :key="item._id"
@@ -127,17 +142,33 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue';
+import { reactive, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Model from '@/components/ui/TheModel.vue';
+import Btn from '@/components/ui/TheBtn.vue';
 import { useOrderStore } from '@/stores/orders';
 import { useModelStore } from '@/stores/model';
+import { useUserStore } from '@/stores/users';
 
 const order = useOrderStore();
+const user = useUserStore();
 const { orderSell, showProduct } = storeToRefs(order);
 const { paidHandler } = order;
 const { toggleShow } = storeToRefs(useModelStore());
+const { users, isMember } = storeToRefs(user);
+const { clickListHandler } = user;
+
+const indexBlack = computed(() => {
+  return users.value.black.findIndex(
+    (item) => item === showProduct.value.list.userId
+  );
+});
+
+const blackBtnText = computed(() => {
+  if (!isMember.value) return '加入黑名單';
+  return indexBlack.value === -1 ? '加入黑名單' : '取消黑名單';
+});
 
 const countyNum = (data) =>
   data.reduce((total, current) => total + current.quantity, 0);

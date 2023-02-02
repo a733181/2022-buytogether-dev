@@ -16,7 +16,7 @@
     <div class="grid lg:grid-cols-4 gap-5 mb-10">
       <Card v-for="item in filterProduct" :key="item._id" :data="item" />
     </div>
-    <Pagination />
+    <!-- <Pagination /> -->
   </div>
 </template>
 

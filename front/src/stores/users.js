@@ -203,6 +203,7 @@ export const useUserStore = defineStore(
           changeListHalder(indexBlack, users.black, id);
         }
       } catch (error) {
+        console.log(error);
         swalError(error);
       }
     };

@@ -88,6 +88,13 @@
           </p>
         </li>
       </ul>
+      <Pagination
+        v-if="messagePage.total > 1"
+        class="ml-auto"
+        :total="messagePage.total"
+        :current="messagePage.current"
+        @current="changePageHandler"
+      />
       <SendMessage @message="submitHandler" />
     </div>
   </div>
@@ -103,6 +110,7 @@ import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Tab from '@/components/ui/TheTab.vue';
 import Youtube from '@/components/ui/YouToLink.vue';
 import SendMessage from '@/components/ui/SendProductMessage.vue';
+import Pagination from '@/components/ui/ThePagination.vue';
 
 import { useProductsStore } from '@/stores/products';
 import { useCartStore } from '@/stores/carts';
@@ -116,7 +124,7 @@ const message = useMessageStore();
 const { getSellProdctHander } = product;
 const { sellProdcut } = storeToRefs(product);
 const { sumbitMessageHandler, getProductMessageHandler } = message;
-const { messageProduct } = storeToRefs(message);
+const { messageProduct, messagePage } = storeToRefs(message);
 getSellProdctHander(route.params.id);
 getProductMessageHandler(route.params.id);
 
@@ -125,6 +133,7 @@ const quantity = ref(1);
 const activeTab = ref('商品詳情');
 
 const changeQuantity = (num) => {
+  console.log(messagePage.value);
   if (quantity.value + num <= 0) {
     quantity.value = 1;
     return;
@@ -142,5 +151,10 @@ const submitHandler = (form) => {
     prodcutId: route.params.id,
   };
   sumbitMessageHandler(newFrom);
+};
+
+const changePageHandler = (page) => {
+  messagePage.value.current = page;
+  getProductMessageHandler(route.params.id);
 };
 </script>
