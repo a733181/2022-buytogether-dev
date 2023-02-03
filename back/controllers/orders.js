@@ -106,6 +106,40 @@ export const paidOrders = async (req, res) => {
   }
 };
 
+export const shipOrders = async (req, res) => {
+  try {
+    let result = await orders.findById(req.params.id);
+    result = result.toObject();
+
+    result.products = result.products.map((item) => {
+      if (item.productId.toString() === req.body.productId) {
+        item.shippingStatus = 1;
+      }
+      return item;
+    });
+
+    const newResult = await orders
+      .findByIdAndUpdate(req.params.id, result, { new: true })
+      .populate('products.productId', '-status')
+      .populate('addressId', '-status -userId')
+      .populate('bankId', '-status -userId');
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result: newResult,
+    });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      res
+        .status(400)
+        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
+    } else {
+      res.status(500).json({ success: false, message: '未知錯誤' });
+    }
+  }
+};
+
 export const getMyBuyOrders = async (req, res) => {
   try {
     const result = await orders
@@ -120,7 +154,7 @@ export const getMyBuyOrders = async (req, res) => {
   }
 };
 
-export const getMySellOrder = async (req, res) => {
+export const getMySellOrders = async (req, res) => {
   try {
     let result = await orders
       .find()
@@ -138,7 +172,6 @@ export const getMySellOrder = async (req, res) => {
 
     result = result.filter((item) => {
       item.products = item.products.filter((prod) => {
-        console.log(prod.productId.userId._id.toString() === req.user._id.toString());
         return prod.productId.userId._id.toString() === req.user._id.toString();
       });
       return item.products.length > 0;

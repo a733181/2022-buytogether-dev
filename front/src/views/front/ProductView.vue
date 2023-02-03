@@ -35,7 +35,9 @@
           <Btn
             text="加入購物車"
             class="w-full"
-            @click="clickAddCartHandler({ id: sellProdcut._id, quantity })"
+            :disabled="isLoadingAddCart"
+            :loading="isLoadingAddCart"
+            @click="clickAddCartBtnHanlder({ id: sellProdcut._id, quantity })"
           />
         </div>
       </div>
@@ -95,7 +97,7 @@
         :current="messagePage.current"
         @current="changePageHandler"
       />
-      <SendMessage @message="submitHandler" />
+      <SendMessage @message="submitHandler" :isLoading="isLoadingMessage" />
     </div>
   </div>
 </template>
@@ -103,7 +105,7 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { ref, onUnmounted } from 'vue';
 
 import Btn from '@/components/ui/TheBtn.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
@@ -128,12 +130,14 @@ const { messageProduct, messagePage } = storeToRefs(message);
 getSellProdctHander(route.params.id);
 getProductMessageHandler(route.params.id);
 
+const isLoadingMessage = ref(false);
+const isLoadingAddCart = ref(false);
+
 const quantity = ref(1);
 
 const activeTab = ref('商品詳情');
 
 const changeQuantity = (num) => {
-  console.log(messagePage.value);
   if (quantity.value + num <= 0) {
     quantity.value = 1;
     return;
@@ -145,16 +149,28 @@ const changeQuantity = (num) => {
   quantity.value += num;
 };
 
-const submitHandler = (form) => {
+const submitHandler = async (form) => {
+  isLoadingMessage.value = true;
   const newFrom = {
     message: form.message,
     prodcutId: route.params.id,
   };
-  sumbitMessageHandler(newFrom);
+  await sumbitMessageHandler(newFrom);
+  isLoadingMessage.value = false;
 };
 
 const changePageHandler = (page) => {
   messagePage.value.current = page;
   getProductMessageHandler(route.params.id);
 };
+
+const clickAddCartBtnHanlder = async (data) => {
+  isLoadingAddCart.value = true;
+  await clickAddCartHandler(data);
+  isLoadingAddCart.value = false;
+};
+
+onUnmounted(() => {
+  messagePage.value.current = 1;
+});
 </script>

@@ -27,7 +27,13 @@
         />
         <div class="flex justify-between mt-8">
           <RouterLink to="/member/membership" class="w-1/3 block">
-            <Btn text="取消" className="btn-outline" class="w-full" />
+            <Btn
+              text="取消"
+              className="btn-outline"
+              class="w-full"
+              :disabled="isLoading"
+              :loading="isLoading"
+            />
           </RouterLink>
           <Btn type="sumbit" text="確定" class="w-1/3" />
         </div>
@@ -51,6 +57,8 @@ import { useUserStore } from '@/stores/users';
 const user = useUserStore();
 const { editUserHander } = user;
 const { users } = storeToRefs(user);
+
+const isLoading = ref(false);
 
 const form = reactive({
   name: users.value.name || '',
@@ -76,8 +84,9 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
+  isLoading.value = true;
   const fd = new FormData();
   if (
     form.image &&
@@ -86,10 +95,11 @@ const submitHandler = () => {
   ) {
     fd.append('name', form.name);
     fd.append('image', form.image);
-    editUserHander(fd);
+    await editUserHander(fd);
   } else {
     fd.append('name', form.name);
-    editUserHander(fd);
+    await editUserHander(fd);
   }
+  isLoading.value = false;
 };
 </script>

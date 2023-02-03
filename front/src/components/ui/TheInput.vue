@@ -3,7 +3,10 @@
     <div :class="lableClass">
       <input
         :type="props.type"
-        :class="inputClass"
+        :class="[
+          inputClass,
+          { 'cursor-not-allowed bg-slate-200': props.disabled },
+        ]"
         v-model.trim="proxy"
         :name="props.name"
         :id="props.id"

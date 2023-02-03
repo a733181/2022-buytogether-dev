@@ -39,14 +39,20 @@
           class="w-1/3"
           @click="cancelBankHandler"
         />
-        <Btn type="sumbit" text="確定" class="w-1/3" />
+        <Btn
+          type="sumbit"
+          text="確定"
+          class="w-1/3"
+          :disabled="isLoading"
+          :loading="isLoading"
+        />
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import validator from 'validator';
 import { storeToRefs } from 'pinia';
 
@@ -57,6 +63,8 @@ import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Input from '@/components/ui/TheInput.vue';
 
 import Btn from '@/components/ui/TheBtn.vue';
+
+const isLoading = ref(false);
 
 const bank = useBankStore();
 const { sumbitBankHandler, cancelBankHandler } = bank;
@@ -112,8 +120,10 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
-  sumbitBankHandler(form);
+  isLoading.value = true;
+  await sumbitBankHandler(form);
+  isLoading.value = false;
 };
 </script>

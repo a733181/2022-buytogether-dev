@@ -24,7 +24,7 @@ router.get('/favorite', jwt, getFatoriteProduct);
 
 router.get('/memberhome/:id', getSellMemberProduct);
 
-router.post('/likes', jwt, toggleLikeProduct);
+router.patch('/likes', jwt, toggleLikeProduct);
 
 router.get('/', getSellProducts);
 

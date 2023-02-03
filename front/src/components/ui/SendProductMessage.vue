@@ -10,13 +10,19 @@
       />
     </div>
     <div class="w-1/3 ml-auto">
-      <Btn status="submit" text="確定" class="w-full" />
+      <Btn
+        status="submit"
+        text="確定"
+        class="w-full"
+        :disabled="isLoading"
+        :loading="isLoading"
+      />
     </div>
   </form>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import validator from 'validator';
 
 import Btn from '@/components/ui/TheBtn.vue';
@@ -27,6 +33,15 @@ import { useUserStore } from '@/stores/users';
 const { isLoginHandler } = useUserStore();
 
 const emit = defineEmits(['message']);
+
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const isLoading = ref(props.isLoading);
 
 const error = reactive({
   message: {
@@ -58,4 +73,10 @@ const submitHandler = () => {
   emit('message', form);
   form.message = '';
 };
+
+watch(props, (value) => {
+  if (value.isLoading !== isLoading.value) {
+    isLoading.value = value.isLoading;
+  }
+});
 </script>

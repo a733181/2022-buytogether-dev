@@ -43,7 +43,7 @@
         @click="error.maxNumber.error = false"
         :disabled="!!editProduct.maxNumber"
       />
-      <p class="text-red-400">全部數量無法修改，請謹慎填寫</p>
+      <p class="text-red-400">＊全部數量無法修改，請謹慎填寫</p>
       <Textarea
         v-model="form.description"
         title="商品描述"
@@ -51,14 +51,26 @@
         :errorText="error.description.value"
         @click="error.description.error = false"
       />
-      <Input
-        v-model="form.bank"
-        title="收款帳戶"
-        :select="bankNewList"
-        :error="error.bank.error"
-        :errorText="error.bank.value"
-        @click="error.bank.error = false"
-      />
+      <div class="flex justify-between items-center">
+        <div class="w-10/12">
+          <Input
+            v-model="form.bank"
+            title="收款帳戶"
+            :select="bankNewList"
+            :error="error.bank.error"
+            :errorText="error.bank.value"
+            @click="error.bank.error = false"
+          />
+        </div>
+        <RouterLink to="/member/bankinfo">
+          <Btn text="新增" class="mt-10" className="btn-outline" />
+        </RouterLink>
+      </div>
+      <p>
+        ＊點選收款帳戶，選擇收款帳戶<span class="ml-2 text-red-400"
+          >(若無帳戶請先新增帳戶)</span
+        >
+      </p>
       <Input
         v-model="form.category"
         title="商品分類"
@@ -67,6 +79,7 @@
         :errorText="error.category.value"
         @click="error.category.error = false"
       />
+      <p>＊點選商品分類，選擇商品分類</p>
       <Input
         v-model="form.youtubeVideoLink"
         title="Youtube影片連結"
@@ -74,7 +87,8 @@
         :errorText="error.youtubeVideoLink.value"
         @click="error.youtubeVideoLink.error = false"
       />
-      <div class="mt-8 flex">
+      <p class="mt-8">＊最多可上傳 9張圖片</p>
+      <div class="mt-2 flex">
         <Btn
           v-if="!form.images.length || form.images.length < 9"
           text="新增圖片"
@@ -113,14 +127,20 @@
           class="w-1/3"
           @click="cancelProductHandler"
         />
-        <Btn type="sumbit" text="確定" class="w-1/3" />
+        <Btn
+          type="sumbit"
+          text="確定"
+          class="w-1/3"
+          :disabled="isLoading"
+          :loading="isLoading"
+        />
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { reactive, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import validator from 'validator';
 import { isVideo, getVideoId } from 'is-youtube-url';
@@ -141,6 +161,8 @@ const { listBank } = storeToRefs(useBankStore());
 const products = useProductsStore();
 const { sumbitProductHandler, cancelProductHandler } = products;
 const { editProduct } = storeToRefs(products);
+
+const isLoading = ref(false);
 
 const error = reactive({
   image: {
@@ -295,8 +317,9 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
+  isLoading.value = true;
   const bankIndex = listBank.value.findIndex((item) => {
     const bank = form.bank.split('-');
     return (
@@ -326,6 +349,8 @@ const submitHandler = () => {
       fd.append('images', item.image);
     });
   }
-  sumbitProductHandler(fd);
+  await sumbitProductHandler(fd);
+
+  isLoading.value = false;
 };
 </script>

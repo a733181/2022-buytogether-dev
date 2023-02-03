@@ -47,7 +47,7 @@ export const useOrderStore = defineStore('orders', () => {
 
   const paidHandler = async ({ orderId, productId }) => {
     try {
-      const { data } = await apiAuth.post(`/orders/paid/${orderId}`, {
+      const { data } = await apiAuth.patch(`/orders/paid/${orderId}`, {
         productId,
       });
 
@@ -99,6 +99,28 @@ export const useOrderStore = defineStore('orders', () => {
     }
   };
 
+  const shipHandler = async ({ orderId, productId }) => {
+    try {
+      const { data } = await apiAuth.patch(`/orders/ship/${orderId}`, {
+        productId,
+      });
+
+      if (order.sellList.length) {
+        const index = order.sellList.findIndex(
+          (item) => item._id === data.result._id
+        );
+        order.sellList[index] = data.result;
+        if (!!showProduct.list) {
+          showProduct.list = data.result;
+        }
+      }
+      await getMemberBuyOrderHandler();
+      swalSuccess('出貨成功');
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
   return {
     orderPaid,
     orderBuy,
@@ -106,6 +128,7 @@ export const useOrderStore = defineStore('orders', () => {
     showProduct,
     checkoutHandler,
     paidHandler,
+    shipHandler,
     getMemberBuyOrderHandler,
     getMemberSellOrderHandler,
   };

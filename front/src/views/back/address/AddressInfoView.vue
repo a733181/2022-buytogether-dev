@@ -28,6 +28,7 @@
         @click="error.city.error = false"
         :select="city"
       />
+      <p>請點選城市，選擇城市</p>
       <Input
         title="區鄉鎮"
         v-model="form.districts"
@@ -36,6 +37,7 @@
         @click="error.districts.error = false"
         :select="districts"
       />
+      <p>請點選區鄉鎮，選擇區鄉鎮</p>
       <Input
         title="街道"
         v-model="form.street"
@@ -66,7 +68,13 @@
           class="w-1/3"
           @click="cancelAddressHandler"
         />
-        <Btn type="sumbit" text="確定" class="w-1/3" />
+        <Btn
+          type="sumbit"
+          text="確定"
+          class="w-1/3"
+          :disabled="isLoading"
+          :loading="isLoading"
+        />
       </div>
     </form>
   </div>
@@ -95,6 +103,8 @@ const { editAddress } = storeToRefs(address);
 
 const accountPhone = ref(editAddress.value?.phone === users.value.phone);
 const accountName = ref(editAddress.value?.name === users.value.name);
+
+const isLoading = ref(false);
 
 const form = reactive({
   _id: editAddress.value._id || '',
@@ -213,9 +223,12 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
+
+  isLoading.value = true;
   form.code = Number(code.value);
-  sumbitAddressHandler(form);
+  await sumbitAddressHandler(form);
+  isLoading.value = false;
 };
 </script>

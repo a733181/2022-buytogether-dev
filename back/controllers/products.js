@@ -55,17 +55,31 @@ export const createProduct = async (req, res) => {
 
 export const getSellProducts = async (req, res) => {
   try {
+    const category = req.query.category || '全部';
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 24;
+    const key = req.query.key || '';
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const find = { isSell: true, status: 0 };
+
+    if (category !== '全部') {
+      find.category = category;
+    }
+    if (key !== '') {
+      find.name = new RegExp(key, 'i');
+    }
+
     const result = await products
-      .find({
-        isSell: true,
-        status: 0,
-      })
+      .find(find)
       .select('-status -bankId -createDate')
       .populate('userId', '_id name black');
     const getOrder = await orders.find();
 
-    const newResult = JSON.parse(JSON.stringify(result));
-    newResult.forEach((reProd) => {
+    let newResult = JSON.parse(JSON.stringify(result));
+    newResult = newResult.filter((reProd) => {
       let total = 0;
       getOrder.forEach((item) => {
         item.products.forEach((prod) => {
@@ -75,14 +89,19 @@ export const getSellProducts = async (req, res) => {
         });
       });
       reProd.remaining = reProd.maxNumber - total;
+      return reProd.remaining > 0;
     });
 
     res.status(200).json({
       success: true,
       message: '',
-      result: newResult,
+      result: {
+        data: newResult.slice(startIndex, endIndex),
+        totalPages: Math.ceil(newResult.length / limit),
+      },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: '未知錯誤' });
   }
 };
@@ -142,6 +161,7 @@ export const getAllMemberProducts = async (req, res) => {
 
     const getOrder = await orders.find();
     const newResult = JSON.parse(JSON.stringify(result));
+
     newResult.forEach((reProd) => {
       let total = 0;
       getOrder.forEach((item) => {
@@ -166,22 +186,47 @@ export const getAllMemberProducts = async (req, res) => {
 
 export const getSellMemberProduct = async (req, res) => {
   try {
+    const category = req.query.category || '全部';
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 24;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
     const result = await products
       .find({
         userId: req.params.id,
         isSell: true,
         status: 0,
       })
-      .select('-status -maxNumber -bankId -userId');
+      .select('-status -bankId -userId');
 
     const member = await users.findById(req.params.id).select('_id name image black');
+
+    const getOrder = await orders.find();
+
+    let newResult = JSON.parse(JSON.stringify(result));
+
+    newResult = newResult.filter((reProd) => {
+      let total = 0;
+      getOrder.forEach((item) => {
+        item.products.forEach((prod) => {
+          if (reProd._id.toString() === prod.productId.toString()) {
+            total += prod.quantity;
+          }
+        });
+      });
+      reProd.remaining = reProd.maxNumber - total;
+      return reProd.remaining > 0;
+    });
 
     res.status(200).json({
       success: true,
       message: '',
       result: {
         member,
-        data: result,
+        data: newResult.slice(startIndex, endIndex),
+        totalPages: Math.ceil(newResult.length / limit),
       },
     });
   } catch (error) {
@@ -313,6 +358,7 @@ export const getFatoriteProduct = async (req, res) => {
     const getOrder = await orders.find();
 
     const newResult = JSON.parse(JSON.stringify(result));
+
     newResult.forEach((reProd) => {
       let total = 0;
       getOrder.forEach((item) => {
@@ -324,6 +370,7 @@ export const getFatoriteProduct = async (req, res) => {
       });
       reProd.remaining = reProd.maxNumber - total;
     });
+
     res.status(200).json({
       success: true,
       message: '',

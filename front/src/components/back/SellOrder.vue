@@ -10,6 +10,7 @@
           <th class="border-2 p-2">是否付款</th>
           <th class="border-2 p-2">收件地址</th>
           <th class="border-2 p-2">付款帳戶</th>
+          <th class="border-2 p-2">出貨狀態</th>
           <th class="border-2 p-2">商品詳情</th>
         </tr>
       </thead>
@@ -47,6 +48,14 @@
           <td class="border-2 p-2">
             <p>{{ item.bankId.bankName }}</p>
             <p>{{ item.bankId.bankNumber }}</p>
+          </td>
+          <td class="border-2 p-2">
+            <p v-if="notShip(item.products)" class="text-red-400">
+              {{ notShip(item.products) }} 筆未出貨
+            </p>
+            <p v-if="shiped(item.products)">
+              {{ shiped(item.products) }} 筆已出貨
+            </p>
           </td>
           <td class="border-2 p-2">
             <img
@@ -104,6 +113,7 @@
             </p>
           </div>
           <Btn
+            v-if="showProduct.list.userId != users._id"
             :text="blackBtnText"
             className="btn-outline"
             class="mr-4"
@@ -134,6 +144,27 @@
               商品價格：
               <span>{{ item.productId.price }}</span>
             </p>
+            <Btn
+              text="出貨"
+              class="w-full mt-6"
+              :disabled="!item.paid.isPaid || item.shippingStatus === 1"
+              :class="{
+                'disabled: opacity-50':
+                  !item.paid.isPaid || item.shippingStatus === 1,
+              }"
+              @click="
+                shipHandler({
+                  orderId: showProduct.list._id,
+                  productId: item.productId._id,
+                })
+              "
+            />
+            <p
+              class="mt-2"
+              :class="{ 'text-red-400': item.shippingStatus === 0 }"
+            >
+              {{ item.shippingStatus === 0 ? '未出貨' : '已出貨' }}
+            </p>
           </div>
         </div>
       </div>
@@ -142,7 +173,7 @@
 </template>
 
 <script setup>
-import { reactive, watch, computed } from 'vue';
+import { ref, reactive, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Model from '@/components/ui/TheModel.vue';
@@ -154,7 +185,7 @@ import { useUserStore } from '@/stores/users';
 const order = useOrderStore();
 const user = useUserStore();
 const { orderSell, showProduct } = storeToRefs(order);
-const { paidHandler } = order;
+const { shipHandler } = order;
 const { toggleShow } = storeToRefs(useModelStore());
 const { users, isMember } = storeToRefs(user);
 const { clickListHandler } = user;
@@ -179,16 +210,34 @@ const countyPrice = (data) => {
 };
 
 const truePaid = (data) => {
-  return data.reduce((total, current) => {
-    if (current.paid.isPaid) {
+  return data.reduce((total, item) => {
+    if (item.paid.isPaid) {
       total++;
     }
     return total;
   }, 0);
 };
 const falsePaid = (data) => {
-  return data.reduce((total, current) => {
-    if (!current.paid.isPaid) {
+  return data.reduce((total, item) => {
+    if (!item.paid.isPaid) {
+      total++;
+    }
+    return total;
+  }, 0);
+};
+
+const notShip = (data) => {
+  return data.reduce((total, item) => {
+    if (item.shippingStatus === 0) {
+      total++;
+    }
+    return total;
+  }, 0);
+};
+
+const shiped = (data) => {
+  return data.reduce((total, item) => {
+    if (item.shippingStatus === 1) {
       total++;
     }
     return total;

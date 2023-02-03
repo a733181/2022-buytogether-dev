@@ -31,14 +31,20 @@
           @click="isLogin = !isLogin"
           :text="isLogin ? '註冊' : '返回'"
         />
-        <Btn status="submit" class="w-1/3" text="確定" />
+        <Btn
+          status="submit"
+          class="w-1/3"
+          text="確定"
+          :disabled="isLoading"
+          :loading="isLoading"
+        />
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import validator from 'validator';
 
@@ -47,6 +53,8 @@ import Btn from '@/components/ui/TheBtn.vue';
 import Input from '@/components/ui/TheInput.vue';
 
 import { useUserStore } from '@/stores/users';
+
+const isLoading = ref(false);
 
 const user = useUserStore();
 const { registerHandler, loginHandler } = user;
@@ -92,13 +100,15 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
+  isLoading.value = true;
 
   if (isLogin.value) {
-    loginHandler(form);
+    await loginHandler(form);
   } else {
-    registerHandler(form);
+    await registerHandler(form);
   }
+  isLoading.value = false;
 };
 </script>

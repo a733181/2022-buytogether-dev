@@ -69,7 +69,9 @@ export const getMemberProductMessage = async (req, res) => {
     const endIndex = page * limit;
 
     const result = await messages
-      .find({ prodcutId: req.params.id, userId: req.user._id })
+      .find({
+        $or: [{ prodcutId: req.params.id }, { userId: req.user._id }],
+      })
       .select('-isShow -createDate');
 
     res.status(200).json({

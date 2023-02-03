@@ -74,13 +74,6 @@
           <tr>
             <td colspan="6">
               <div class="flex justify-end items-center">
-                <RouterLink to="/member/bankinfo">
-                  <Btn
-                    text="新增"
-                    class="mr-10 mt-10"
-                    className="btn-outline"
-                  />
-                </RouterLink>
                 <div class="w-1/2">
                   <Input
                     v-model="form.bank"
@@ -90,20 +83,21 @@
                     :errorText="error.bank.value"
                     @click="error.bank.error = false"
                   />
+                  <p>
+                    點選付款帳戶，選擇帳戶<span class="ml-2 text-red-400"
+                      >(若無帳戶請先新增帳戶)</span
+                    >
+                  </p>
                 </div>
+                <RouterLink to="/member/bankinfo">
+                  <Btn text="新增" class="mt-4 ml-10" className="btn-outline" />
+                </RouterLink>
               </div>
             </td>
           </tr>
           <tr>
             <td colspan="6">
               <div class="flex justify-end">
-                <RouterLink to="/member/addressinfo">
-                  <Btn
-                    text="新增"
-                    class="mt-10 mr-10"
-                    className="btn-outline"
-                  />
-                </RouterLink>
                 <div class="w-1/2">
                   <Input
                     v-model="form.address"
@@ -113,14 +107,32 @@
                     :errorText="error.address.value"
                     @click="error.address.error = false"
                   />
+                  <p>
+                    點選收件地址，選擇地址<span class="ml-2 text-red-400"
+                      >(若無地址請先新增地址)</span
+                    >
+                  </p>
                 </div>
+                <RouterLink to="/member/addressinfo">
+                  <Btn
+                    text="新增"
+                    class="mt-10 ml-10"
+                    className="btn-outline"
+                  />
+                </RouterLink>
               </div>
             </td>
           </tr>
           <tr>
             <td colspan="4"></td>
             <td colspan="2">
-              <Btn text="確定" class="w-full mt-6" @click="submitHandler" />
+              <Btn
+                text="確定"
+                class="w-full mt-6"
+                @click="submitHandler"
+                :disabled="isLoading"
+                :loading="isLoading"
+              />
             </td>
           </tr>
         </tbody>
@@ -130,7 +142,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import validator from 'validator';
 
@@ -150,6 +162,8 @@ const { checkoutHandler } = useOrderStore();
 const { listBank } = storeToRefs(useBankStore());
 const { listAddress } = storeToRefs(useAddressStore());
 getCartList();
+
+const isLoading = ref(false);
 
 const error = reactive({
   address: {
@@ -238,9 +252,9 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
-
+  isLoading.value = true;
   const bankIndex = listBank.value.findIndex((item) => {
     const bank = form.bank.split('-');
     return (
@@ -264,6 +278,7 @@ const submitHandler = () => {
     bankId: listBank.value[bankIndex]._id,
   };
 
-  checkoutHandler(newForm);
+  await checkoutHandler(newForm);
+  isLoading.value = false;
 };
 </script>

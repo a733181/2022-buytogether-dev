@@ -47,8 +47,8 @@ router.post('/address', content('application/json'), auth.jwt, createAddress);
 router.patch('/address/:id', content('application/json'), auth.jwt, editAddress);
 router.delete('/address/:id', auth.jwt, deleteAddress);
 
-router.post('/favorite', auth.jwt, toggleFatorite);
-router.post('/list', auth.jwt, toggleList);
+router.patch('/favorite', auth.jwt, toggleFatorite);
+router.patch('/list', auth.jwt, toggleList);
 
 router.get('/track', auth.jwt, getTrackList);
 router.get('/black', auth.jwt, getBlackList);

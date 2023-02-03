@@ -179,7 +179,7 @@ export const useUserStore = defineStore(
       if (!isLoginHandler()) return;
       try {
         const index = users.favorites.findIndex((item) => item === productId);
-        await apiAuth.post('/users/favorite', { productId });
+        await apiAuth.patch('/users/favorite', { productId });
         changeListHalder(index, users.favorites, productId);
 
         if (products.sellFatorite.length > 0) {
@@ -196,14 +196,13 @@ export const useUserStore = defineStore(
         const indexTrack = users.track.findIndex((item) => item === id);
         const indexBlack = users.black.findIndex((item) => item === id);
 
-        await apiAuth.post('/users/list', { id, type });
+        await apiAuth.patch('/users/list', { id, type });
         if (type === 'track') {
           changeListHalder(indexTrack, users.track, id);
         } else {
           changeListHalder(indexBlack, users.black, id);
         }
       } catch (error) {
-        console.log(error);
         swalError(error);
       }
     };

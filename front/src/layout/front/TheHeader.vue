@@ -60,7 +60,7 @@
           <img
             v-else
             src="@/assets/svg/cart-plus.svg"
-            class="w-4 absolute -top-2 right-2"
+            class="w-4 absolute -top-2 right-2 animate-bounce"
           />
           <img src="@/assets/svg/cart.svg" class="w-10" />
         </RouterLink>

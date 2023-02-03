@@ -46,7 +46,9 @@
       <Btn
         text="加入購物車"
         class="ml-auto"
-        @click="clickAddCartHandler({ id: data._id })"
+        @click="addCartBtnHandler(data._id)"
+        :disabled="isLoading"
+        :loading="isLoading"
       />
     </div>
   </div>
@@ -54,7 +56,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 
 import Btn from '@/components/ui/TheBtn.vue';
 
@@ -75,6 +77,8 @@ const props = defineProps({
   },
 });
 
+const isLoading = ref(false);
+
 const isFavorite = computed(() => {
   const index = favorites.value.findIndex((item) => item === props.data._id);
 
@@ -94,6 +98,12 @@ const isLike = computed(() => {
 const likesLength = computed(() => {
   return props.data.likes.length;
 });
+
+const addCartBtnHandler = async (id) => {
+  isLoading.value = true;
+  await clickAddCartHandler({ id });
+  isLoading.value = false;
+};
 </script>
 
 <style scoped>

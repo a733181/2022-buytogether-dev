@@ -10,6 +10,7 @@
           <th class="border-2 p-2">是否付款</th>
           <th class="border-2 p-2">收件地址</th>
           <th class="border-2 p-2">付款帳戶</th>
+          <th class="border-2 p-2">出貨狀態</th>
           <th class="border-2 p-2">商品詳情</th>
         </tr>
       </thead>
@@ -47,6 +48,14 @@
           <td class="border-2 p-2">
             <p>{{ item.bankId.bankName }}</p>
             <p>{{ item.bankId.bankNumber }}</p>
+          </td>
+          <td class="border-2 p-2">
+            <p v-if="notShip(item.products)" class="text-red-400">
+              {{ notShip(item.products) }} 筆未出貨
+            </p>
+            <p v-if="shiped(item.products)">
+              {{ shiped(item.products) }} 筆已出貨
+            </p>
           </td>
           <td class="border-2 p-2">
             <img
@@ -132,6 +141,12 @@
                 })
               "
             />
+            <p
+              class="mt-2"
+              :class="{ 'text-red-400': item.shippingStatus === 0 }"
+            >
+              {{ item.shippingStatus === 0 ? '未出貨' : '已出貨' }}
+            </p>
           </div>
         </div>
       </div>
@@ -172,6 +187,24 @@ const truePaid = (data) => {
 const falsePaid = (data) => {
   return data.reduce((total, current) => {
     if (!current.paid.isPaid) {
+      total++;
+    }
+    return total;
+  }, 0);
+};
+
+const notShip = (data) => {
+  return data.reduce((total, item) => {
+    if (item.shippingStatus === 0) {
+      total++;
+    }
+    return total;
+  }, 0);
+};
+
+const shiped = (data) => {
+  return data.reduce((total, item) => {
+    if (item.shippingStatus === 1) {
       total++;
     }
     return total;

@@ -24,7 +24,13 @@
           <RouterLink to="/member/membership" class="w-1/3 block">
             <Btn text="取消" className="btn-outline" class="w-full" />
           </RouterLink>
-          <Btn type="sumbit" text="確定" class="w-1/3" />
+          <Btn
+            type="sumbit"
+            text="確定"
+            class="w-1/3"
+            :disabled="isLoading"
+            :loading="isLoading"
+          />
         </div>
       </form>
     </div>
@@ -32,7 +38,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
 import validator from 'validator';
 import { storeToRefs } from 'pinia';
 
@@ -41,6 +47,8 @@ import Input from '@/components/ui/TheInput.vue';
 import Btn from '@/components/ui/TheBtn.vue';
 
 import { useUserStore } from '@/stores/users';
+
+const isLoading = ref(false);
 
 const user = useUserStore();
 const { editUserHander } = user;
@@ -69,10 +77,12 @@ const validatorFormHandler = () => {
   return false;
 };
 
-const submitHandler = () => {
+const submitHandler = async () => {
   if (validatorFormHandler()) return;
+  isLoading.value = true;
   const fd = new FormData();
   fd.append('email', form.email);
-  editUserHander(fd);
+  await editUserHander(fd);
+  isLoading.value = false;
 };
 </script>

@@ -36,6 +36,11 @@ export const useProductsStore = defineStore('products', () => {
     sellFatorite: [],
   });
 
+  const productPage = reactive({
+    total: 1,
+    current: 1,
+  });
+
   const editProduct = computed(() => product.edit);
 
   const listProduct = computed(() => product.list);
@@ -138,10 +143,15 @@ export const useProductsStore = defineStore('products', () => {
     }
   };
 
-  const getAllSellProdcutHandler = async () => {
+  const getAllSellProdcutHandler = async (form) => {
     try {
-      const { data } = await api.get('/products');
-      product.allSell = data.result;
+      const category = form?.category || '全部';
+      const key = form?.key || '';
+      const { data } = await api.get(
+        `/products?key=${key}&category=${category}`
+      );
+      product.allSell = data.result.data;
+      productPage.total = data.result.totalPages;
       if (user.isMember) {
         product.allSell = product.allSell.filter(
           (item) => !item.userId.black.some((item) => item === user.users._id)
@@ -174,6 +184,7 @@ export const useProductsStore = defineStore('products', () => {
     try {
       const { data } = await api.get(`/products/memberhome/${userId}`);
       product.member = data.result;
+      productPage.total = data.result.totalPages;
       if (!product.member?.image) {
         product.member.member.image = `https://source.boringavatars.com/beam/256/${product.member.member.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`;
       }
@@ -208,7 +219,7 @@ export const useProductsStore = defineStore('products', () => {
     if (!user.isLoginHandler()) return;
 
     try {
-      await apiAuth.post('/products/likes', { productId });
+      await apiAuth.patch('/products/likes', { productId });
       const indexSellProduct = product.allSell.findIndex(
         (item) => item._id === productId
       );

@@ -46,9 +46,10 @@
               text="付款"
               class="w-full mt-6"
               :disabled="item.productId?.paid"
+              :loading="isLoading"
               :class="{ 'disabled: opacity-50': item.productId.paid }"
               @click="
-                paidHandler({
+                clickBtnPaidHandler({
                   orderId: orderPaid._id,
                   productId: item.productId._id,
                 })
@@ -85,7 +86,13 @@
             <Btn
               text="全部付款"
               class="w-full mt-6"
-              @click="paidHandler({ orderId: orderPaid._id, productId: '' })"
+              :loading="isAllLoading"
+              @click="
+                clickBtnAllPaidHandler({
+                  orderId: orderPaid._id,
+                  productId: '',
+                })
+              "
             />
           </td>
         </tr>
@@ -95,7 +102,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
@@ -105,6 +112,9 @@ import Btn from '@/components/ui/TheBtn.vue';
 import { useOrderStore } from '@/stores/orders';
 import { useBankStore } from '@/stores/bank';
 import { useAddressStore } from '@/stores/address';
+
+const isLoading = ref(false);
+const isAllLoading = ref(false);
 
 const router = useRouter();
 
@@ -139,4 +149,16 @@ const address = computed(() => {
 
   return `${filter[0].code} ${filter[0].city} ${filter[0].districts} ${filter[0].street}`;
 });
+
+const clickBtnPaidHandler = async (id) => {
+  isLoading.value = true;
+  await paidHandler(id);
+  isLoading.value = false;
+};
+
+const clickBtnAllPaidHandler = async (id) => {
+  isAllLoading.value = true;
+  await paidHandler(id);
+  isAllLoading.value = false;
+};
 </script>

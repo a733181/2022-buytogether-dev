@@ -53,7 +53,6 @@ export const useMessageStore = defineStore('messages', () => {
       );
       message.product = data.result.data;
       messagePage.total = data.result.totalPages;
-      return;
     } catch (error) {
       swalError(error);
     }
