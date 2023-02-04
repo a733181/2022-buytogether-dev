@@ -4,21 +4,22 @@
       <h2>沒有收藏商品</h2>
       <RouterLink to="/products" class="text-primary">前往商城</RouterLink>
     </div>
-    <div
-      v-if="sellFatorite.length"
-      class="flex justify-center items-center gap-5 flex-wrap mb-10"
-    >
-      <Tab tab="全部" :active="activeTab" @click="activeTab = '全部'" />
-      <Tab
-        v-for="(item, index) in productCategory"
-        :tab="item"
-        :key="index"
-        :active="activeTab"
-        @click="activeTab = item"
-      />
-    </div>
-    <div v-if="sellFatorite.length" class="grid lg:grid-cols-4 gap-5 mb-10">
-      <Card v-for="item in filterProduct" :key="item._id" :data="item" />
+    <div v-if="sellFatorite.length" class="flex">
+      <div class="flex gap-5 flex-col mr-10">
+        <Tab tab="全部" :active="activeTab" @click="activeTab = '全部'" />
+        <Tab
+          v-for="(item, index) in productCategory"
+          :tab="item"
+          :key="index"
+          :active="activeTab"
+          @click="activeTab = item"
+        />
+      </div>
+      <div class="flex-1">
+        <div class="grid lg:grid-cols-3 gap-5 mb-10">
+          <Card v-for="item in filterProduct" :key="item._id" :data="item" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

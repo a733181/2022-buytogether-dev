@@ -101,7 +101,6 @@ export const getSellProducts = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, message: '未知錯誤' });
   }
 };
@@ -189,17 +188,21 @@ export const getSellMemberProduct = async (req, res) => {
     const category = req.query.category || '全部';
     const page = req.query.page || 1;
     const limit = req.query.limit || 24;
+    const key = req.query.key || '';
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
-    const result = await products
-      .find({
-        userId: req.params.id,
-        isSell: true,
-        status: 0,
-      })
-      .select('-status -bankId -userId');
+    const find = { userId: req.params.id, isSell: true, status: 0 };
+
+    if (category !== '全部') {
+      find.category = category;
+    }
+    if (key !== '') {
+      find.name = new RegExp(key, 'i');
+    }
+
+    const result = await products.find(find).select('-status -bankId -userId');
 
     const member = await users.findById(req.params.id).select('_id name image black');
 

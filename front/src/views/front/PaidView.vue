@@ -49,7 +49,7 @@
               :loading="isLoading"
               :class="{ 'disabled: opacity-50': item.productId.paid }"
               @click="
-                clickBtnPaidHandler({
+                clickBtnpaidOrderHandler({
                   orderId: orderPaid._id,
                   productId: item.productId._id,
                 })
@@ -88,7 +88,7 @@
               class="w-full mt-6"
               :loading="isAllLoading"
               @click="
-                clickBtnAllPaidHandler({
+                clickBtnAllpaidOrderHandler({
                   orderId: orderPaid._id,
                   productId: '',
                 })
@@ -120,7 +120,7 @@ const router = useRouter();
 
 const order = useOrderStore();
 const { orderPaid } = storeToRefs(order);
-const { paidHandler } = order;
+const { paidOrderHandler } = order;
 const { listBank } = storeToRefs(useBankStore());
 const { listAddress } = storeToRefs(useAddressStore());
 
@@ -150,15 +150,15 @@ const address = computed(() => {
   return `${filter[0].code} ${filter[0].city} ${filter[0].districts} ${filter[0].street}`;
 });
 
-const clickBtnPaidHandler = async (id) => {
+const clickBtnpaidOrderHandler = async (id) => {
   isLoading.value = true;
-  await paidHandler(id);
+  await paidOrderHandler(id);
   isLoading.value = false;
 };
 
-const clickBtnAllPaidHandler = async (id) => {
+const clickBtnAllpaidOrderHandler = async (id) => {
   isAllLoading.value = true;
-  await paidHandler(id);
+  await paidOrderHandler(id);
   isAllLoading.value = false;
 };
 </script>

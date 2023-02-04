@@ -18,7 +18,7 @@ const props = defineProps({
 
 <style scoped>
 .tab {
-  @apply border-2 rounded-lg px-3 py-2;
+  @apply border-2 rounded-lg px-3 py-2 text-center;
 }
 .tab:hover {
   @apply border-primary;

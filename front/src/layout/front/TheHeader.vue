@@ -5,7 +5,7 @@
     >
       <RouterLink to="/" class="flex gap-2 items-center">
         <i class="logo"></i>
-        <p>團購趣</p>
+        <p class="mb-2">團購趣</p>
       </RouterLink>
       <nav>
         <ul class="flex gap-4 py-4 items-center justify-center">

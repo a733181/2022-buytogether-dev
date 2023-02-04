@@ -1826,9 +1826,27 @@ export const useCategoryStore = defineStore('category', () => {
     },
   ];
 
+  const sortProduct = [
+    '綜合排名',
+    '價格由高至低',
+    '價格由低至高',
+    '剩餘數量由高至低',
+    '剩餘數量由低至高',
+  ];
+
+  const sortOrder = [
+    '未付款訂單',
+    '已付款訂單',
+    '已出貨訂單',
+    '已取消訂單',
+    '封存訂單',
+  ];
+
   return {
     productCategory,
     bankNumberLists,
     districtsList,
+    sortProduct,
+    sortOrder,
   };
 });

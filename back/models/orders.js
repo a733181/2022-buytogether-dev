@@ -51,6 +51,14 @@ const schema = new Schema(
       ref: 'banks',
       required: [true, '缺少付款帳戶'],
     },
+    buyStatus: {
+      type: Number,
+      default: 0,
+    },
+    sellStatus: {
+      type: Number,
+      default: 0,
+    },
     createDate: {
       type: Date,
       default: Date.now,

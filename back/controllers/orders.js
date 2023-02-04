@@ -59,68 +59,67 @@ export const createOrder = async (req, res) => {
   }
 };
 
-export const paidOrders = async (req, res) => {
+export const editOrder = async (req, res) => {
   try {
     let result = await orders.findById(req.params.id);
     result = result.toObject();
-    if (req.body.productId === '') {
-      result.products = result.products.map((item) => {
-        item.paid.isPaid = true;
-        return item;
-      });
+    if (req.body.type === 'paid') {
+      if (req.body.productId === '') {
+        result.products = result.products.map((item) => {
+          item.paid.isPaid = true;
+          return item;
+        });
 
-      await orders.findByIdAndUpdate(req.params.id, result, { new: true });
+        await orders.findByIdAndUpdate(req.params.id, result, { new: true });
 
-      res.status(200).json({
-        success: true,
-        message: '',
-      });
-    } else {
+        res.status(200).json({
+          success: true,
+          message: '',
+        });
+        return;
+      } else {
+        result.products = result.products.map((item) => {
+          if (item.productId.toString() === req.body.productId) {
+            item.paid.isPaid = true;
+          }
+          return item;
+        });
+      }
+    } else if (req.body.type === 'ship') {
       result.products = result.products.map((item) => {
         if (item.productId.toString() === req.body.productId) {
-          item.paid.isPaid = true;
+          if (item.paid.isPaid) {
+            item.shippingStatus = 1;
+          }
         }
         return item;
       });
-
-      const newResult = await orders
-        .findByIdAndUpdate(req.params.id, result, { new: true })
-        .populate('products.productId', '-status')
-        .populate('addressId', '-status -userId')
-        .populate('bankId', '-status -userId');
-
-      res.status(200).json({
-        success: true,
-        message: '',
-        result: newResult,
+    } else if (req.body.type === 'archive') {
+      if (req.body.member === 'buy') {
+        result.buyStatus = req.body.status;
+      } else {
+        result.sellStatus = req.body.status;
+      }
+    } else if (req.body.type === 'cancel') {
+      result.products = result.products.map((item) => {
+        if (item.productId.toString() === req.body.productId) {
+          item.shippingStatus = 2;
+        }
+        return item;
       });
     }
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
-  }
-};
-
-export const shipOrders = async (req, res) => {
-  try {
-    let result = await orders.findById(req.params.id);
-    result = result.toObject();
-
-    result.products = result.products.map((item) => {
-      if (item.productId.toString() === req.body.productId) {
-        item.shippingStatus = 1;
-      }
-      return item;
-    });
 
     const newResult = await orders
       .findByIdAndUpdate(req.params.id, result, { new: true })
-      .populate('products.productId', '-status')
+      .populate({
+        path: 'products.productId',
+        select: '_id addressId bankId name image category userId price',
+        populate: {
+          path: 'bankId',
+          model: 'banks',
+          select: 'bankName bankNumber',
+        },
+      })
       .populate('addressId', '-status -userId')
       .populate('bankId', '-status -userId');
 
@@ -144,7 +143,15 @@ export const getMyBuyOrders = async (req, res) => {
   try {
     const result = await orders
       .find({ userId: req.user._id })
-      .populate('products.productId', '-status')
+      .populate({
+        path: 'products.productId',
+        select: '_id addressId bankId name image category userId price',
+        populate: {
+          path: 'bankId',
+          model: 'banks',
+          select: 'bankName bankNumber',
+        },
+      })
       .populate('addressId', '-status -userId')
       .populate('bankId', '-status -userId');
 
@@ -160,7 +167,7 @@ export const getMySellOrders = async (req, res) => {
       .find()
       .populate({
         path: 'products.productId',
-        select: '-status',
+        select: '_id addressId bankId name image category userId price',
         populate: {
           path: 'userId',
           model: 'users',

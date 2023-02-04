@@ -32,6 +32,7 @@ export const useCartStore = defineStore('carts', () => {
     try {
       const { data } = await apiAuth.get('/users/cart');
       cart.list = data.result;
+      console.log(cart.list);
     } catch (error) {
       swalError(error);
     }

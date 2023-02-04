@@ -158,7 +158,7 @@ import { useAddressStore } from '@/stores/address';
 const carts = useCartStore();
 const { getCartList, clickAddCartHandler, deleteCartHandler } = carts;
 const { cart } = storeToRefs(carts);
-const { checkoutHandler } = useOrderStore();
+const { checkouOrdertHandler } = useOrderStore();
 const { listBank } = storeToRefs(useBankStore());
 const { listAddress } = storeToRefs(useAddressStore());
 getCartList();
@@ -278,7 +278,7 @@ const submitHandler = async () => {
     bankId: listBank.value[bankIndex]._id,
   };
 
-  await checkoutHandler(newForm);
+  await checkouOrdertHandler(newForm);
   isLoading.value = false;
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div v-if="toggleShow">
     <div
-      class="fixed top-20 left-1/2 -translate-x-1/2 z-30 bg-white p-10 overflow-y-auto max-h-[calc(100vh-136px)] lg:w-1/2"
+      class="fixed top-20 left-1/2 -translate-x-1/2 z-30 bg-white p-10 overflow-y-auto max-h-[calc(100vh-136px)] rounded-xl lg:w-1/2"
     >
       <slot></slot>
       <img
@@ -20,10 +20,7 @@
 <script setup>
 import { useModelStore } from '@/stores/model';
 import { storeToRefs } from 'pinia';
-
 const model = useModelStore();
-
 const { toggleShow } = storeToRefs(model);
 </script>
-
 <style scoped></style>

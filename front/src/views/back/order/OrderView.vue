@@ -1,20 +1,27 @@
 <template>
   <div class="container py-20">
     <Breadcrumbs class="mb-10">
-      <p>帳戶</p>
+      <span>訂單管理</span>
+      <span>&ensp;/&ensp;{{ activeTab }}</span>
     </Breadcrumbs>
     <div class="flex gap-8 mb-10">
       <Tab
         tab="購買"
-        class="w-1/2 text-center"
+        class="w-1/3"
         :active="activeTab"
         @click="activeTab = '購買'"
       />
       <Tab
         tab="銷售"
-        class="w-1/2 text-center"
+        class="w-1/3"
         :active="activeTab"
         @click="activeTab = '銷售'"
+      />
+      <Tab
+        tab="圖表"
+        class="w-1/3"
+        :active="activeTab"
+        @click="activeTab = '圖表'"
       />
     </div>
     <BuyOrder v-if="activeTab === '購買'" />
@@ -27,7 +34,7 @@ import { ref } from 'vue';
 
 import Tab from '@/components/ui/TheTab.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
-import BuyOrder from '@/components/back/buyOrder.vue';
+import BuyOrder from '@/components/back/BuyOrder.vue';
 import SellOrder from '@/components/back/SellOrder.vue';
 
 import { useOrderStore } from '@/stores/orders';

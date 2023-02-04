@@ -148,7 +148,7 @@ export const useProductsStore = defineStore('products', () => {
       const category = form?.category || '全部';
       const key = form?.key || '';
       const { data } = await api.get(
-        `/products?key=${key}&category=${category}`
+        `/products?page=${productPage.current}&key=${key}&category=${category}`
       );
       product.allSell = data.result.data;
       productPage.total = data.result.totalPages;
@@ -180,9 +180,13 @@ export const useProductsStore = defineStore('products', () => {
     }
   };
 
-  const getMemberSellProductHandler = async (userId) => {
+  const getMemberSellProductHandler = async (form) => {
     try {
-      const { data } = await api.get(`/products/memberhome/${userId}`);
+      const category = form?.category || '全部';
+      const key = form?.key || '';
+      const { data } = await api.get(
+        `/products/memberhome/${form.userId}?category=${category}&key=${key}&page=${productPage.current}`
+      );
       product.member = data.result;
       productPage.total = data.result.totalPages;
       if (!product.member?.image) {
@@ -253,6 +257,7 @@ export const useProductsStore = defineStore('products', () => {
     sellProdcut,
     memberHomeProduct,
     sellFatorite,
+    productPage,
     addProductHandler,
     sumbitProductHandler,
     getAllProductHandler,

@@ -1,5 +1,6 @@
 <template>
   <div class="overflow-auto">
+    <Select v-model="sortType" :select="sortOrder" />
     <table class="mt-10 w-full table-auto">
       <thead>
         <tr>
@@ -12,10 +13,11 @@
           <th class="border-2 p-2">付款帳戶</th>
           <th class="border-2 p-2">出貨狀態</th>
           <th class="border-2 p-2">商品詳情</th>
+          <th class="border-2 p-2">封存</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in orderSell" :key="item._id">
+        <tr v-for="item in filterData" :key="item._id">
           <td class="border-2 p-2 text-center">{{ item._id }}</td>
           <td class="border-2 p-2 text-center">
             <p v-for="prod in item.products">{{ prod.productId.name }}</p>
@@ -49,7 +51,7 @@
             <p>{{ item.bankId.bankName }}</p>
             <p>{{ item.bankId.bankNumber }}</p>
           </td>
-          <td class="border-2 p-2">
+          <td class="border-2 p-2 text-center">
             <p v-if="notShip(item.products)" class="text-red-400">
               {{ notShip(item.products) }} 筆未出貨
             </p>
@@ -62,6 +64,34 @@
               src="@/assets/svg/eye-solid.svg"
               class="w-6 hover:opacity-60 mx-auto"
               @click="viewOrder(item)"
+            />
+          </td>
+          <td class="border-2 p-2">
+            <img
+              v-if="item.sellStatus === 1"
+              src="@/assets/svg/eye-solid.svg"
+              class="w-6 hover:opacity-60 mx-auto"
+              @click="
+                changeStatusOrderHandler({
+                  id: item._id,
+                  type: 'archive',
+                  status: 0,
+                  member: 'sell',
+                })
+              "
+            />
+            <img
+              v-if="item.sellStatus === 0"
+              src="@/assets/svg/eye-slash-solid.svg"
+              class="w-6 hover:opacity-60 mx-auto"
+              @click="
+                changeStatusOrderHandler({
+                  id: item._id,
+                  type: 'archive',
+                  status: 1,
+                  member: 'sell',
+                })
+              "
             />
           </td>
         </tr>
@@ -144,6 +174,14 @@
               商品價格：
               <span>{{ item.productId.price }}</span>
             </p>
+            <p
+              v-if="item.paid.isPaid"
+              class="mt-2"
+              :class="{ 'text-red-400': item.shippingStatus === 0 }"
+            >
+              {{ item.shippingStatus === 0 ? '未出貨' : '已出貨' }}
+            </p>
+            <p v-if="item.shippingStatus === 2">已取消</p>
             <Btn
               text="出貨"
               class="w-full mt-6"
@@ -153,18 +191,12 @@
                   !item.paid.isPaid || item.shippingStatus === 1,
               }"
               @click="
-                shipHandler({
+                shipOrderHandler({
                   orderId: showProduct.list._id,
                   productId: item.productId._id,
                 })
               "
             />
-            <p
-              class="mt-2"
-              :class="{ 'text-red-400': item.shippingStatus === 0 }"
-            >
-              {{ item.shippingStatus === 0 ? '未出貨' : '已出貨' }}
-            </p>
           </div>
         </div>
       </div>
@@ -173,22 +205,65 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Model from '@/components/ui/TheModel.vue';
 import Btn from '@/components/ui/TheBtn.vue';
+import Select from '@/components/ui/TheSelect.vue';
+
 import { useOrderStore } from '@/stores/orders';
 import { useModelStore } from '@/stores/model';
 import { useUserStore } from '@/stores/users';
+import { useCategoryStore } from '@/stores/category';
 
 const order = useOrderStore();
 const user = useUserStore();
 const { orderSell, showProduct } = storeToRefs(order);
-const { shipHandler } = order;
+const { shipOrderHandler, changeStatusOrderHandler } = order;
 const { toggleShow } = storeToRefs(useModelStore());
 const { users, isMember } = storeToRefs(user);
 const { clickListHandler } = user;
+const { sortOrder } = useCategoryStore();
+
+const sortType = ref(sortOrder[1]);
+
+const filterData = computed(() => {
+  const copydata = JSON.parse(JSON.stringify(orderSell.value));
+  if (sortType.value === sortOrder[0]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => !prod.paid.isPaid && prod.shippingStatus !== 2
+      );
+      return item.sellStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[1]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => prod.paid.isPaid && prod.shippingStatus === 0
+      );
+      return item.sellStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[2]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => prod.paid.isPaid && prod.shippingStatus === 1
+      );
+      return item.sellStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[3]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter((prod) => prod.shippingStatus === 2);
+      return item.sellStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortOrder.type === sortType[4]) {
+    return copydata.filter((item) => item.sellStatus === 1);
+  }
+});
 
 const indexBlack = computed(() => {
   return users.value.black.findIndex(
@@ -211,7 +286,7 @@ const countyPrice = (data) => {
 
 const truePaid = (data) => {
   return data.reduce((total, item) => {
-    if (item.paid.isPaid) {
+    if (item.paid.isPaid && item.shippingStatus !== 2) {
       total++;
     }
     return total;
@@ -219,7 +294,7 @@ const truePaid = (data) => {
 };
 const falsePaid = (data) => {
   return data.reduce((total, item) => {
-    if (!item.paid.isPaid) {
+    if (!item.paid.isPaid && item.shippingStatus !== 2) {
       total++;
     }
     return total;

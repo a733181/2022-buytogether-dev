@@ -3,13 +3,13 @@
     <div class="flex gap-8 mb-10">
       <Tab
         tab="收藏"
-        class="w-1/2 text-center"
+        class="w-1/2"
         :active="activeTab"
         @click="activeTab = '收藏'"
       />
       <Tab
         tab="追蹤名單"
-        class="w-1/2 text-center"
+        class="w-1/2"
         :active="activeTab"
         @click="activeTab = '追蹤'"
       />

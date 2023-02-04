@@ -1,5 +1,6 @@
 <template>
   <div class="overflow-auto">
+    <Select v-model="sortType" :select="sortOrder" />
     <table class="mt-10 w-full table-auto">
       <thead>
         <tr>
@@ -12,10 +13,11 @@
           <th class="border-2 p-2">付款帳戶</th>
           <th class="border-2 p-2">出貨狀態</th>
           <th class="border-2 p-2">商品詳情</th>
+          <th class="border-2 p-2">封存</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in orderBuy" :key="item._id">
+        <tr v-for="item in filterData" :key="item._id">
           <td class="border-2 p-2 text-center">{{ item._id }}</td>
           <td class="border-2 p-2 text-center">
             <p v-for="prod in item.products">{{ prod.productId.name }}</p>
@@ -49,19 +51,48 @@
             <p>{{ item.bankId.bankName }}</p>
             <p>{{ item.bankId.bankNumber }}</p>
           </td>
-          <td class="border-2 p-2">
+          <td class="border-2 p-2 text-center">
             <p v-if="notShip(item.products)" class="text-red-400">
               {{ notShip(item.products) }} 筆未出貨
             </p>
             <p v-if="shiped(item.products)">
               {{ shiped(item.products) }} 筆已出貨
             </p>
+            <p></p>
           </td>
           <td class="border-2 p-2">
             <img
               src="@/assets/svg/eye-solid.svg"
               class="w-6 hover:opacity-60 mx-auto"
               @click="viewOrder(item)"
+            />
+          </td>
+          <td class="border-2 p-2">
+            <img
+              v-if="item.buyStatus === 1"
+              src="@/assets/svg/eye-solid.svg"
+              class="w-6 hover:opacity-60 mx-auto"
+              @click="
+                changeStatusOrderHandler({
+                  id: item._id,
+                  type: 'archive',
+                  status: 0,
+                  member: 'buy',
+                })
+              "
+            />
+            <img
+              v-if="item.buyStatus === 0"
+              src="@/assets/svg/eye-slash-solid.svg"
+              class="w-6 hover:opacity-60 mx-auto"
+              @click="
+                changeStatusOrderHandler({
+                  id: item._id,
+                  type: 'archive',
+                  status: 1,
+                  member: 'buy',
+                })
+              "
             />
           </td>
         </tr>
@@ -113,14 +144,17 @@
         <div
           v-for="item in showProduct.list.products"
           :key="item._id"
-          class="flex flex-col lg:flex-row gap-6 mb-10 items-center lg:justify-center mt-8"
+          class="flex flex-col lg:flex-row gap-6 mb-10 mt-8 lg: justify-around"
         >
           <img
             :src="item.productId.image"
             class="rounded-lg w-56 h-36 lg:w-80 lg:h-56 object-cover"
           />
-          <div>
-            <p>{{ item.productId.name }}</p>
+          <div class="mt-2">
+            <p>
+              商品名稱：
+              <span>{{ item.productId.name }}</span>
+            </p>
             <p>
               商品數量：
               <span>{{ item.quantity }}</span>
@@ -129,24 +163,54 @@
               商品價格：
               <span>{{ item.productId.price }}</span>
             </p>
-            <Btn
-              text="付款"
-              class="w-full mt-6"
-              :disabled="item.paid.isPaid"
-              :class="{ 'disabled: opacity-50': item.paid.isPaid }"
-              @click="
-                paidHandler({
-                  orderId: showProduct.list._id,
-                  productId: item.productId._id,
-                })
-              "
-            />
+          </div>
+          <div>
+            <div class="mt-2">
+              <p>收款帳戶：</p>
+              <p>
+                {{ item.productId.bankId.bankName }}
+              </p>
+              <p>{{ item.productId.bankId.bankNumber }}</p>
+            </div>
             <p
+              v-if="item.paid.isPaid"
               class="mt-2"
               :class="{ 'text-red-400': item.shippingStatus === 0 }"
             >
               {{ item.shippingStatus === 0 ? '未出貨' : '已出貨' }}
             </p>
+            <p v-if="item.shippingStatus === 2">已取消</p>
+            <Btn
+              text="付款"
+              class="w-full mt-6"
+              :disabled="item.paid.isPaid || item.shippingStatus === 2"
+              :class="{
+                'disabled: opacity-50':
+                  item.paid.isPaid || item.shippingStatus === 2,
+              }"
+              @click="
+                paidOrderHandler({
+                  orderId: showProduct.list._id,
+                  productId: item.productId._id,
+                })
+              "
+            />
+            <Btn
+              text="取消訂單"
+              class="w-full mt-6"
+              className="btn-outline"
+              :disabled="item.paid.isPaid || item.shippingStatus === 2"
+              :class="{
+                'disabled: opacity-50':
+                  item.paid.isPaid || item.shippingStatus === 2,
+              }"
+              @click="
+                cancelOrderHandler({
+                  orderId: showProduct.list._id,
+                  productId: item.productId._id,
+                })
+              "
+            />
           </div>
         </div>
       </div>
@@ -155,19 +219,63 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue';
+import { watch, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Model from '@/components/ui/TheModel.vue';
 import Btn from '@/components/ui/TheBtn.vue';
+import Select from '@/components/ui/TheSelect.vue';
 
 import { useOrderStore } from '@/stores/orders';
 import { useModelStore } from '@/stores/model';
+import { useCategoryStore } from '@/stores/category';
 
 const order = useOrderStore();
 const { orderBuy, showProduct } = storeToRefs(order);
-const { paidHandler } = order;
+const { paidOrderHandler, changeStatusOrderHandler, cancelOrderHandler } =
+  order;
 const { toggleShow } = storeToRefs(useModelStore());
+const { sortOrder } = useCategoryStore();
+
+const sortType = ref(sortOrder[0]);
+
+const filterData = computed(() => {
+  const copydata = JSON.parse(JSON.stringify(orderBuy.value));
+  if (sortType.value === sortOrder[0]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => !prod.paid.isPaid && prod.shippingStatus !== 2
+      );
+      return item.buyStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[1]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => prod.paid.isPaid && prod.shippingStatus === 0
+      );
+      return item.buyStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[2]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter(
+        (prod) => prod.paid.isPaid && prod.shippingStatus === 1
+      );
+      return item.buyStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortType.value === sortOrder[3]) {
+    return copydata.filter((item) => {
+      item.products = item.products.filter((prod) => prod.shippingStatus === 2);
+      return item.buyStatus === 0 && item.products.length > 0;
+    });
+  }
+  if (sortOrder.type === sortType[4]) {
+    return copydata.filter((item) => item.buyStatus === 1);
+  }
+});
+
 const countyNum = (data) =>
   data.reduce((total, current) => total + current.quantity, 0);
 
@@ -177,16 +285,16 @@ const countyPrice = (data) => {
 };
 
 const truePaid = (data) => {
-  return data.reduce((total, current) => {
-    if (current.paid.isPaid) {
+  return data.reduce((total, item) => {
+    if (item.paid.isPaid && item.shippingStatus !== 2) {
       total++;
     }
     return total;
   }, 0);
 };
 const falsePaid = (data) => {
-  return data.reduce((total, current) => {
-    if (!current.paid.isPaid) {
+  return data.reduce((total, item) => {
+    if (!item.paid.isPaid && item.shippingStatus !== 2) {
       total++;
     }
     return total;
@@ -205,6 +313,15 @@ const notShip = (data) => {
 const shiped = (data) => {
   return data.reduce((total, item) => {
     if (item.shippingStatus === 1) {
+      total++;
+    }
+    return total;
+  }, 0);
+};
+
+const cancel = (data) => {
+  return data.reduce((total, item) => {
+    if (item.shippingStatus === 2) {
       total++;
     }
     return total;

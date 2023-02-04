@@ -46,13 +46,13 @@
     <div class="flex gap-8 mb-10">
       <Tab
         tab="商品詳情"
-        class="w-1/2 text-center"
+        class="w-1/2"
         :active="activeTab"
         @click="activeTab = '商品詳情'"
       />
       <Tab
         tab="問與答"
-        class="w-1/2 text-center"
+        class="w-1/2"
         :active="activeTab"
         @click="activeTab = '問與答'"
       />
