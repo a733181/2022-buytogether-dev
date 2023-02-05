@@ -109,11 +109,11 @@ const router = createRouter({
       component: () => import('@/layout/back/BackView.vue'),
       children: [
         {
-          path: 'order',
-          name: 'member-order',
+          path: 'orderlist',
+          name: 'member-orderlist',
           component: () => import('@/views/back/order/OrderView.vue'),
           meta: {
-            title: '團購趣 | 訂單',
+            title: '團購趣 | 訂單管理',
             member: true,
             admin: false,
           },
@@ -141,7 +141,7 @@ const router = createRouter({
         {
           path: 'membership',
           name: 'member-membership',
-          component: () => import('@/views/back/MemberView.vue'),
+          component: () => import('@/views/back/user/MemberView.vue'),
           meta: {
             title: '團購趣 | 會員設定',
             member: true,
@@ -226,6 +226,46 @@ const router = createRouter({
             title: '團購趣 | 問與答',
             member: true,
             admin: false,
+          },
+        },
+        {
+          path: 'orderalllist',
+          name: 'member-orderalllist',
+          component: () => import('@/views/back/order/OrderAdminView.vue'),
+          meta: {
+            title: '團購趣 | 所有訂單管理',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'productalllist',
+          name: 'member-productalllist',
+          component: () => import('@/views/back/product/ProductAdminView.vue'),
+          meta: {
+            title: '團購趣 | 所有商品管理',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'membershipadmin',
+          name: 'member-admin',
+          component: () => import('@/views/back/user/MemberAdminView.vue'),
+          meta: {
+            title: '團購趣 | 會員設定',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'membershipadmininfo',
+          name: 'member-admininfo',
+          component: () => import('@/views/back/user/MemberAdminView.vue'),
+          meta: {
+            title: '團購趣 | 會員編輯',
+            member: true,
+            admin: true,
           },
         },
       ],

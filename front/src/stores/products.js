@@ -34,6 +34,7 @@ export const useProductsStore = defineStore('products', () => {
       member: {},
     },
     sellFatorite: [],
+    adminList: [],
   });
 
   const productPage = reactive({
@@ -123,7 +124,11 @@ export const useProductsStore = defineStore('products', () => {
 
   const cancelProductHandler = () => {
     changeEditProductHander();
-    router.push('/member/productlist');
+    if (user.isAdmin) {
+      router.push('/member/productalllist');
+    } else {
+      router.push('/member/productlist');
+    }
   };
 
   const editProductHandler = (id) => {
@@ -250,6 +255,15 @@ export const useProductsStore = defineStore('products', () => {
     }
   };
 
+  const getAdminProductHandler = async () => {
+    try {
+      const { data } = await apiAuth.get('/products/all');
+      product.list = data.result;
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
   return {
     allSellProduct,
     listProduct,
@@ -269,5 +283,6 @@ export const useProductsStore = defineStore('products', () => {
     clickLikesHandler,
     getMemberSellProductHandler,
     getFatoriteHandler,
+    getAdminProductHandler,
   };
 });

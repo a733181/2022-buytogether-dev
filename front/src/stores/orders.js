@@ -17,6 +17,7 @@ export const useOrderStore = defineStore('orders', () => {
       bankId: '',
       _id: '',
     },
+    adminList: [],
   });
 
   const showProduct = reactive({
@@ -26,6 +27,7 @@ export const useOrderStore = defineStore('orders', () => {
   const orderPaid = computed(() => order.paid);
   const orderBuy = computed(() => order.buyList);
   const orderSell = computed(() => order.sellList);
+  const orderAdmin = computed(() => order.adminList);
 
   const { cart } = storeToRefs(useCartStore());
   const { swalSuccess, swalError } = useSwalStore();
@@ -42,6 +44,37 @@ export const useOrderStore = defineStore('orders', () => {
       router.push('/paid');
     } catch (error) {
       swalError(error);
+    }
+  };
+
+  const changeBuyAndSellList = (data) => {
+    if (order.buyList.length) {
+      const index = order.buyList.findIndex(
+        (item) => item._id === data.result._id
+      );
+      order.buyList[index] = data.result;
+      if (!!showProduct.list) {
+        showProduct.list = data.result;
+      }
+    }
+
+    if (order.sellList.length) {
+      const index = order.sellList.findIndex(
+        (item) => item._id === data.result._id
+      );
+      order.sellList[index] = data.result;
+      if (!!showProduct.list) {
+        showProduct.list = data.result;
+      }
+    }
+    if (order.adminList.length) {
+      const index = order.adminList.findIndex(
+        (item) => item._id === data.result._id
+      );
+      order.adminList[index] = data.result;
+      if (!!showProduct.list) {
+        showProduct.list = data.result;
+      }
     }
   };
 
@@ -64,29 +97,12 @@ export const useOrderStore = defineStore('orders', () => {
         router.push('/member/order');
       }
 
-      if (order.buyList.length && productId !== '') {
-        const index = order.buyList.findIndex(
-          (item) => item._id === data.result._id
-        );
-        order.buyList[index] = data.result;
-        if (!!showProduct.list) {
-          showProduct.list = data.result;
-        }
-      }
-
-      if (order.sellList.length && productId !== '') {
-        const index = order.sellList.findIndex(
-          (item) => item._id === data.result._id
-        );
-        order.sellList[index] = data.result;
-        if (!!showProduct.list) {
-          showProduct.list = data.result;
-        }
+      if (productId !== '') {
+        changeBuyAndSellList(data);
       }
 
       swalSuccess('付款成功');
     } catch (error) {
-      console.log(error);
       swalError(error);
     }
   };
@@ -109,6 +125,15 @@ export const useOrderStore = defineStore('orders', () => {
     }
   };
 
+  const getAdminOrder = async () => {
+    try {
+      const { data } = await apiAuth.get('/orders/all');
+      order.adminList = data.result;
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
   const shipOrderHandler = async ({ orderId, productId }) => {
     try {
       const { data } = await apiAuth.patch(`/orders/${orderId}`, {
@@ -116,25 +141,7 @@ export const useOrderStore = defineStore('orders', () => {
         type: 'ship',
       });
 
-      if (order.buyList.length) {
-        const index = order.buyList.findIndex(
-          (item) => item._id === data.result._id
-        );
-        order.buyList[index] = data.result;
-        if (!!showProduct.list) {
-          showProduct.list = data.result;
-        }
-      }
-
-      if (order.sellList.length) {
-        const index = order.sellList.findIndex(
-          (item) => item._id === data.result._id
-        );
-        order.sellList[index] = data.result;
-        if (!!showProduct.list) {
-          showProduct.list = data.result;
-        }
-      }
+      changeBuyAndSellList(data);
 
       swalSuccess('出貨成功');
     } catch (error) {
@@ -148,25 +155,7 @@ export const useOrderStore = defineStore('orders', () => {
       type: 'cancel',
     });
 
-    if (order.buyList.length) {
-      const index = order.buyList.findIndex(
-        (item) => item._id === data.result._id
-      );
-      order.buyList[index] = data.result;
-      if (!!showProduct.list) {
-        showProduct.list = data.result;
-      }
-    }
-
-    if (order.sellList.length) {
-      const index = order.sellList.findIndex(
-        (item) => item._id === data.result._id
-      );
-      order.sellList[index] = data.result;
-      if (!!showProduct.list) {
-        showProduct.list = data.result;
-      }
-    }
+    changeBuyAndSellList(data);
 
     try {
     } catch (error) {
@@ -212,12 +201,14 @@ export const useOrderStore = defineStore('orders', () => {
     orderPaid,
     orderBuy,
     orderSell,
+    orderAdmin,
     showProduct,
     checkouOrdertHandler,
     paidOrderHandler,
     shipOrderHandler,
     getMemberBuyOrderHandler,
     getMemberSellOrderHandler,
+    getAdminOrder,
     changeStatusOrderHandler,
     cancelOrderHandler,
   };

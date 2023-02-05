@@ -36,31 +36,6 @@ export const createAddress = async (req, res) => {
   }
 };
 
-export const getAllAddress = async (req, res) => {
-  try {
-    const result = await address
-      .find({
-        userId: req.user._id,
-        status: 0,
-      })
-      .select('-userId -status');
-
-    res.status(200).json({
-      success: true,
-      message: '',
-      result: result,
-    });
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
-  }
-};
-
 export const editAddress = async (req, res) => {
   try {
     const data = {

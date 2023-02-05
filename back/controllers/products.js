@@ -237,6 +237,42 @@ export const getSellMemberProduct = async (req, res) => {
   }
 };
 
+export const getAdminProduct = async (req, res) => {
+  try {
+    const result = await products
+      .find({
+        status: 0,
+      })
+      .select(' -status')
+      .populate({
+        path: 'userId',
+      });
+
+    const getOrder = await orders.find();
+    const newResult = JSON.parse(JSON.stringify(result));
+
+    newResult.forEach((reProd) => {
+      let total = 0;
+      getOrder.forEach((item) => {
+        item.products.forEach((prod) => {
+          if (reProd._id.toString() === prod.productId.toString()) {
+            total += prod.quantity;
+          }
+        });
+      });
+      reProd.sales = total;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result: newResult,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};
+
 export const editProdcut = async (req, res) => {
   try {
     const mainImage = req?.files?.image ? req?.files?.image[0].path : req.body.image;

@@ -77,6 +77,7 @@ export const useMessageStore = defineStore('messages', () => {
       );
 
       message.allProduct.splice(index, 1);
+      swalSuccess('成功回覆');
     } catch (error) {
       swalError(error);
     }

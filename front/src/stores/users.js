@@ -16,8 +16,8 @@ export const useUserStore = defineStore(
   () => {
     const { swalSuccess, swalError } = useSwalStore();
 
-    const { getAllBankHandler } = useBankStore();
-    const { getAllAddressHandler } = useAddressStore();
+    const bank = useBankStore();
+    const address = useAddressStore();
     const { cart } = storeToRefs(useCartStore());
     const products = useProductsStore();
     const { getAllMemberProductMessageHanlder } = useMessageStore();
@@ -40,6 +40,11 @@ export const useUserStore = defineStore(
       blackList: [],
     });
     const token = ref('');
+
+    const userAdmin = reactive({
+      list: [],
+      edit: {},
+    });
 
     const isMember = computed(() => token.value.length > 0);
 
@@ -107,11 +112,16 @@ export const useUserStore = defineStore(
         changeUserDataHandler(data.result);
         token.value = data.result.token;
         cart.value.length = data.result.cart;
-        await getAllBankHandler();
-        await getAllAddressHandler();
+        bank.banks.list = data.result.banks;
+        address.address.list = data.result.address;
         await getAllMemberProductMessageHanlder();
+
         swalSuccess('登入成功');
-        router.push('/member/order');
+        if (isAdmin.value) {
+          router.push('/member/orderalllist');
+        } else {
+          router.push('/member/orderlist');
+        }
       } catch (error) {
         swalError(error);
       }
@@ -138,8 +148,8 @@ export const useUserStore = defineStore(
         changeUserDataHandler(data.result);
 
         cart.value.length = data.result.cart;
-        await getAllBankHandler();
-        await getAllAddressHandler();
+        bank.banks.list = data.result.banks;
+        address.address.list = data.result.address;
         await getAllMemberProductMessageHanlder();
       } catch (error) {
         logoutHandler();
@@ -235,6 +245,21 @@ export const useUserStore = defineStore(
       }
     };
 
+    const getAdminAllUserHanlder = async () => {
+      try {
+        const { data } = await apiAuth.get('/users/all');
+        userAdmin.list = data.result.users;
+
+        userAdmin.list.forEach((user) => {
+          user.image =
+            user?.image ||
+            `https://source.boringavatars.com/beam/256/${users.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`;
+        });
+      } catch (error) {
+        swalError(error);
+      }
+    };
+
     return {
       isLogin,
       token,
@@ -244,6 +269,7 @@ export const useUserStore = defineStore(
       favorites,
       trackList,
       blackList,
+      userAdmin,
       registerHandler,
       loginHandler,
       logoutHandler,
@@ -254,6 +280,7 @@ export const useUserStore = defineStore(
       isLoginHandler,
       getTrackListHandler,
       getBlackListHanlder,
+      getAdminAllUserHanlder,
     };
   },
   {

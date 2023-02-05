@@ -1,11 +1,8 @@
 <template>
   <div class="container py-20">
-    <div class="flex items-center justify-between mb-10">
-      <Breadcrumbs>
-        <p>商品管理</p>
-      </Breadcrumbs>
-      <Btn text="新增商品" @click="addProductHandler" />
-    </div>
+    <Breadcrumbs class="mb-10">
+      <p>商品管理</p>
+    </Breadcrumbs>
     <div class="overflow-auto">
       <table class="w-full table-auto">
         <thead>
@@ -49,7 +46,7 @@
                 <img
                   src="@/assets/svg/edit.svg"
                   class="w-6 hover:opacity-60"
-                  @click="editProductHandler(item._id)"
+                  @click=""
                 />
                 <img
                   src="@/assets/svg/delete.svg"
@@ -69,18 +66,12 @@
 import { storeToRefs } from 'pinia';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
-import Btn from '@/components/ui/TheBtn.vue';
 
 import { useProductsStore } from '@/stores/products';
 
 const products = useProductsStore();
-const {
-  getAllProductHandler,
-  addProductHandler,
-  editProductHandler,
-  deleteProductHandler,
-} = products;
+const { getAdminProductHandler, deleteProductHandler } = products;
 const { listProduct } = storeToRefs(products);
 
-getAllProductHandler();
+getAdminProductHandler();
 </script>

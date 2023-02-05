@@ -3,36 +3,38 @@
     <Breadcrumbs class="mb-10">
       <p>問與答</p>
     </Breadcrumbs>
-    <table class="w-full table-auto">
-      <thead>
-        <tr>
-          <th class="border-2 p-2">商品圖片</th>
-          <th class="border-2 p-2">商品名稱</th>
-          <th class="border-2 p-2">商品問題</th>
-          <th class="border-2 p-2">回覆</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in messageAllProduct" :key="item._id">
-          <td class="border-2 p-2">
-            <img
-              :src="item.prodcutId.image"
-              :alt="item.prodcutId.name"
-              class="w-32 h-24 rounded-lg mx-auto object-cover"
-            />
-          </td>
-          <td class="border-2 p-2 text-center">
-            <p>{{ item.prodcutId.name }}</p>
-          </td>
-          <td class="border-2 p-2 text-center">
-            <p>{{ item.message }}</p>
-          </td>
-          <td class="border-2 p-2 text-center">
-            <Btn text="回覆" @click="showReply(item._id)" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="overflow-auto">
+      <table class="w-full table-auto">
+        <thead>
+          <tr>
+            <th class="border-2 p-2">商品圖片</th>
+            <th class="border-2 p-2">商品名稱</th>
+            <th class="border-2 p-2">商品問題</th>
+            <th class="border-2 p-2">回覆</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in messageAllProduct" :key="item._id">
+            <td class="border-2 p-2">
+              <img
+                :src="item.prodcutId.image"
+                :alt="item.prodcutId.name"
+                class="w-32 h-24 rounded-lg mx-auto object-cover"
+              />
+            </td>
+            <td class="border-2 p-2 text-center">
+              <p>{{ item.prodcutId.name }}</p>
+            </td>
+            <td class="border-2 p-2 text-center">
+              <p>{{ item.message }}</p>
+            </td>
+            <td class="border-2 p-2 text-center">
+              <Btn text="回覆" @click="showReply(item._id)" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <Model>
       <SendMessage @message="submitHandler" />
     </Model>

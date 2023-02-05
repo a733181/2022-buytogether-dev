@@ -28,29 +28,6 @@ export const createBank = async (req, res) => {
   }
 };
 
-export const getAllBanks = async (req, res) => {
-  try {
-    const result = await banks
-      .find()
-      .and([{ userId: req.user._id }, { status: 0 }])
-      .select('-userId -status');
-
-    res.status(200).json({
-      success: true,
-      message: '',
-      result,
-    });
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
-  }
-};
-
 export const editBank = async (req, res) => {
   try {
     const data = {

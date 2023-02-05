@@ -3,16 +3,16 @@
     <div
       class="container flex justify-between items-center relative flex-col lg:flex-row"
     >
-      <RouterLink to="/" class="flex gap-2 items-center">
+      <RouterLink to="/" class="flex gap-2 items-center mb-2 lg:mb-0">
         <i class="logo"></i>
         <p class="mb-2">團購趣</p>
       </RouterLink>
       <nav>
-        <ul class="flex gap-4 py-4 items-center justify-center">
+        <ul class="flex gap-4 py-2 items-center justify-center">
           <li>
             <RouterLink
               to="/about"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/about')"
               >關於我</RouterLink
             >
@@ -20,7 +20,7 @@
           <li>
             <RouterLink
               to="/products"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/products')"
               >商城</RouterLink
             >
@@ -28,7 +28,7 @@
           <li v-if="user.isMember">
             <RouterLink
               to="/tracklist"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/tracklist')"
               >收藏/追蹤</RouterLink
             >
@@ -42,9 +42,12 @@
             >
           </li>
           <li v-else>
-            <RouterLink to="/member/order" class="px-3 py-2 rounded-lg"
-              >會員中心</RouterLink
+            <p
+              class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
+              @click="toMember"
             >
+              會員中心
+            </p>
           </li>
         </ul>
         <RouterLink
@@ -70,13 +73,14 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/stores/users';
 import { useCartStore } from '@/stores/carts';
 
 const route = useRoute();
+const router = useRouter();
 
 const user = useUserStore();
 const carts = useCartStore();
@@ -84,5 +88,13 @@ const { cart } = storeToRefs(carts);
 
 const activeClass = (active) => {
   return route.path === active ? 'text-gray-500 bg-white' : null;
+};
+
+const toMember = () => {
+  if (!user.isAdmin) {
+    router.push('/member/orderlist');
+  } else {
+    router.push('/member/orderalllist');
+  }
 };
 </script>

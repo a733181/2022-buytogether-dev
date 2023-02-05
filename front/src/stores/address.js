@@ -84,13 +84,6 @@ export const useAddressStore = defineStore('address', () => {
     router.go(-1);
   };
 
-  const getAllAddressHandler = async () => {
-    try {
-      const { data } = await apiAuth.get('/users/address');
-      address.list = data.result;
-    } catch (error) {}
-  };
-
   const editAddressHandler = (id) => {
     const index = address.list.findIndex((item) => item._id === id);
     changeEditAddressHandler(address.list[index]);
@@ -110,12 +103,12 @@ export const useAddressStore = defineStore('address', () => {
   };
 
   return {
+    address,
     listAddress,
     editAddress,
     addAddressHandler,
     cancelAddressHandler,
     sumbitAddressHandler,
-    getAllAddressHandler,
     editAddressHandler,
     deleteAddressHandler,
   };

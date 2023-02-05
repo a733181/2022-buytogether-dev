@@ -12,11 +12,11 @@
         <p class="lg:w-2/12">名稱</p>
         <div class="flex-1 flex justify-between items-center">
           <div class="flex items-center">
-            <p>{{ users.name }}</p>
             <img
               :src="users.image"
-              class="w-8 h-8 ml-3 rounded-full object-cover"
+              class="w-8 h-8 mr-3 rounded-full object-cover"
             />
+            <p>{{ users.name }}</p>
           </div>
           <RouterLink to="/member/nameinfo" class="hover:opacity-50">
             <img

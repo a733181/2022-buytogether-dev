@@ -4,7 +4,13 @@ import { jwt } from '../middleware/auth.js';
 import admin from '../middleware/admin.js';
 import content from '../middleware/content.js';
 
-import { createOrder, getMyBuyOrders, editOrder, getMySellOrders } from '../controllers/orders.js';
+import {
+  createOrder,
+  getMyBuyOrders,
+  editOrder,
+  getMySellOrders,
+  getAdminOrders,
+} from '../controllers/orders.js';
 
 const router = Router();
 
@@ -16,6 +22,6 @@ router.get('/sell', jwt, getMySellOrders);
 
 router.patch('/:id', content('application/json'), jwt, editOrder);
 
-// router.get('/all', jwt, getAllOrders);
+router.get('/all', jwt, admin, getAdminOrders);
 
 export default router;

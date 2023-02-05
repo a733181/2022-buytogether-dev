@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import users from '../models/users.js';
+import banks from '../models/banks.js';
+import address from '../models/address.js';
 import products from '../models/products.js';
 import orders from '../models/orders.js';
 
@@ -33,6 +35,17 @@ export const login = async (req, res) => {
     req.user.tokens.push(token);
     await req.user.save();
 
+    const banklist = await banks
+      .find({ userId: req.user._id }, { status: 0 })
+      .select('-userId -status');
+
+    const addressList = await address
+      .find({
+        userId: req.user._id,
+        status: 0,
+      })
+      .select('-userId -status');
+
     res.status(200).json({
       success: true,
       message: '',
@@ -49,6 +62,8 @@ export const login = async (req, res) => {
         track: req.user.track,
         black: req.user.black,
         cart: req.user.cart.reduce((total, current) => total + current.quantity, 0),
+        banks: banklist,
+        address: addressList,
       },
     });
   } catch (error) {
@@ -80,6 +95,17 @@ export const extend = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
+    const banklist = await banks
+      .find({ userId: req.user._id }, { status: 0 })
+      .select('-userId -status');
+
+    const addressList = await address
+      .find({
+        userId: req.user._id,
+        status: 0,
+      })
+      .select('-userId -status');
+
     res.status(200).json({
       success: true,
       message: '',
@@ -95,6 +121,8 @@ export const getUser = async (req, res) => {
         track: req.user.track,
         black: req.user.black,
         cart: req.user.cart.reduce((total, current) => total + current.quantity, 0),
+        banks: banklist,
+        address: addressList,
       },
     });
   } catch (error) {
@@ -322,5 +350,20 @@ export const deleteCart = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};
+
+export const getAdminAllUser = async (req, res) => {
+  try {
+    const result = await users.find().select('-tokens -status -cart -password');
+    res.status(200).json({
+      success: true,
+      message: '',
+      result: {
+        users: result,
+      },
+    });
+  } catch (error) {
+    showError(error, res);
   }
 };

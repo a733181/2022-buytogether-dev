@@ -38,13 +38,6 @@ export const useBankStore = defineStore('bank', () => {
     banks.edit.bankNumber = data.bankNumber;
   };
 
-  const getAllBankHandler = async () => {
-    try {
-      const { data } = await apiAuth.get('/users/bank');
-      banks.list = data.result;
-    } catch (error) {}
-  };
-
   const addBankHandler = () => {
     changeEditBankHandler();
     router.push('/member/bankinfo');
@@ -97,9 +90,9 @@ export const useBankStore = defineStore('bank', () => {
   };
 
   return {
+    banks,
     listBank,
     editBank,
-    getAllBankHandler,
     addBankHandler,
     sumbitBankHandler,
     editBankHandler,

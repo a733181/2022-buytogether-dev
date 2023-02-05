@@ -189,3 +189,30 @@ export const getMySellOrders = async (req, res) => {
     res.status(500).json({ success: false, message: '未知錯誤' });
   }
 };
+
+export const getAdminOrders = async (req, res) => {
+  try {
+    const result = await orders
+      .find()
+      .populate({
+        path: 'products.productId',
+        select: '_id addressId bankId name image category userId price',
+        populate: {
+          path: 'userId',
+          model: 'users',
+          select: '_id',
+        },
+        populate: {
+          path: 'bankId',
+          model: 'banks',
+          select: 'bankName bankNumber',
+        },
+      })
+      .populate('addressId', '-status -userId')
+      .populate('bankId', '-status -userId');
+
+    res.status(200).json({ success: true, message: '', result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};

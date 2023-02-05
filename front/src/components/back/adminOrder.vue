@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-auto">
-    <Select v-model="sortType" :select="sortOrder" />
+    <Select v-model="sortType" :select="newSortOrder" />
     <table class="mt-10 w-full table-auto">
       <thead>
         <tr>
@@ -13,7 +13,6 @@
           <th class="border-2 p-2">付款帳戶</th>
           <th class="border-2 p-2">出貨狀態</th>
           <th class="border-2 p-2">商品詳情</th>
-          <th class="border-2 p-2">封存</th>
         </tr>
       </thead>
       <tbody>
@@ -65,34 +64,6 @@
               src="@/assets/svg/eye-solid.svg"
               class="w-6 hover:opacity-60 mx-auto"
               @click="viewOrder(item)"
-            />
-          </td>
-          <td class="border-2 p-2">
-            <img
-              v-if="item.buyStatus === 1"
-              src="@/assets/svg/eye-solid.svg"
-              class="w-6 hover:opacity-60 mx-auto"
-              @click="
-                changeStatusOrderHandler({
-                  id: item._id,
-                  type: 'archive',
-                  status: 0,
-                  member: 'buy',
-                })
-              "
-            />
-            <img
-              v-if="item.buyStatus === 0"
-              src="@/assets/svg/eye-slash-solid.svg"
-              class="w-6 hover:opacity-60 mx-auto"
-              @click="
-                changeStatusOrderHandler({
-                  id: item._id,
-                  type: 'archive',
-                  status: 1,
-                  member: 'buy',
-                })
-              "
             />
           </td>
         </tr>
@@ -211,6 +182,21 @@
                 })
               "
             />
+            <Btn
+              text="出貨"
+              class="w-full mt-6"
+              :disabled="!item.paid.isPaid || item.shippingStatus === 1"
+              :class="{
+                'disabled: opacity-50':
+                  !item.paid.isPaid || item.shippingStatus === 1,
+              }"
+              @click="
+                shipOrderHandler({
+                  orderId: showProduct.list._id,
+                  productId: item.productId._id,
+                })
+              "
+            />
           </div>
         </div>
       </div>
@@ -231,48 +217,48 @@ import { useModelStore } from '@/stores/model';
 import { useCategoryStore } from '@/stores/category';
 
 const order = useOrderStore();
-const { orderBuy, showProduct } = storeToRefs(order);
-const { paidOrderHandler, changeStatusOrderHandler, cancelOrderHandler } =
-  order;
+const { orderAdmin, showProduct } = storeToRefs(order);
+const { paidOrderHandler, cancelOrderHandler, shipOrderHandler } = order;
 const { toggleShow } = storeToRefs(useModelStore());
 const { sortOrder } = useCategoryStore();
 
-const sortType = ref(sortOrder[0]);
+const newSortOrder = computed(() => {
+  return sortOrder.slice(0, 4);
+});
+
+const sortType = ref(newSortOrder.value[0]);
 
 const filterData = computed(() => {
-  const copydata = JSON.parse(JSON.stringify(orderBuy.value));
-  if (sortType.value === sortOrder[0]) {
+  const copydata = JSON.parse(JSON.stringify(orderAdmin.value));
+  if (sortType.value === newSortOrder.value[0]) {
     return copydata.filter((item) => {
       item.products = item.products.filter(
         (prod) => !prod.paid.isPaid && prod.shippingStatus !== 2
       );
-      return item.buyStatus === 0 && item.products.length > 0;
+      return item.products.length > 0;
     });
   }
-  if (sortType.value === sortOrder[1]) {
+  if (sortType.value === newSortOrder.value[1]) {
     return copydata.filter((item) => {
       item.products = item.products.filter(
         (prod) => prod.paid.isPaid && prod.shippingStatus === 0
       );
-      return item.buyStatus === 0 && item.products.length > 0;
+      return item.products.length > 0;
     });
   }
-  if (sortType.value === sortOrder[2]) {
+  if (sortType.value === newSortOrder.value[2]) {
     return copydata.filter((item) => {
       item.products = item.products.filter(
         (prod) => prod.paid.isPaid && prod.shippingStatus === 1
       );
-      return item.buyStatus === 0 && item.products.length > 0;
+      return item.products.length > 0;
     });
   }
-  if (sortType.value === sortOrder[3]) {
+  if (sortType.value === newSortOrder.value[3]) {
     return copydata.filter((item) => {
       item.products = item.products.filter((prod) => prod.shippingStatus === 2);
-      return item.buyStatus === 0 && item.products.length > 0;
+      return item.products.length > 0;
     });
-  }
-  if (sortOrder.type === sortType[4]) {
-    return copydata.filter((item) => item.buyStatus === 1);
   }
 });
 

@@ -3,35 +3,53 @@
     <div
       class="container flex justify-between items-center flex-col lg:flex-row"
     >
-      <RouterLink to="/" class="flex gap-2 items-center">
+      <RouterLink to="/" class="flex gap-2 items-center mb-2 lg:mb-2">
         <i class="logo"></i>
         <p class="mb-2">團購趣</p>
       </RouterLink>
       <nav>
         <ul class="flex gap-4 py-2 items-center flex-wrap justify-center">
           <li>
-            <RouterLink to="/" class="px-3 py-2 rounded-lg">回首頁</RouterLink>
+            <RouterLink to="/" class="px-3 py-2 rounded-lg hover:opacity-60"
+              >回首頁</RouterLink
+            >
           </li>
-          <li>
+          <li v-if="!user.isAdmin">
             <RouterLink
-              to="/member/order"
-              class="px-3 py-2 rounded-lg"
-              :class="activeClass('/member/order')"
+              to="/member/orderlist"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
+              :class="activeClass('/member/orderlist')"
               >訂單管理</RouterLink
             >
           </li>
-          <li>
+          <li v-if="user.isAdmin">
+            <RouterLink
+              to="/member/orderalllist"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
+              :class="activeClass('/member/orderalllist')"
+              >訂單管理</RouterLink
+            >
+          </li>
+          <li v-if="!user.isAdmin">
             <RouterLink
               to="/member/productlist"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/member/productlist')"
               >商品管理</RouterLink
             >
           </li>
-          <li class="relative">
+          <li v-if="user.isAdmin">
+            <RouterLink
+              to="/member/productalllist"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
+              :class="activeClass('/member/productalllist')"
+              >商品管理</RouterLink
+            >
+          </li>
+          <li v-if="!user.isAdmin" class="relative">
             <RouterLink
               to="/member/qanda"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/member/qanda')"
               >問與答</RouterLink
             >
@@ -42,17 +60,25 @@
               {{ messageAllProduct.length }}
             </p>
           </li>
-          <li>
+          <li v-if="!user.isAdmin">
             <RouterLink
               to="/member/membership"
-              class="px-3 py-2 rounded-lg"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/member/membership')"
+              >帳戶</RouterLink
+            >
+          </li>
+          <li v-if="user.isAdmin">
+            <RouterLink
+              to="/member/membershipadmin"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
+              :class="activeClass('/member/membershipadmin')"
               >帳戶</RouterLink
             >
           </li>
           <li>
             <p
-              class="rounded-lg px-3 py-2 hover:text-gray-500 hover:bg-white"
+              class="rounded-lg px-3 py-2 hover:text-gray-500 hover:bg-white cursor-pointer"
               @click="logoutHandler"
             >
               登出

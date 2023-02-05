@@ -13,11 +13,13 @@ import {
   toggleLikeProduct,
   getSellMemberProduct,
   getFatoriteProduct,
+  getAdminProduct,
 } from '../controllers/products.js';
 
 const router = Router();
 
 router.post('/', content('multipart/form-data'), jwt, upload, createProduct);
+router.get('/all', jwt, admin, getAdminProduct);
 
 router.get('/member', jwt, getAllMemberProducts);
 router.get('/favorite', jwt, getFatoriteProduct);
