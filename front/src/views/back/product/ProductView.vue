@@ -51,26 +51,14 @@
         :errorText="error.description.value"
         @click="error.description.error = false"
       />
-      <div class="flex justify-between items-center">
-        <div class="w-10/12">
-          <Input
-            v-model="form.bank"
-            title="收款帳戶"
-            :select="bankNewList"
-            :error="error.bank.error"
-            :errorText="error.bank.value"
-            @click="error.bank.error = false"
-          />
-        </div>
-        <RouterLink to="/member/bankinfo">
-          <Btn text="新增" class="mt-10" className="btn-outline" />
-        </RouterLink>
-      </div>
-      <p>
-        ＊點選收款帳戶，選擇收款帳戶<span class="ml-2 text-red-400"
-          >(若無帳戶請先新增帳戶)</span
-        >
-      </p>
+      <Input
+        v-model="form.bank"
+        title="收款帳戶"
+        :select="bankNewList"
+        :error="error.bank.error"
+        :errorText="error.bank.value"
+        @click="error.bank.error = false"
+      />
       <Input
         v-model="form.category"
         title="商品分類"
@@ -119,7 +107,7 @@
           />
         </div>
       </div>
-      <Input title="上架" type="checkbox" v-model="form.isSell" />
+      <Input title="上架" type="checkbox" v-model="form.isSell" id="isSell" />
       <div class="flex justify-between mt-8">
         <Btn
           text="取消"
@@ -200,12 +188,18 @@ const error = reactive({
 });
 
 const editBank = computed(() => {
-  if (!editProduct.value.bankId) return '';
-
-  const bank = listBank.value.filter(
-    (item) => item._id === editProduct.value.bankId
-  )[0];
-  return `${bank.bankName} - ${bank.bankNumber}`;
+  if (!!editProduct.value.bankId) {
+    const bank = listBank.value.filter(
+      (item) => item._id === editProduct.value.bankId
+    )[0];
+    return `${bank.bankName} - ${bank.bankNumber}`;
+  } else {
+    const index = listBank.value.findIndex((item) => item.preset);
+    if (index !== -1) {
+      return `${listBank.value[index].bankName} - ${listBank.value[index].bankNumber}`;
+    }
+    return `${listBank.value[0].bankName} - ${listBank.value[0].bankNumber}`;
+  }
 });
 
 const images = computed(() => {

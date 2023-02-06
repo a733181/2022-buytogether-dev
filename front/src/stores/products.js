@@ -6,10 +6,12 @@ import router from '@/router/index';
 
 import { useSwalStore } from '@/stores/swal';
 import { useUserStore } from '@/stores/users';
+import { useBankStore } from '@/stores/bank';
 
 export const useProductsStore = defineStore('products', () => {
   const user = useUserStore();
   const { swalSuccess, swalError } = useSwalStore();
+  const { banks } = storeToRefs(useBankStore());
 
   const product = reactive({
     list: [],
@@ -86,6 +88,11 @@ export const useProductsStore = defineStore('products', () => {
 
   const addProductHandler = () => {
     changeEditProductHander();
+    if (banks.value.list.length === 0) {
+      swalError('請先新增收款帳戶');
+      router.push('/member/bankinfo');
+      return;
+    }
     router.push('/member/product');
   };
 

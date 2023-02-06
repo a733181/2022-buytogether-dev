@@ -73,7 +73,7 @@
               to="/member/membershipadmin"
               class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/member/membershipadmin')"
-              >帳戶</RouterLink
+              >會員</RouterLink
             >
           </li>
           <li>

@@ -253,7 +253,7 @@ const router = createRouter({
           name: 'member-admin',
           component: () => import('@/views/back/user/MemberAdminView.vue'),
           meta: {
-            title: '團購趣 | 會員設定',
+            title: '團購趣 | 所有會員',
             member: true,
             admin: true,
           },
@@ -261,9 +261,19 @@ const router = createRouter({
         {
           path: 'membershipadmininfo',
           name: 'member-admininfo',
-          component: () => import('@/views/back/user/MemberAdminView.vue'),
+          component: () => import('@/views/back/user/MemberAdminInfoView.vue'),
           meta: {
             title: '團購趣 | 會員編輯',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'memberadminbank',
+          name: 'member-adminbank',
+          component: () => import('@/views/back/bank/BankListAdminView.vue'),
+          meta: {
+            title: '團購趣 | 會員帳戶',
             member: true,
             admin: true,
           },

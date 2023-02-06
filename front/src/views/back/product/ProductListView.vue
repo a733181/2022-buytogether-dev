@@ -34,7 +34,7 @@
             <td class="border-2 p-2 text-center">{{ item.category }}</td>
             <td
               class="border-2 p-2 text-center"
-              :class="{ ' text-red-400': !item.isSell }"
+              :class="{ 'text-red-400': !item.isSell }"
             >
               {{ item.isSell ? '上架' : '下架' }}
             </td>

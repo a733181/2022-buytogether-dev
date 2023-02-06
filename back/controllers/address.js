@@ -10,6 +10,7 @@ export const createAddress = async (req, res) => {
       code: req.body.code,
       phone: req.body.phone,
       name: req.body.name,
+      preset: req.body.preset,
     });
 
     res.status(200).json({
@@ -23,6 +24,7 @@ export const createAddress = async (req, res) => {
         code: result.code,
         phone: result.phone,
         name: req.body.name,
+        preset: result.preset,
       },
     });
   } catch (error) {
@@ -45,7 +47,12 @@ export const editAddress = async (req, res) => {
       code: req.body.code,
       phone: req.body.phone,
       name: req.body.name,
+      preset: req.body.preset,
     };
+
+    if (req.body.preset) {
+      await address.findOneAndUpdate({ preset: true }, { preset: false }, { new: true });
+    }
 
     const result = await address
       .findByIdAndUpdate(req.params.id, data, { new: true })

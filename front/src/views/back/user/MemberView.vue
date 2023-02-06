@@ -46,6 +46,7 @@
         class="mb-4 flex lg:items-center flex-col lg:flex-row gap-2 border-b-2 pb-4"
       >
         <p class="lg:w-2/12">收付款帳戶</p>
+        <p>{{ defaultBank }}</p>
         <div class="flex-1 flex justify-between items-center">
           <RouterLink to="/member/banklist" class="ml-auto hover:opacity-50">
             <img src="@/assets/svg/arrow.svg" class="w-4 h-full rotate-180" />
@@ -56,6 +57,7 @@
         class="mb-4 flex lg:items-center flex-col lg:flex-row gap-2 border-b-2 pb-4"
       >
         <p class="lg:w-2/12">地址</p>
+        <p>{{ defaultAddress }}</p>
         <div class="flex-1 flex justify-between items-center">
           <RouterLink to="/member/addresslist" class="ml-auto hover:opacity-50">
             <img src="@/assets/svg/arrow.svg" class="w-4 h-full rotate-180" />
@@ -86,6 +88,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 
@@ -94,6 +97,31 @@ import { useBankStore } from '@/stores/bank';
 import { useAddressStore } from '@/stores/address';
 
 const { users } = storeToRefs(useUserStore());
+const { listBank } = storeToRefs(useBankStore());
+const { listAddress } = storeToRefs(useAddressStore());
+
+const defaultBank = computed(() => {
+  const index = listBank.value.findIndex((item) => item.preset);
+  if (index === -1 && listBank.value.length === 0) {
+    return '';
+  } else if (index === -1) {
+    return `${listBank.value[0].bankName} - ${listBank.value[0].bankNumber}`;
+  } else {
+    return `${listBank.value[index].bankName} - ${listBank.value[index].bankNumber}`;
+  }
+});
+
+const defaultAddress = computed(() => {
+  const index = listAddress.value.findIndex((item) => item.preset);
+
+  if (index === -1 && listAddress.value.length === 0) {
+    return '';
+  } else if (index === -1) {
+    return `${listAddress.value[0].code} ${listAddress.value[0].city} ${listAddress.value[0].districts} ${listAddress.value[0].street}`;
+  } else {
+    return `${listAddress.value[index].code} ${listAddress.value[index].city} ${listAddress.value[index].districts} ${listAddress.value[index].street}`;
+  }
+});
 </script>
 
 <style scoped></style>

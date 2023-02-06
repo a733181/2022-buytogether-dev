@@ -14,6 +14,11 @@
         @click="toggleShowSelectHandler"
       />
       <label :class="titleClass" :for="props.id">
+        <!-- <span
+          v-if="props.select !== undefined && filterSelect.length === 0"
+          class="text-red-400"
+          >沒有</span
+        > -->
         {{ props.title }}
       </label>
     </div>
@@ -32,7 +37,7 @@
       </li>
     </ul>
     <img
-      v-if="props.select.length > 0 && proxy.length > 0"
+      v-if="filterSelect.length > 0 && proxy.length > 0"
       src="@/assets/svg/close.svg"
       alt="close"
       class="select-close"
@@ -47,7 +52,6 @@ const emit = defineEmits();
 const props = defineProps({
   select: {
     type: Array,
-    default: [],
   },
   title: {
     type: String,
@@ -87,6 +91,7 @@ const proxy = ref(props.modelValue || props.value || '');
 const isShowSelect = ref(false);
 
 const filterSelect = computed(() => {
+  if (!props.select) return [];
   return props.select.filter((item) => item.includes(proxy.value));
 });
 

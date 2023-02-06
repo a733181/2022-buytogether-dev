@@ -61,6 +61,12 @@
         :errorText="error.phone.value"
         @click="error.phone.error = false"
       />
+      <Input
+        title="預設"
+        type="checkbox"
+        v-model="form.preset"
+        id="addressPreset"
+      />
       <div class="flex justify-between mt-8">
         <Btn
           text="取消"
@@ -113,6 +119,7 @@ const form = reactive({
   street: editAddress.value.street || '',
   name: editAddress.value.name || '',
   phone: editAddress.value.phone || '',
+  preset: editAddress.value.preset,
 });
 
 const error = reactive({
@@ -170,7 +177,7 @@ watch(accountPhone, (value) => {
 });
 watch(accountName, (value) => {
   if (value) {
-    form.name = users.value.name;
+    form.name = users.value.name || '';
   } else {
     form.name = '';
   }

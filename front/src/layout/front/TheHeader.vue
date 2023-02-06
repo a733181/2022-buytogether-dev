@@ -50,9 +50,9 @@
             </p>
           </li>
         </ul>
-        <RouterLink
-          to="/cart"
+        <div
           class="absolute right-6 -bottom-16 hover:opacity-50"
+          @click="toCart"
         >
           <p
             v-if="cart.length"
@@ -66,7 +66,7 @@
             class="w-4 absolute -top-2 right-2 animate-bounce"
           />
           <img src="@/assets/svg/cart.svg" class="w-10" />
-        </RouterLink>
+        </div>
       </nav>
     </div>
   </header>
@@ -78,6 +78,9 @@ import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/stores/users';
 import { useCartStore } from '@/stores/carts';
+import { useBankStore } from '@/stores/bank';
+import { useAddressStore } from '@/stores/address';
+import { useSwalStore } from '@/stores/swal';
 
 const route = useRoute();
 const router = useRouter();
@@ -85,6 +88,9 @@ const router = useRouter();
 const user = useUserStore();
 const carts = useCartStore();
 const { cart } = storeToRefs(carts);
+const { listAddress } = storeToRefs(useAddressStore());
+const { listBank } = storeToRefs(useBankStore());
+const { swalError } = useSwalStore();
 
 const activeClass = (active) => {
   return route.path === active ? 'text-gray-500 bg-white' : null;
@@ -96,5 +102,21 @@ const toMember = () => {
   } else {
     router.push('/member/orderalllist');
   }
+};
+
+const toCart = () => {
+  if (cart.value.length) {
+    if (listBank.value.length === 0) {
+      swalError('請先新增付款帳戶');
+      router.push('/member/bankinfo');
+      return;
+    }
+    if (listAddress.value.length === 0) {
+      swalError('請先新增收件地址');
+      router.push('/member/addressinfo');
+      return;
+    }
+  }
+  router.push('/cart');
 };
 </script>

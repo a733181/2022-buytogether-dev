@@ -177,6 +177,20 @@ export const useUserStore = defineStore(
       }
     };
 
+    const editAdminUserHander = async (form) => {
+      try {
+        const { data } = await apiAuth.patch('/users/member', form);
+        const index = userAdmin.list.findIndex(
+          (item) => item._id === form.get('id')
+        );
+        userAdmin.list[index] = data.result;
+        swalSuccess('修改成功');
+        router.push('/member/membershipadmin');
+      } catch (error) {
+        swalError(error);
+      }
+    };
+
     const changeListHalder = (index, data, id) => {
       if (index === -1) {
         data.push(id);
@@ -249,7 +263,8 @@ export const useUserStore = defineStore(
       try {
         const { data } = await apiAuth.get('/users/all');
         userAdmin.list = data.result.users;
-
+        bank.banksAdmin.list = data.result.banks;
+        address.addressAdmin.list = data.result.address;
         userAdmin.list.forEach((user) => {
           user.image =
             user?.image ||
@@ -275,6 +290,7 @@ export const useUserStore = defineStore(
       logoutHandler,
       getUserHandler,
       editUserHander,
+      editAdminUserHander,
       clickFavoriteHandler,
       clickListHandler,
       isLoginHandler,

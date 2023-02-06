@@ -27,15 +27,15 @@
         />
         <div class="flex justify-between mt-8">
           <RouterLink to="/member/membership" class="w-1/3 block">
-            <Btn
-              text="取消"
-              className="btn-outline"
-              class="w-full"
-              :disabled="isLoading"
-              :loading="isLoading"
-            />
+            <Btn text="取消" className="btn-outline" class="w-full" />
           </RouterLink>
-          <Btn type="sumbit" text="確定" class="w-1/3" />
+          <Btn
+            type="sumbit"
+            text="確定"
+            class="w-1/3"
+            :disabled="isLoading"
+            :loading="isLoading"
+          />
         </div>
       </form>
     </div>
@@ -95,11 +95,10 @@ const submitHandler = async () => {
   ) {
     fd.append('name', form.name);
     fd.append('image', form.image);
-    await editUserHander(fd);
   } else {
     fd.append('name', form.name);
-    await editUserHander(fd);
   }
+  await editUserHander(fd);
   isLoading.value = false;
 };
 </script>

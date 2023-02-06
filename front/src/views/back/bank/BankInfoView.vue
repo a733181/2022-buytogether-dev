@@ -1,12 +1,27 @@
 <template>
   <div class="container py-20">
-    <Breadcrumbs class="mb-10">
+    <Breadcrumbs v-if="editBank.type === 'user'" class="mb-10">
       <div class="flex">
         <RouterLink to="/member/membership" class="hover:scale-105"
           >帳戶</RouterLink
         >
         <p>&ensp;/&ensp;</p>
         <RouterLink to="/member/banklist" class="hover:scale-105"
+          >帳戶列表</RouterLink
+        >
+
+        <p>
+          {{ editBank._id ? '&ensp;/&ensp;修改帳戶' : '&ensp;/&ensp;新增帳戶' }}
+        </p>
+      </div>
+    </Breadcrumbs>
+    <Breadcrumbs v-if="editBank.type === 'admin'" class="mb-10">
+      <div class="flex">
+        <RouterLink to="/member/membershipadmin" class="hover:scale-105"
+          >會員</RouterLink
+        >
+        <p>&ensp;/&ensp;</p>
+        <RouterLink to="/member/memberadminbank" class="hover:scale-105"
           >帳戶列表</RouterLink
         >
 
@@ -31,6 +46,12 @@
         :error="error.bankNumber.error"
         :errorText="error.bankNumber.value"
         @click="error.bankNumber.error = false"
+      />
+      <Input
+        title="預設"
+        type="checkbox"
+        v-model="form.preset"
+        id="bankpreset"
       />
       <div class="flex justify-between mt-8">
         <Btn
@@ -75,6 +96,7 @@ const form = reactive({
   _id: editBank.value._id || '',
   bankName: editBank.value.bankName || '',
   bankNumber: editBank.value.bankNumber.toString() || '',
+  preset: editBank.value.preset || false,
 });
 
 const error = reactive({

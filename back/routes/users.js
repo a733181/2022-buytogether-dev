@@ -11,6 +11,7 @@ import {
   extend,
   getUser,
   editUser,
+  adminEditUser,
   toggleFatorite,
   toggleList,
   getTrackList,
@@ -34,6 +35,7 @@ router.delete('/logout', auth.jwt, logout);
 router.patch('/extend', auth.jwt, extend);
 router.get('/me', auth.jwt, getUser);
 router.patch('/edit', content('multipart/form-data'), auth.jwt, upload, editUser);
+router.patch('/member', content('multipart/form-data'), auth.jwt, admin, upload, adminEditUser);
 
 router.post('/bank', content('application/json'), auth.jwt, createBank);
 router.patch('/bank/:id', content('application/json'), auth.jwt, editBank);

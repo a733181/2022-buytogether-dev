@@ -19,7 +19,13 @@ export const useAddressStore = defineStore('address', () => {
       street: '',
       name: '',
       phone: '',
+      preset: false,
     },
+  });
+
+  const addressAdmin = reactive({
+    list: [],
+    edit: {},
   });
 
   const listAddress = computed(() => {
@@ -39,6 +45,7 @@ export const useAddressStore = defineStore('address', () => {
       street: '',
       name: '',
       phone: '',
+      preset: false,
     }
   ) => {
     address.edit._id = data._id;
@@ -48,6 +55,7 @@ export const useAddressStore = defineStore('address', () => {
     address.edit.street = data.street;
     address.edit.name = data.name;
     address.edit.phone = data.phone;
+    address.edit.preset = data.preset;
   };
 
   const addAddressHandler = () => {
@@ -58,9 +66,23 @@ export const useAddressStore = defineStore('address', () => {
   const sumbitAddressHandler = async (form) => {
     try {
       if (address.edit._id === '') {
+        if (form.preset && address.list.length > 0) {
+          const index = address.list.findIndex((item) => item.preset);
+          if (index !== -1) {
+            address.list[index].preset = false;
+          }
+        }
+
         const { data } = await apiAuth.post('/users/address', form);
         address.list.push(data.result);
       } else {
+        if (form.preset) {
+          const index = address.list.findIndex((item) => item.preset);
+          if (index !== -1) {
+            address.list[index].preset = false;
+          }
+        }
+
         const { data } = await apiAuth.patch(
           `/users/address/${form._id}`,
           form
@@ -104,6 +126,7 @@ export const useAddressStore = defineStore('address', () => {
 
   return {
     address,
+    addressAdmin,
     listAddress,
     editAddress,
     addAddressHandler,

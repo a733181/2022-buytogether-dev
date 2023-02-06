@@ -73,53 +73,29 @@
           </tr>
           <tr>
             <td colspan="6">
-              <div class="flex justify-end items-center">
-                <div class="w-1/2">
-                  <Input
-                    v-model="form.bank"
-                    title="付款帳戶"
-                    :select="bankNewList"
-                    :error="error.bank.error"
-                    :errorText="error.bank.value"
-                    @click="error.bank.error = false"
-                  />
-                  <p>
-                    點選付款帳戶，選擇帳戶<span class="ml-2 text-red-400"
-                      >(若無帳戶請先新增帳戶)</span
-                    >
-                  </p>
-                </div>
-                <RouterLink to="/member/bankinfo">
-                  <Btn text="新增" class="mt-4 ml-10" className="btn-outline" />
-                </RouterLink>
+              <div class="w-1/2 ml-auto">
+                <Input
+                  v-model="form.bank"
+                  title="付款帳戶"
+                  :select="bankNewList"
+                  :error="error.bank.error"
+                  :errorText="error.bank.value"
+                  @click="error.bank.error = false"
+                />
               </div>
             </td>
           </tr>
           <tr>
             <td colspan="6">
-              <div class="flex justify-end">
-                <div class="w-1/2">
-                  <Input
-                    v-model="form.address"
-                    title="收件地址"
-                    :select="addressNewList"
-                    :error="error.address.error"
-                    :errorText="error.address.value"
-                    @click="error.address.error = false"
-                  />
-                  <p>
-                    點選收件地址，選擇地址<span class="ml-2 text-red-400"
-                      >(若無地址請先新增地址)</span
-                    >
-                  </p>
-                </div>
-                <RouterLink to="/member/addressinfo">
-                  <Btn
-                    text="新增"
-                    class="mt-10 ml-10"
-                    className="btn-outline"
-                  />
-                </RouterLink>
+              <div class="w-1/2 ml-auto">
+                <Input
+                  v-model="form.address"
+                  title="收件地址"
+                  :select="addressNewList"
+                  :error="error.address.error"
+                  :errorText="error.address.value"
+                  @click="error.address.error = false"
+                />
               </div>
             </td>
           </tr>
@@ -158,12 +134,35 @@ import { useAddressStore } from '@/stores/address';
 const carts = useCartStore();
 const { getCartList, clickAddCartHandler, deleteCartHandler } = carts;
 const { cart } = storeToRefs(carts);
-const { checkoutHandler } = useOrderStore();
+const { checkouOrdertHandler } = useOrderStore();
 const { listBank } = storeToRefs(useBankStore());
 const { listAddress } = storeToRefs(useAddressStore());
 getCartList();
 
 const isLoading = ref(false);
+
+const defaultAddress = computed(() => {
+  const index = listAddress.value.findIndex((item) => item.preset);
+
+  if (index === -1 && listAddress.value.length === 0) {
+    return '';
+  } else if (index === -1) {
+    return `${listAddress.value[0].code} ${listAddress.value[0].city} ${listAddress.value[0].districts} ${listAddress.value[0].street}`;
+  } else {
+    return `${listAddress.value[index].code} ${listAddress.value[index].city} ${listAddress.value[index].districts} ${listAddress.value[index].street}`;
+  }
+});
+
+const defaultBank = computed(() => {
+  const index = listBank.value.findIndex((item) => item.preset);
+  if (index === -1 && listBank.value.length === 0) {
+    return '';
+  } else if (index === -1) {
+    return `${listBank.value[0].bankName} - ${listBank.value[0].bankNumber}`;
+  } else {
+    return `${listBank.value[index].bankName} - ${listBank.value[index].bankNumber}`;
+  }
+});
 
 const error = reactive({
   address: {
@@ -176,7 +175,10 @@ const error = reactive({
   },
 });
 
-const form = reactive({ address: '', bank: '' });
+const form = reactive({
+  address: defaultAddress.value,
+  bank: defaultBank.value,
+});
 
 const changeNumber = async ({ id, quantity, type }) => {
   if (type !== 'delete') {
@@ -194,19 +196,15 @@ const sumTotal = computed(() => {
   );
 });
 
-const bankNewList = computed(() => {
-  if (!listBank.value) return [];
+const bankNewList = computed(() =>
+  listBank.value.map((item) => `${item.bankName} - ${item.bankNumber}`)
+);
 
-  return listBank.value.map((item) => `${item.bankName} - ${item.bankNumber}`);
-});
-
-const addressNewList = computed(() => {
-  if (!listAddress.value) return [];
-
-  return listAddress.value.map(
+const addressNewList = computed(() =>
+  listAddress.value.map(
     (item) => `${item.code} ${item.city} ${item.districts} ${item.street}`
-  );
-});
+  )
+);
 
 const validatorFormHandler = () => {
   if (validator.isEmpty(form.bank)) {
@@ -278,7 +276,7 @@ const submitHandler = async () => {
     bankId: listBank.value[bankIndex]._id,
   };
 
-  await checkoutHandler(newForm);
+  await checkouOrdertHandler(newForm);
   isLoading.value = false;
 };
 </script>

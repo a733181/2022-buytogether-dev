@@ -40,6 +40,10 @@ const addressSchema = new Schema(
         },
       },
     },
+    preset: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: Number,
       default: 0,

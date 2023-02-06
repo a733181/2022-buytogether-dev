@@ -6,7 +6,12 @@ export const createBank = async (req, res) => {
       userId: req.user._id,
       bankName: req.body.bankName,
       bankNumber: req.body.bankNumber,
+      preset: req.body.preset,
     });
+
+    if (req.body.preset) {
+      await banks.findOneAndUpdate({ preset: true }, { preset: false }, { new: true });
+    }
 
     res.status(200).json({
       success: true,
@@ -15,6 +20,7 @@ export const createBank = async (req, res) => {
         _id: result._id,
         bankName: result.bankName,
         bankNumber: result.bankNumber,
+        preset: result.preset,
       },
     });
   } catch (error) {
@@ -33,7 +39,12 @@ export const editBank = async (req, res) => {
     const data = {
       bankName: req.body.bankName,
       bankNumber: req.body.bankNumber,
+      preset: req.body.preset || false,
     };
+
+    if (req.body.preset) {
+      await banks.findOneAndUpdate({ preset: true }, { preset: false }, { new: true });
+    }
 
     const result = await banks
       .findByIdAndUpdate(req.params.id, data, { new: true })
