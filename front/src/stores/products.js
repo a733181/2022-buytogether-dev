@@ -10,8 +10,8 @@ import { useBankStore } from '@/stores/bank';
 
 export const useProductsStore = defineStore('products', () => {
   const user = useUserStore();
+  const bank = useBankStore();
   const { swalSuccess, swalError } = useSwalStore();
-  const { banks } = storeToRefs(useBankStore());
 
   const product = reactive({
     list: [],
@@ -88,7 +88,7 @@ export const useProductsStore = defineStore('products', () => {
 
   const addProductHandler = () => {
     changeEditProductHander();
-    if (banks.value.list.length === 0) {
+    if (bank.banks.list.length === 0) {
       swalError('請先新增收款帳戶');
       router.push('/member/bankinfo');
       return;
@@ -114,7 +114,11 @@ export const useProductsStore = defineStore('products', () => {
 
       swalSuccess(product.edit._id === '' ? '新增成功' : '修改成功');
       changeEditProductHander();
-      router.push('/member/productlist');
+      if (user.isAdmin) {
+        router.push('/member/productalllist');
+      } else {
+        router.push('/member/productlist');
+      }
     } catch (error) {
       swalError(error);
     }
@@ -131,6 +135,7 @@ export const useProductsStore = defineStore('products', () => {
 
   const cancelProductHandler = () => {
     changeEditProductHander();
+
     if (user.isAdmin) {
       router.push('/member/productalllist');
     } else {
@@ -141,7 +146,12 @@ export const useProductsStore = defineStore('products', () => {
   const editProductHandler = (id) => {
     const index = product.list.findIndex((item) => item._id === id);
     changeEditProductHander(product.list[index]);
-    router.push('/member/product');
+
+    if (user.isAdmin) {
+      router.push('/member/memberproductinfo');
+    } else {
+      router.push('/member/product');
+    }
   };
 
   const deleteProductHandler = async (id) => {
@@ -265,7 +275,8 @@ export const useProductsStore = defineStore('products', () => {
   const getAdminProductHandler = async () => {
     try {
       const { data } = await apiAuth.get('/products/all');
-      product.list = data.result;
+      product.list = data.result.products;
+      bank.banksAdmin.list = data.result.banks;
     } catch (error) {
       swalError(error);
     }

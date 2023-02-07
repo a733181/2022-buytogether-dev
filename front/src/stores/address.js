@@ -12,6 +12,7 @@ export const useAddressStore = defineStore('address', () => {
   const address = reactive({
     list: [],
     edit: {
+      userId: null,
       _id: '',
       code: 0,
       city: '',
@@ -20,12 +21,16 @@ export const useAddressStore = defineStore('address', () => {
       name: '',
       phone: '',
       preset: false,
+      type: 'user',
     },
   });
 
   const addressAdmin = reactive({
     list: [],
-    edit: {},
+    user: {
+      userId: '',
+      list: [],
+    },
   });
 
   const listAddress = computed(() => {
@@ -46,6 +51,7 @@ export const useAddressStore = defineStore('address', () => {
       name: '',
       phone: '',
       preset: false,
+      type: 'user',
     }
   ) => {
     address.edit._id = data._id;
@@ -56,30 +62,73 @@ export const useAddressStore = defineStore('address', () => {
     address.edit.name = data.name;
     address.edit.phone = data.phone;
     address.edit.preset = data.preset;
+    address.edit.type = data.type;
   };
 
   const addAddressHandler = () => {
     changeEditAddressHandler();
     router.push('/member/addressinfo');
+
+    if (addressAdmin.list.length) {
+      address.edit.userId = addressAdmin.user.userId;
+      address.edit.type = 'admin';
+    }
   };
 
   const sumbitAddressHandler = async (form) => {
     try {
-      if (address.edit._id === '') {
-        if (form.preset && address.list.length > 0) {
-          const index = address.list.findIndex((item) => item.preset);
-          if (index !== -1) {
-            address.list[index].preset = false;
+      if (form._id === '') {
+        if (addressAdmin.list.length) {
+          if (form.preset) {
+            const addressPreset = addressAdmin.user.list.filter(
+              (item) => item.preset
+            );
+
+            if (addressPreset[0]) {
+              const index = addressAdmin.list.findIndex(
+                (item) => item._id === addressPreset[0]._id
+              );
+              addressAdmin.list[index].preset = false;
+            }
+          }
+        } else {
+          if (form.preset && address.list.length > 0) {
+            const index = address.list.findIndex((item) => item.preset);
+            if (index !== -1) {
+              address.list[index].preset = false;
+            }
           }
         }
 
         const { data } = await apiAuth.post('/users/address', form);
-        address.list.push(data.result);
+
+        if (addressAdmin.list.length) {
+          addressAdmin.list.push(data.result);
+          addressAdmin.user.list = addressAdmin.list.filter(
+            (item) => item.userId === addressAdmin.user.userId
+          );
+        } else {
+          address.list.push(data.result);
+        }
       } else {
-        if (form.preset) {
-          const index = address.list.findIndex((item) => item.preset);
-          if (index !== -1) {
-            address.list[index].preset = false;
+        if (addressAdmin.list.length) {
+          if (form.preset) {
+            const addressPreset = addressAdmin.user.list.filter(
+              (item) => item.preset
+            );
+            if (addressPreset[0]) {
+              const index = addressAdmin.list.findIndex(
+                (item) => item._id === addressPreset[0]._id
+              );
+              addressAdmin.list[index].preset = false;
+            }
+          }
+        } else {
+          if (form.preset) {
+            const index = address.list.findIndex((item) => item.preset);
+            if (index !== -1) {
+              address.list[index].preset = false;
+            }
           }
         }
 
@@ -87,16 +136,28 @@ export const useAddressStore = defineStore('address', () => {
           `/users/address/${form._id}`,
           form
         );
-        const index = address.list.findIndex(
-          (item) => item._id === data.result._id
-        );
-        address.list[index] = data.result;
+
+        if (addressAdmin.list.length) {
+          const index = addressAdmin.list.findIndex(
+            (item) => item._id === data.result._id
+          );
+          addressAdmin.list[index] = data.result;
+          addressAdmin.user.list = addressAdmin.list.filter(
+            (item) => item.userId === addressAdmin.user.userId
+          );
+        } else {
+          const index = address.list.findIndex(
+            (item) => item._id === data.result._id
+          );
+          address.list[index] = data.result;
+        }
       }
 
       swalSuccess(address.edit._id === '' ? '新增成功' : '修改成功');
       changeEditAddressHandler();
       router.go(-1);
     } catch (error) {
+      console.log(error);
       swalError(error);
     }
   };
@@ -107,21 +168,47 @@ export const useAddressStore = defineStore('address', () => {
   };
 
   const editAddressHandler = (id) => {
-    const index = address.list.findIndex((item) => item._id === id);
-    changeEditAddressHandler(address.list[index]);
+    if (addressAdmin.list.length) {
+      const index = addressAdmin.user.list.findIndex((item) => item._id === id);
+      changeEditAddressHandler({
+        ...addressAdmin.user.list[index],
+        type: 'admin',
+      });
+    } else {
+      const index = address.list.findIndex((item) => item._id === id);
+      changeEditAddressHandler(address.list[index]);
+    }
     router.push('/member/addressinfo');
   };
 
   const deleteAddressHandler = async (id) => {
     try {
       await apiAuth.delete(`/users/address/${id}`);
-      const index = address.list.findIndex((item) => item.id === id);
-      address.list.splice(index, 1);
+
+      if (addressAdmin.list.length) {
+        const index = addressAdmin.list.findIndex((item) => item._id === id);
+        addressAdmin.list.splice(index, 1);
+        addressAdmin.user.list = addressAdmin.list.filter(
+          (item) => item.userId === addressAdmin.user.userId
+        );
+      } else {
+        const index = address.list.findIndex((item) => item.id === id);
+        address.list.splice(index, 1);
+      }
 
       swalSuccess('成功刪除');
     } catch (error) {
       swalError(error);
     }
+  };
+
+  const adminViewUserAddressListHanlder = (userId) => {
+    addressAdmin.user.userId = userId;
+
+    addressAdmin.user.list = addressAdmin.list.filter(
+      (item) => item.userId === userId
+    );
+    router.push('/member/memberadminaddress');
   };
 
   return {
@@ -134,5 +221,6 @@ export const useAddressStore = defineStore('address', () => {
     sumbitAddressHandler,
     editAddressHandler,
     deleteAddressHandler,
+    adminViewUserAddressListHanlder,
   };
 });

@@ -1,17 +1,33 @@
 import products from '../models/products.js';
 import users from '../models/users.js';
+import banks from '../models/banks.js';
 import orders from '../models/orders.js';
+
+const showError = (error, res) => {
+  if (error.name === 'ValidationError') {
+    res
+      .status(400)
+      .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
+  } else if (error.name === 'CastError') {
+    res.status(404).json({ success: false, message: '找不到' });
+  } else if (error.code === 11000) {
+    res.status(400).json({ success: false, message: '重複' });
+  } else {
+    res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};
 
 export const createProduct = async (req, res) => {
   try {
-    let imagePath = [];
-    if (!!req.files.images) {
+    const imagePath = [];
+    if (req.files.images) {
       req.files.images.forEach((item) => {
         imagePath.push(item.path);
       });
     }
+
     const result = await products.create({
-      userId: req.user._id,
+      userId: req.body.userId || req.user._id,
       name: req.body.name,
       price: req.body.price,
       maxNumber: req.body.maxNumber,
@@ -43,13 +59,8 @@ export const createProduct = async (req, res) => {
       },
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    console.log(error);
+    showError(error, res);
   }
 };
 
@@ -101,7 +112,7 @@ export const getSellProducts = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -141,11 +152,7 @@ export const getSellProduct = async (req, res) => {
       });
     }
   } catch (error) {
-    if (error.name === 'CastError') {
-      res.status(404).json({ success: false, message: '找不到' });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -179,7 +186,7 @@ export const getAllMemberProducts = async (req, res) => {
       result: newResult,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -233,7 +240,7 @@ export const getSellMemberProduct = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -246,6 +253,7 @@ export const getAdminProduct = async (req, res) => {
       .select(' -status')
       .populate({
         path: 'userId',
+        select: '_id',
       });
 
     const getOrder = await orders.find();
@@ -263,13 +271,18 @@ export const getAdminProduct = async (req, res) => {
       reProd.sales = total;
     });
 
+    const banksList = await banks.find({ status: 0 }).select('-status');
+
     res.status(200).json({
       success: true,
       message: '',
-      result: newResult,
+      result: {
+        products: newResult,
+        banks: banksList,
+      },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -292,7 +305,6 @@ export const editProdcut = async (req, res) => {
     const data = {
       name: req.body.name,
       price: req.body.price,
-      maxNumber: req.body.maxNumber,
       description: req.body.description,
       image: mainImage,
       images: imagePath,
@@ -301,6 +313,10 @@ export const editProdcut = async (req, res) => {
       bankId: req.body.bankId,
       youtubeId: req.body.youtubeId,
     };
+
+    if (req.user.role === 1) {
+      data.maxNumber = req.body.maxNumber;
+    }
     const result = await products
       .findByIdAndUpdate(req.params.id, data, { new: true })
       .select('-likes -status');
@@ -315,15 +331,7 @@ export const editProdcut = async (req, res) => {
       });
     }
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else if (error.name === 'CastError') {
-      res.status(404).json({ success: false, message: '找不到' });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -341,15 +349,7 @@ export const deletProduct = async (req, res) => {
       res.status(200).json({ success: true, message: '' });
     }
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else if (error.name === 'CastError') {
-      res.status(404).json({ success: false, message: '找不到' });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -375,15 +375,7 @@ export const toggleLikeProduct = async (req, res) => {
       result: {},
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else if (error.name === 'CastError') {
-      res.status(404).json({ success: false, message: '找不到' });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -416,6 +408,6 @@ export const getFatoriteProduct = async (req, res) => {
       result: newResult,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };

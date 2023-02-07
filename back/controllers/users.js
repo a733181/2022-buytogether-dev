@@ -36,7 +36,7 @@ export const login = async (req, res) => {
     await req.user.save();
 
     const banklist = await banks
-      .find({ userId: req.user._id }, { status: 0 })
+      .find({ userId: req.user._id, status: 0 })
       .select('-userId -status');
 
     const addressList = await address
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -77,7 +77,7 @@ export const logout = async (req, res) => {
     await req.user.save();
     res.status(200).json({ success: true, message: '' });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -89,14 +89,14 @@ export const extend = async (req, res) => {
     await req.user.save();
     res.status(200).json({ success: true, message: '', result: token });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
 export const getUser = async (req, res) => {
   try {
     const banklist = await banks
-      .find({ userId: req.user._id }, { status: 0 })
+      .find({ userId: req.user._id, status: 0 })
       .select('-userId -status');
 
     const addressList = await address
@@ -126,7 +126,7 @@ export const getUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -339,13 +339,7 @@ export const editCart = async (req, res) => {
       result: req.user.cart.reduce((total, current) => total + current.quantity, 0),
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -363,7 +357,7 @@ export const getCart = async (req, res) => {
 
     res.status(200).json({ success: true, message: '', result: result.cart });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 
@@ -379,7 +373,7 @@ export const deleteCart = async (req, res) => {
       result: req.user.cart.reduce((total, current) => total + current.quantity, 0),
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: '未知錯誤' });
+    showError(error, res);
   }
 };
 

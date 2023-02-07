@@ -1,6 +1,6 @@
 <template>
   <div class="container py-20">
-    <Breadcrumbs class="mb-10">
+    <Breadcrumbs class="mb-10" v-if="editAddress.type !== 'admin'">
       <div class="flex">
         <RouterLink to="/member/membership" class="hover:scale-105"
           >帳戶</RouterLink
@@ -11,9 +11,23 @@
         >
         <p>
           {{
-            !!editAddress.value
-              ? '&ensp;/&ensp;新增地址'
-              : '&ensp;/&ensp;修改地址'
+            !editAddress._id ? '&ensp;/&ensp;新增地址' : '&ensp;/&ensp;修改地址'
+          }}
+        </p>
+      </div>
+    </Breadcrumbs>
+    <Breadcrumbs class="mb-10" v-else>
+      <div class="flex">
+        <RouterLink to="/member/membershipadmin" class="hover:scale-105"
+          >會員</RouterLink
+        >
+        <p>&ensp;/&ensp;</p>
+        <RouterLink to="/member/memberadminaddress" class="hover:scale-105"
+          >地址列表</RouterLink
+        >
+        <p>
+          {{
+            !editAddress._id ? '&ensp;/&ensp;新增地址' : '&ensp;/&ensp;修改地址'
           }}
         </p>
       </div>
@@ -45,7 +59,12 @@
         :errorText="error.street.value"
         @click="error.street.error = false"
       />
-      <Input title="同帳號姓名" type="checkbox" v-model="accountName" />
+      <Input
+        v-if="editAddress.type === 'user'"
+        title="同帳號姓名"
+        type="checkbox"
+        v-model="accountName"
+      />
       <Input
         title="姓名"
         v-model="form.name"
@@ -53,7 +72,12 @@
         :errorText="error.name.value"
         @click="error.name.error = false"
       />
-      <Input title="同帳號電話" type="checkbox" v-model="accountPhone" />
+      <Input
+        v-if="editAddress.type === 'user'"
+        title="同帳號電話"
+        type="checkbox"
+        v-model="accountPhone"
+      />
       <Input
         title="電話"
         v-model="form.phone"
@@ -114,6 +138,7 @@ const isLoading = ref(false);
 
 const form = reactive({
   _id: editAddress.value._id || '',
+  userId: editAddress.value.userId || null,
   city: editAddress.value.city || '',
   districts: editAddress.value.districts || '',
   street: editAddress.value.street || '',

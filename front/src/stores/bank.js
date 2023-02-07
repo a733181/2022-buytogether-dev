@@ -12,6 +12,7 @@ export const useBankStore = defineStore('bank', () => {
   const banks = reactive({
     list: [],
     edit: {
+      userId: null,
       _id: '',
       bankName: '',
       bankNumber: '',
@@ -22,7 +23,10 @@ export const useBankStore = defineStore('bank', () => {
 
   const banksAdmin = reactive({
     list: [],
-    user: [],
+    user: {
+      userId: '',
+      list: [],
+    },
   });
 
   const listBank = computed(() => {
@@ -52,34 +56,85 @@ export const useBankStore = defineStore('bank', () => {
   const addBankHandler = () => {
     changeEditBankHandler();
     router.push('/member/bankinfo');
+
+    if (banksAdmin.list.length) {
+      banks.edit.userId = banksAdmin.user.userId;
+      banks.edit.type = 'admin';
+    }
   };
 
   const sumbitBankHandler = async (form) => {
     try {
-      if (banks.edit._id === '') {
-        if (form.preset && banks.list.length > 0) {
-          const index = banks.list.findIndex((item) => item.preset);
-          if (index !== -1) {
-            banks.list[index].preset = false;
+      if (form._id === '') {
+        if (banksAdmin.list.length) {
+          if (form.preset) {
+            const bankPreset = banksAdmin.user.list.filter(
+              (item) => item.preset
+            );
+
+            if (bankPreset[0]) {
+              const index = banksAdmin.list.findIndex(
+                (item) => item._id === bankPreset[0]._id
+              );
+              banksAdmin.list[index].preset = false;
+            }
+          }
+        } else {
+          if (form.preset && banks.list.length > 0) {
+            const index = banks.list.findIndex((item) => item.preset);
+            if (index !== -1) {
+              banks.list[index].preset = false;
+            }
           }
         }
-
         const { data } = await apiAuth.post('/users/bank', form);
-        banks.list.push(data.result);
+
+        if (banksAdmin.list.length) {
+          banksAdmin.list.push(data.result);
+          banksAdmin.user.list = banksAdmin.list.filter(
+            (item) => item.userId === banksAdmin.user.userId
+          );
+        } else {
+          banks.list.push(data.result);
+        }
       } else {
-        if (form.preset) {
-          const index = banks.list.findIndex((item) => item.preset);
-          if (index !== -1) {
-            banks.list[index].preset = false;
+        if (banksAdmin.list.length) {
+          if (form.preset) {
+            const bankPreset = banksAdmin.user.list.filter(
+              (item) => item.preset
+            );
+            if (bankPreset[0]) {
+              const index = banksAdmin.list.findIndex(
+                (item) => item._id === bankPreset[0]._id
+              );
+              banksAdmin.list[index].preset = false;
+            }
+          }
+        } else {
+          if (form.preset) {
+            const index = banks.list.findIndex((item) => item.preset);
+            if (index !== -1) {
+              banks.list[index].preset = false;
+            }
           }
         }
 
         const { data } = await apiAuth.patch(`/users/bank/${form._id}`, form);
 
-        const index = banks.list.findIndex(
-          (item) => item._id === data.result._id
-        );
-        banks.list[index] = data.result;
+        if (banksAdmin.list.length) {
+          const index = banksAdmin.list.findIndex(
+            (item) => item._id === data.result._id
+          );
+          banksAdmin.list[index] = data.result;
+          banksAdmin.user.list = banksAdmin.list.filter(
+            (item) => item.userId === banksAdmin.user.userId
+          );
+        } else {
+          const index = banks.list.findIndex(
+            (item) => item._id === data.result._id
+          );
+          banks.list[index] = data.result;
+        }
       }
 
       swalSuccess(banks.edit._id === '' ? '新增成功' : '修改成功');
@@ -91,13 +146,14 @@ export const useBankStore = defineStore('bank', () => {
   };
 
   const editBankHandler = (id) => {
-    if (banksAdmin.list.length === 0) {
+    if (banksAdmin.list.length) {
+      const index = banksAdmin.user.list.findIndex((item) => item._id === id);
+      changeEditBankHandler({ ...banksAdmin.user.list[index], type: 'admin' });
+    } else {
       const index = banks.list.findIndex((item) => item._id === id);
       changeEditBankHandler(banks.list[index]);
-    } else {
-      const index = banksAdmin.user.findIndex((item) => item._id === id);
-      changeEditBankHandler({ ...banksAdmin.user[index], type: 'admin' });
     }
+
     router.push('/member/bankinfo');
   };
 
@@ -109,10 +165,18 @@ export const useBankStore = defineStore('bank', () => {
   const deleteBankHandler = async (id) => {
     try {
       await apiAuth.delete(`/users/bank/${id}`);
-      const index = banks.list.findIndex((item) => {
-        return item._id === id;
-      });
-      banks.list.splice(index, 1);
+      if (banksAdmin.list.length) {
+        const index = banksAdmin.list.findIndex((item) => item._id === id);
+        banksAdmin.list.splice(index, 1);
+        banksAdmin.user.list = banksAdmin.list.filter(
+          (item) => item.userId === banksAdmin.user.userId
+        );
+      } else {
+        const index = banks.list.findIndex((item) => {
+          return item._id === id;
+        });
+        banks.list.splice(index, 1);
+      }
 
       swalSuccess('成功刪除');
     } catch (error) {
@@ -121,8 +185,11 @@ export const useBankStore = defineStore('bank', () => {
   };
 
   const adminViewUserBankListHanlder = (userId) => {
-    banksAdmin.user = banksAdmin.list.filter((item) => (item.userId = userId));
+    banksAdmin.user.userId = userId;
 
+    banksAdmin.user.list = banksAdmin.list.filter(
+      (item) => item.userId === userId
+    );
     router.push('/member/memberadminbank');
   };
 

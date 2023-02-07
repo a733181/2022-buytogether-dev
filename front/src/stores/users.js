@@ -100,6 +100,10 @@ export const useUserStore = defineStore(
         await api.post('/users', form);
         swalSuccess('註冊成功');
         isLogin.value = true;
+        if (userAdmin.list.length) {
+          await getAdminAllUserHanlder();
+          router.push('/member/membershipadmin');
+        }
       } catch (error) {
         swalError(error);
         isLogin.value = false;

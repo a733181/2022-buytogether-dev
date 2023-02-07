@@ -18,9 +18,9 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
+import BankTable from '@/components/back/BankTable.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Btn from '@/components/ui/TheBtn.vue';
-import BankTable from '@/components/ui/TheBankTable.vue';
 
 import { useBankStore } from '@/stores/bank';
 

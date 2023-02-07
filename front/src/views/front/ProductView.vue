@@ -82,12 +82,14 @@
           :key="item._id"
           class="border-2 rounded-lg mb-2 px-4 py-2"
         >
-          <p class="mb-2 w-4/5">
-            問：<span class="ml-2">{{ item.message }}</span>
-          </p>
-          <p class="ml-auto w-4/5 text-end">
-            團主答：<span class="ml-2">{{ item.reply || '' }}</span>
-          </p>
+          <div class="w-4/5 whitespace-pre">
+            <p>問：</p>
+            <p class="ml-2 whitespace-pre">{{ item.message }}</p>
+          </div>
+          <div class="ml-auto w-4/5 text-end">
+            <p>團主答：</p>
+            <p class="ml-2">{{ item.reply || '' }}</p>
+          </div>
         </li>
       </ul>
       <Pagination

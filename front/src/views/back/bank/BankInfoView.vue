@@ -1,6 +1,6 @@
 <template>
   <div class="container py-20">
-    <Breadcrumbs v-if="editBank.type === 'user'" class="mb-10">
+    <Breadcrumbs v-if="editBank.type != 'admin'" class="mb-10">
       <div class="flex">
         <RouterLink to="/member/membership" class="hover:scale-105"
           >帳戶</RouterLink
@@ -15,7 +15,7 @@
         </p>
       </div>
     </Breadcrumbs>
-    <Breadcrumbs v-if="editBank.type === 'admin'" class="mb-10">
+    <Breadcrumbs v-else class="mb-10">
       <div class="flex">
         <RouterLink to="/member/membershipadmin" class="hover:scale-105"
           >會員</RouterLink
@@ -94,8 +94,11 @@ const { bankNumberLists } = useCategoryStore();
 
 const form = reactive({
   _id: editBank.value._id || '',
+  userId: editBank.value.userId || null,
   bankName: editBank.value.bankName || '',
-  bankNumber: editBank.value.bankNumber.toString() || '',
+  bankNumber: editBank.value.bankNumber
+    ? String(editBank.value.bankNumber)
+    : '',
   preset: editBank.value.preset || false,
 });
 

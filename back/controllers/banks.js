@@ -1,9 +1,21 @@
 import banks from '../models/banks.js';
 
+const showError = (error, res) => {
+  if (error.name === 'ValidationError') {
+    res
+      .status(400)
+      .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
+  } else if (error.code === 11000) {
+    res.status(400).json({ success: false, message: '重複' });
+  } else {
+    res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};
+
 export const createBank = async (req, res) => {
   try {
     const result = await banks.create({
-      userId: req.user._id,
+      userId: req.body.userId || req.user._id,
       bankName: req.body.bankName,
       bankNumber: req.body.bankNumber,
       preset: req.body.preset,
@@ -12,7 +24,6 @@ export const createBank = async (req, res) => {
     if (req.body.preset) {
       await banks.findOneAndUpdate({ preset: true }, { preset: false }, { new: true });
     }
-
     res.status(200).json({
       success: true,
       message: '',
@@ -21,16 +32,11 @@ export const createBank = async (req, res) => {
         bankName: result.bankName,
         bankNumber: result.bankNumber,
         preset: result.preset,
+        userId: result.userId,
       },
     });
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -48,7 +54,7 @@ export const editBank = async (req, res) => {
 
     const result = await banks
       .findByIdAndUpdate(req.params.id, data, { new: true })
-      .select('-userId -status');
+      .select('-status');
 
     if (!result) {
       res.status(404).json({ success: false, message: '找不到' });
@@ -60,13 +66,7 @@ export const editBank = async (req, res) => {
       });
     }
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };
 
@@ -84,12 +84,6 @@ export const deleteBank = async (req, res) => {
       res.status(200).json({ success: true, message: '' });
     }
   } catch (error) {
-    if (error.name === 'ValidationError') {
-      res
-        .status(400)
-        .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
-    } else {
-      res.status(500).json({ success: false, message: '未知錯誤' });
-    }
+    showError(error, res);
   }
 };

@@ -241,7 +241,8 @@ const router = createRouter({
         {
           path: 'productalllist',
           name: 'member-productalllist',
-          component: () => import('@/views/back/product/ProductAdminView.vue'),
+          component: () =>
+            import('@/views/back/product/ProductListAdminView.vue'),
           meta: {
             title: '團購趣 | 所有商品管理',
             member: true,
@@ -274,6 +275,37 @@ const router = createRouter({
           component: () => import('@/views/back/bank/BankListAdminView.vue'),
           meta: {
             title: '團購趣 | 會員帳戶',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'memberadminaddress',
+          name: 'member-adminaddress',
+          component: () =>
+            import('@/views/back/address/AddressListAdminView.vue'),
+          meta: {
+            title: '團購趣 | 會員地址',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'memberadminadd',
+          name: 'member-add',
+          component: () => import('@/views/back/user/MemberAddAdminView.vue'),
+          meta: {
+            title: '團購趣 | 新增會員',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'memberproductinfo',
+          name: 'member-productinfo',
+          component: () => import('@/views/back/product/ProductAdminView.vue'),
+          meta: {
+            title: '團購趣 | 商品',
             member: true,
             admin: true,
           },

@@ -30,11 +30,26 @@
       </div>
     </div>
     <h2 class="text-4xl">聯絡我們</h2>
-    <SendMessage />
+    <SendMessage @message="submitHandler" :isLoading="isLoading" />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import SendMessage from '@/components/ui/SendProductMessage.vue';
+
+import { useContactStore } from '@/stores/contact';
+
+const contact = useContactStore();
+const { sumbitContactHandler } = contact;
+
+const isLoading = ref(false);
+
+const submitHandler = async (form) => {
+  isLoading.value = false;
+  await sumbitContactHandler(form);
+  isLoading.value = true;
+};
 </script>

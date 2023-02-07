@@ -5,10 +5,12 @@ const messagesShema = new Schema(
     userId: {
       type: ObjectId,
       ref: 'users',
+      trim: true,
     },
     prodcutId: {
       type: ObjectId,
       ref: 'products',
+      trim: true,
     },
     message: {
       type: String,

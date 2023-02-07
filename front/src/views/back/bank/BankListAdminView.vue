@@ -10,8 +10,9 @@
           <p>&ensp;-&ensp;{{ userName }}</p>
         </div>
       </Breadcrumbs>
+      <Btn text="新增帳戶" @click="addBankHandler" />
     </div>
-    <BankTable :data="banksAdmin.user" />
+    <BankTable :data="banksAdmin.user.list" />
   </div>
 </template>
 
@@ -19,19 +20,21 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
+import BankTable from '@/components/back/BankTable.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
-import BankTable from '@/components/ui/TheBankTable.vue';
+import Btn from '@/components/ui/TheBtn.vue';
 
 import { useBankStore } from '@/stores/bank';
 import { useUserStore } from '@/stores/users';
 
 const bank = useBankStore();
+const { addBankHandler } = bank;
 const { banksAdmin } = storeToRefs(bank);
 const { userAdmin } = storeToRefs(useUserStore());
 
 const userName = computed(() => {
   const index = userAdmin.value.list.findIndex(
-    (item) => item._id === banksAdmin.value.user[0].userId
+    (item) => item._id === banksAdmin.value.user.userId
   );
 
   return userAdmin.value.list[index].name;

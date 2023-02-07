@@ -1,8 +1,16 @@
 <template>
   <div class="container py-20">
-    <Breadcrumbs class="mb-10">
-      <p>會員</p>
-    </Breadcrumbs>
+    <div class="flex justify-between items-center mb-8">
+      <Breadcrumbs>
+        <div class="flex">
+          <p>會員</p>
+          <p>&ensp;/&ensp;新增會員</p>
+        </div>
+      </Breadcrumbs>
+      <RouterLink to="/member/memberadminadd">
+        <Btn text="新增會員" />
+      </RouterLink>
+    </div>
     <div class="overflow-auto mb-10">
       <table class="w-full table-auto text-center">
         <thead>
@@ -58,6 +66,7 @@
               <img
                 src="@/assets/svg/eye-solid.svg"
                 class="w-6 hover:opacity-60 mx-auto"
+                @click="adminViewUserAddressListHanlder(user._id)"
               />
             </td>
           </tr>
@@ -70,7 +79,9 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
+import Btn from '@/components/ui/TheBtn.vue';
 
 import { useUserStore } from '@/stores/users';
 import { useBankStore } from '@/stores/bank';
@@ -79,13 +90,14 @@ import { useAddressStore } from '@/stores/address';
 const router = useRouter();
 const user = useUserStore();
 const { getAdminAllUserHanlder } = user;
+getAdminAllUserHanlder();
 const { userAdmin } = storeToRefs(user);
 const bank = useBankStore();
 const { adminViewUserBankListHanlder } = bank;
 const { banksAdmin } = storeToRefs(bank);
-const { addressAdmin } = storeToRefs(useAddressStore());
-
-getAdminAllUserHanlder();
+const address = useAddressStore();
+const { adminViewUserAddressListHanlder } = address;
+const { addressAdmin } = storeToRefs(address);
 
 const defaultBank = (userId) => {
   const bankList = banksAdmin.value.list.filter(

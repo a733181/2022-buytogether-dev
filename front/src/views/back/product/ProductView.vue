@@ -187,18 +187,23 @@ const error = reactive({
   },
 });
 
+const bankNewList = computed(() => {
+  if (!listBank.value) {
+    return [];
+  }
+
+  return listBank.value.map((item) => `${item.bankName} - ${item.bankNumber}`);
+});
+
 const editBank = computed(() => {
-  if (!!editProduct.value.bankId) {
-    const bank = listBank.value.filter(
-      (item) => item._id === editProduct.value.bankId
-    )[0];
-    return `${bank.bankName} - ${bank.bankNumber}`;
+  const index = listBank.value.findIndex(
+    (item) => item._id === editProduct.value.bankId
+  );
+
+  if (index === -1) {
+    return '';
   } else {
-    const index = listBank.value.findIndex((item) => item.preset);
-    if (index !== -1) {
-      return `${listBank.value[index].bankName} - ${listBank.value[index].bankNumber}`;
-    }
-    return `${listBank.value[0].bankName} - ${listBank.value[0].bankNumber}`;
+    return `${listBank.value[index].bankName} - ${listBank.value[index].bankNumber}`;
   }
 });
 
@@ -225,14 +230,6 @@ const form = reactive({
   youtubeVideoLink: editProduct.value.youtubeId
     ? `https://www.youtube.com/watch?v=${editProduct.value.youtubeId}`
     : '',
-});
-
-const bankNewList = computed(() => {
-  if (!listBank.value) {
-    return [];
-  }
-
-  return listBank.value.map((item) => `${item.bankName} - ${item.bankNumber}`);
 });
 
 const validatorFormHandler = () => {

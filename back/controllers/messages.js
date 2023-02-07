@@ -70,7 +70,7 @@ export const getMemberProductMessage = async (req, res) => {
 
     const result = await messages
       .find({
-        $or: [{ prodcutId: req.params.id }, { userId: req.user._id }],
+        $or: [{ prodcutId: req.params.id, isShow: true }, { userId: req.user._id }],
       })
       .select('-isShow -createDate');
 
