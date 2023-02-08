@@ -13,8 +13,17 @@
         :alt="memberHomeProduct?.member?.name || ''"
         class="w-16 h-16 rounded-full object-cover"
       />
-      <p class="flex-1 text-xl">{{ memberHomeProduct?.member?.name || '' }}</p>
-      <div v-if="memberHomeProduct?.member?._id !== users._id">
+      <p class="text-xl">{{ memberHomeProduct?.member?.name || '' }}</p>
+      <Btn
+        text="聊天"
+        @click="
+          addFromUserHandler({
+            id: memberHomeProduct?.member?._id,
+            name: memberHomeProduct?.member?.name,
+          })
+        "
+      />
+      <div v-if="memberHomeProduct?.member?._id !== users._id" class="ml-auto">
         <Btn
           v-if="showBlackBtn"
           :text="blackBtnText"
@@ -109,6 +118,7 @@ import Pagination from '@/components/ui/ThePagination.vue';
 import { useCategoryStore } from '@/stores/category';
 import { useProductsStore } from '@/stores/products';
 import { useUserStore } from '@/stores/users';
+import { useChats } from '@/stores/chats';
 
 const route = useRoute();
 const product = useProductsStore();
@@ -118,6 +128,7 @@ const { getMemberSellProductHandler } = product;
 const { memberHomeProduct, productPage } = storeToRefs(product);
 const { clickListHandler } = user;
 const { users, isMember } = storeToRefs(user);
+const { addFromUserHandler } = useChats();
 
 getMemberSellProductHandler({ userId: route.params.id });
 
