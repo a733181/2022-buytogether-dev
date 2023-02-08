@@ -89,7 +89,6 @@ const isFavorite = computed(() => {
 
 const isLike = computed(() => {
   const index = props.data.likes.findIndex((item) => item === users.value._id);
-
   return index === -1
     ? new URL('@/assets/svg/start.svg', import.meta.url).href
     : new URL('@/assets/svg/start-active.svg', import.meta.url).href;

@@ -1,4 +1,4 @@
-import { defineStore, storeToRefs } from 'pinia';
+import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 
 import { api, apiAuth } from '@/axios/index';
@@ -243,7 +243,6 @@ export const useProductsStore = defineStore('products', () => {
 
   const clickLikesHandler = async (productId) => {
     if (!user.isLoginHandler()) return;
-
     try {
       await apiAuth.patch('/products/likes', { productId });
       const indexSellProduct = product.allSell.findIndex(
@@ -252,6 +251,14 @@ export const useProductsStore = defineStore('products', () => {
       const indexMemberProduct = product.member.data.findIndex(
         (item) => item._id === productId
       );
+      if (product.sellFatorite.length) {
+        const index = product.sellFatorite.findIndex(
+          (item) => item._id === productId
+        );
+        if (index !== -1) {
+          changeLikesHandler(index, product.sellFatorite);
+        }
+      }
 
       if (indexSellProduct !== -1) {
         changeLikesHandler(indexSellProduct, product.allSell);

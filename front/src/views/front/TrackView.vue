@@ -11,14 +11,14 @@
         tab="追蹤名單"
         class="w-1/2"
         :active="activeTab"
-        @click="activeTab = '追蹤'"
+        @click="activeTab = '追蹤名單'"
       />
     </div>
     <Breadcrumbs class="mb-10">
       <p>{{ activeTab }}</p>
     </Breadcrumbs>
     <Collect v-if="activeTab === '收藏'" />
-    <Track v-if="activeTab === '追蹤'" />
+    <Track v-if="activeTab === '追蹤名單'" />
   </div>
 </template>
 

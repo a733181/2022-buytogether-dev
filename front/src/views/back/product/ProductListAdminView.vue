@@ -3,6 +3,7 @@
     <Breadcrumbs class="mb-10">
       <p>商品管理</p>
     </Breadcrumbs>
+    <Select v-model="sortType" :select="sortMemberProduct" class="mb-8" />
     <div class="overflow-auto">
       <table class="w-full table-auto">
         <thead>
@@ -19,7 +20,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in listProduct" :key="item._id">
+          <tr v-for="item in filterData" :key="item._id">
             <td class="border-2 p-2 text-center">
               {{ item.userId._id }}
             </td>
@@ -68,15 +69,46 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
+import { ref, computed } from 'vue';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
+import Select from '@/components/ui/TheSelect.vue';
 
 import { useProductsStore } from '@/stores/products';
+import { useCategoryStore } from '@/stores/category';
 
 const products = useProductsStore();
 const { getAdminProductHandler, deleteProductHandler, editProductHandler } =
   products;
+const { sortMemberProduct } = useCategoryStore();
 getAdminProductHandler();
 
+const sortType = ref(sortMemberProduct[0]);
+
 const { listProduct } = storeToRefs(products);
+
+const filterData = computed(() => {
+  if (sortType.value === sortMemberProduct[0]) {
+    return listProduct.value;
+  }
+
+  if (sortType.value === sortMemberProduct[1]) {
+    return listProduct.value.filter((item) => item.isSell && item.status !== 2);
+  }
+  if (sortType.value === sortMemberProduct[2]) {
+    return listProduct.value.filter(
+      (item) => item.maxNumber - item.sales === 0 && item.status !== 2
+    );
+  }
+
+  if (sortType.value === sortMemberProduct[3]) {
+    return listProduct.value.filter(
+      (item) => !item.isSell && item.status !== 2
+    );
+  }
+
+  if (sortType.value === sortMemberProduct[4]) {
+    return listProduct.value.filter((item) => item.status === 2);
+  }
+});
 </script>

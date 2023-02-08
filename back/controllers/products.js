@@ -59,7 +59,6 @@ export const createProduct = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
     showError(error, res);
   }
 };
@@ -125,7 +124,7 @@ export const getSellProduct = async (req, res) => {
         status: 0,
       })
       .select('-status -bankId')
-      .populate('userId', '_id name black');
+      .populate('userId', '_id name image black');
 
     result = result[0].toObject();
 
@@ -161,9 +160,9 @@ export const getAllMemberProducts = async (req, res) => {
     const result = await products
       .find({
         userId: req.user._id,
-        status: 0,
+        $or: [{ status: 0 }, { status: 2 }],
       })
-      .select('-userId -status');
+      .select('-userId');
 
     const getOrder = await orders.find();
     const newResult = JSON.parse(JSON.stringify(result));

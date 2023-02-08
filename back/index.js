@@ -7,6 +7,7 @@ import productRouter from './routes/products.js';
 import orderRouter from './routes/orders.js';
 import messageRouter from './routes/messages.js';
 import contactRouter from './routes/contacts.js';
+import reportRouter from './routes/reports.js';
 import './passport/passport.js';
 
 mongoose.connect(process.env.DB_URL);
@@ -47,7 +48,8 @@ app.use('/users', userRoute);
 app.use('/products', productRouter);
 app.use('/orders', orderRouter);
 app.use('/messages', messageRouter);
-app.use('/contact', contactRouter);
+app.use('/contacts', contactRouter);
+app.use('/reports', reportRouter);
 
 app.all('*', (req, res) => {
   res.status(400).json({ success: false, message: '找不到' });

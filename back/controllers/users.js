@@ -166,30 +166,29 @@ export const editUser = async (req, res) => {
 };
 
 export const adminEditUser = async (req, res) => {
-  const imageUrl = req.files.image ? req.files.image[0].path : null;
-  const data = {
-    name: req.body.name,
-    phone: req.body.phone,
-  };
-
-  if (imageUrl) {
-    data.image = imageUrl;
-  }
-  if (req.body.email) {
-    data.email = req.body.email;
-  }
-
-  const result = await users
-    .findByIdAndUpdate(req.body.id, data, { new: true })
-    .select('-status -password');
-
-  res.status(200).json({
-    success: true,
-    message: '',
-    result,
-  });
-
   try {
+    const imageUrl = req.files.image ? req.files.image[0].path : null;
+    const data = {
+      name: req.body.name,
+      phone: req.body.phone,
+    };
+
+    if (imageUrl) {
+      data.image = imageUrl;
+    }
+    if (req.body.email) {
+      data.email = req.body.email;
+    }
+
+    const result = await users
+      .findByIdAndUpdate(req.body.id, data, { new: true })
+      .select('-status -password');
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result,
+    });
   } catch (error) {
     showError(error, res);
   }

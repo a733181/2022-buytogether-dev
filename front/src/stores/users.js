@@ -121,7 +121,9 @@ export const useUserStore = defineStore(
         await getAllMemberProductMessageHanlder();
 
         swalSuccess('登入成功');
+
         if (isAdmin.value) {
+          await getAdminAllUserHanlder();
           router.push('/member/orderalllist');
         } else {
           router.push('/member/orderlist');

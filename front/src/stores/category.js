@@ -1842,6 +1842,14 @@ export const useCategoryStore = defineStore('category', () => {
     '封存訂單',
   ];
 
+  const sortMemberProduct = [
+    '全部商品',
+    '上架商品',
+    '售完商品',
+    '下架商品',
+    '檢舉下架商品',
+  ];
+
   const sortMessage = ['未回覆', '已回覆'];
 
   return {
@@ -1851,5 +1859,6 @@ export const useCategoryStore = defineStore('category', () => {
     sortProduct,
     sortOrder,
     sortMessage,
+    sortMemberProduct,
   };
 });

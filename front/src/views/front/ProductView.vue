@@ -24,12 +24,16 @@
               src="@/assets/svg/minus.svg"
               class="w-5 hover:opacity-60"
               @click="changeQuantity(-1)"
+              alt="減少數量"
+              title="減少數量"
             />
             <p>{{ quantity }}</p>
             <img
               src="@/assets/svg/plus.svg"
               class="w-5 hover:opacity-60"
               @click="changeQuantity(1)"
+              alt="增加數量"
+              title="增加數量"
             />
           </div>
           <Btn
@@ -41,8 +45,29 @@
           />
         </div>
       </div>
+      <img
+        src="@/assets/svg/ellipsis-vertical.svg"
+        alt="檢舉商品"
+        title="檢舉商品"
+        class="w-6 h-6 self-start hover:opacity-60"
+        @click="clickBtnShowReportHandler"
+      />
     </div>
-    <div class="h-2 bg-gray-500 my-10 rounded-md"></div>
+    <div class="h-2 bg-gray-500 my-5 rounded-md"></div>
+    <div v-if="sellProdcut.userId" class="flex items-center gap-4">
+      <img
+        :src="sellProdcut.userId.image"
+        :alt="sellProdcut.userId.name"
+        class="w-16 h-16 rounded-full object-cover"
+      />
+      <p>{{ sellProdcut.userId.name }}</p>
+      <RouterLink
+        :to="`/memberhome/${sellProdcut.userId._id}`"
+        class="text-primary"
+        >前往商品頁</RouterLink
+      >
+    </div>
+    <div class="h-2 bg-gray-500 my-5 rounded-md"></div>
     <div class="flex gap-8 mb-10">
       <Tab
         tab="商品詳情"
@@ -99,8 +124,14 @@
         :current="messagePage.current"
         @current="changePageHandler"
       />
-      <SendMessage @message="submitHandler" :isLoading="isLoadingMessage" />
+      <SendMessage
+        @message="submitMessageHandler"
+        :isLoading="isLoadingMessage"
+      />
     </div>
+    <Model>
+      <SendMessage @message="submitReportHandler" />
+    </Model>
   </div>
 </template>
 
@@ -115,10 +146,14 @@ import Tab from '@/components/ui/TheTab.vue';
 import Youtube from '@/components/ui/YouToLink.vue';
 import SendMessage from '@/components/ui/SendProductMessage.vue';
 import Pagination from '@/components/ui/ThePagination.vue';
+import Model from '@/components/ui/TheModel.vue';
 
 import { useProductsStore } from '@/stores/products';
 import { useCartStore } from '@/stores/carts';
 import { useMessageStore } from '@/stores/messages';
+import { useModelStore } from '@/stores/model';
+import { useUserStore } from '@/stores/users';
+import { useReportsStore } from '@/stores/reports';
 
 const route = useRoute();
 
@@ -129,6 +164,9 @@ const { getSellProdctHander } = product;
 const { sellProdcut } = storeToRefs(product);
 const { sumbitMessageHandler, getProductMessageHandler } = message;
 const { messageProduct, messagePage } = storeToRefs(message);
+const { toggleShow } = storeToRefs(useModelStore());
+const { isLoginHandler } = useUserStore();
+const { createReporteHandler } = useReportsStore();
 getSellProdctHander(route.params.id);
 getProductMessageHandler(route.params.id);
 
@@ -151,7 +189,7 @@ const changeQuantity = (num) => {
   quantity.value += num;
 };
 
-const submitHandler = async (form) => {
+const submitMessageHandler = async (form) => {
   isLoadingMessage.value = true;
   const newFrom = {
     message: form.message,
@@ -159,6 +197,20 @@ const submitHandler = async (form) => {
   };
   await sumbitMessageHandler(newFrom);
   isLoadingMessage.value = false;
+};
+
+const clickBtnShowReportHandler = () => {
+  if (!isLoginHandler()) return;
+  toggleShow.value = !toggleShow.value;
+};
+
+const submitReportHandler = async (message) => {
+  toggleShow.value = !toggleShow.value;
+  const newFrom = {
+    message: message.message,
+    productId: route.params.id,
+  };
+  createReporteHandler(newFrom);
 };
 
 const changePageHandler = (page) => {

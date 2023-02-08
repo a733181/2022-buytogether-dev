@@ -15,7 +15,7 @@ export const useContactStore = defineStore('contacts', () => {
 
   const sumbitContactHandler = async (form) => {
     try {
-      await apiAuth.post('/contact', form);
+      await apiAuth.post('/contacts', form);
       swalSuccess('訊息傳送成功');
     } catch (error) {
       swalError(error);
@@ -24,7 +24,7 @@ export const useContactStore = defineStore('contacts', () => {
 
   const getMemberContactHandler = async () => {
     try {
-      const { data } = await apiAuth.get('/contact');
+      const { data } = await apiAuth.get('/contacts');
       contact.list = data.result;
     } catch (error) {
       swalError(error);
@@ -33,7 +33,7 @@ export const useContactStore = defineStore('contacts', () => {
 
   const getAdminContactHandler = async () => {
     try {
-      const { data } = await apiAuth.get('/contact/admin');
+      const { data } = await apiAuth.get('/contacts/admin');
       contact.list = data.result;
     } catch (error) {
       swalError(error);
@@ -42,7 +42,7 @@ export const useContactStore = defineStore('contacts', () => {
 
   const replayContactHandler = async (from) => {
     try {
-      await apiAuth.patch('/contact', from);
+      await apiAuth.patch('/contacts', from);
       const index = contact.list.findIndex((item) => item._id === from.id);
 
       contact.list[index].reply = from.reply;

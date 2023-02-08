@@ -91,10 +91,10 @@ export const useOrderStore = defineStore('orders', () => {
         order.paid.list[index].productId.paid = true;
 
         const isAllPaid = order.paid.list.every((item) => item.productId.paid);
-        if (isAllPaid) router.push('/member/order');
+        if (isAllPaid) router.push('/member/orderlist');
       }
       if (productId === '') {
-        router.push('/member/order');
+        router.push('/member/orderlist');
       }
 
       if (productId !== '') {
