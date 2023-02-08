@@ -25,7 +25,7 @@
         @click="isLogin = !isLogin"
         :text="isLogin ? '註冊' : '返回'"
       />
-      <RouterLink v-else to="/member/membershipadmin" class="w-1/3">
+      <RouterLink v-else to="/member/shipadmin" class="w-1/3">
         <Btn
           status="button"
           class="w-full"

@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-8">
       <Breadcrumbs>
         <div class="flex">
-          <RouterLink to="/member/membershipadmin" class="hover:scale-105"
+          <RouterLink to="/member/shipadmin" class="hover:scale-105"
             >會員</RouterLink
           >
           <p>&ensp;/&ensp;帳戶列表</p>

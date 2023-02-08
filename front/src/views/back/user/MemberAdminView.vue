@@ -2,10 +2,7 @@
   <div class="container py-20">
     <div class="flex justify-between items-center mb-8">
       <Breadcrumbs>
-        <div class="flex">
-          <p>會員</p>
-          <p>&ensp;/&ensp;新增會員</p>
-        </div>
+        <p>會員</p>
       </Breadcrumbs>
       <RouterLink to="/member/memberadminadd">
         <Btn text="新增會員" />
@@ -89,8 +86,6 @@ import { useAddressStore } from '@/stores/address';
 
 const router = useRouter();
 const user = useUserStore();
-const { getAdminAllUserHanlder } = user;
-getAdminAllUserHanlder();
 const { userAdmin } = storeToRefs(user);
 const bank = useBankStore();
 const { adminViewUserBankListHanlder } = bank;
@@ -138,7 +133,7 @@ const editUserHandler = (user) => {
   addressAdmin.value.edit = addressAdmin.value.list.filter(
     (item) => item.userId === user._id
   );
-  router.push('/member/membershipadmininfo');
+  router.push('/member/shipadmininfo');
 };
 </script>
 

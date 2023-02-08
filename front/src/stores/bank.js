@@ -190,7 +190,7 @@ export const useBankStore = defineStore('bank', () => {
     banksAdmin.user.list = banksAdmin.list.filter(
       (item) => item.userId === userId
     );
-    router.push('/member/memberadminbank');
+    router.push('/member/adminbank');
   };
 
   return {

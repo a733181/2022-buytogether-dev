@@ -2,9 +2,7 @@
   <div class="container py-20">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/membership" class="hover:scale-105"
-          >帳戶</RouterLink
-        >
+        <RouterLink to="/member/ship" class="hover:scale-105">帳戶</RouterLink>
         <p>&ensp;/&ensp;名稱編輯</p>
       </div>
     </Breadcrumbs>
@@ -26,7 +24,7 @@
           @click="error.error = false"
         />
         <div class="flex justify-between mt-8">
-          <RouterLink to="/member/membership" class="w-1/3 block">
+          <RouterLink to="/member/ship" class="w-1/3 block">
             <Btn text="取消" className="btn-outline" class="w-full" />
           </RouterLink>
           <Btn

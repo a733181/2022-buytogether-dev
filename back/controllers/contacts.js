@@ -28,11 +28,36 @@ export const creatContact = async (req, res) => {
   }
 };
 
+export const replayContact = async (req, res) => {
+  try {
+    await contacts.findByIdAndUpdate(req.body.id, { reply: req.body.reply }, { new: true });
+
+    res.status(200).json({
+      success: true,
+      message: '',
+    });
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
 export const getMemberContact = async (req, res) => {
   try {
-    const result = contacts.find({ userId: req.user._id });
+    const result = await contacts.find({ userId: req.user._id });
 
-    console.log(result);
+    res.status(200).json({
+      success: true,
+      message: '',
+      result: result.filter((item) => item.reply !== ''),
+    });
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const getAdminContact = async (req, res) => {
+  try {
+    const result = await contacts.find();
 
     res.status(200).json({
       success: true,

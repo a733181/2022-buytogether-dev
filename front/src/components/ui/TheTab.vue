@@ -24,6 +24,6 @@ const props = defineProps({
   @apply border-primary;
 }
 .tab-active {
-  @apply bg-primary text-white;
+  @apply bg-primary text-white border-primary;
 }
 </style>

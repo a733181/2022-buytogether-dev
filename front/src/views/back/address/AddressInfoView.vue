@@ -2,9 +2,7 @@
   <div class="container py-20">
     <Breadcrumbs class="mb-10" v-if="editAddress.type !== 'admin'">
       <div class="flex">
-        <RouterLink to="/member/membership" class="hover:scale-105"
-          >帳戶</RouterLink
-        >
+        <RouterLink to="/member/ship" class="hover:scale-105">帳戶</RouterLink>
         <p>&ensp;/&ensp;</p>
         <RouterLink to="/member/addresslist" class="hover:scale-105"
           >地址列表</RouterLink
@@ -18,11 +16,11 @@
     </Breadcrumbs>
     <Breadcrumbs class="mb-10" v-else>
       <div class="flex">
-        <RouterLink to="/member/membershipadmin" class="hover:scale-105"
+        <RouterLink to="/member/shipadmin" class="hover:scale-105"
           >會員</RouterLink
         >
         <p>&ensp;/&ensp;</p>
-        <RouterLink to="/member/memberadminaddress" class="hover:scale-105"
+        <RouterLink to="/member/adminaddress" class="hover:scale-105"
           >地址列表</RouterLink
         >
         <p>

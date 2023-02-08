@@ -1842,11 +1842,14 @@ export const useCategoryStore = defineStore('category', () => {
     '封存訂單',
   ];
 
+  const sortMessage = ['未回覆', '已回覆'];
+
   return {
     productCategory,
     bankNumberLists,
     districtsList,
     sortProduct,
     sortOrder,
+    sortMessage,
   };
 });

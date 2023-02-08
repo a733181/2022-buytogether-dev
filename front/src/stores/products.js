@@ -194,7 +194,7 @@ export const useProductsStore = defineStore('products', () => {
         );
         if (isBlack) {
           swalError('已被加入黑名單');
-          router.push('/products');
+          router.push('/');
         }
       }
     } catch (error) {
@@ -221,7 +221,7 @@ export const useProductsStore = defineStore('products', () => {
         );
         if (isBlack) {
           swalError('已被加入黑名單');
-          router.push('/products');
+          router.push('/');
         }
       }
     } catch (error) {

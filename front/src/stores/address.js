@@ -157,7 +157,6 @@ export const useAddressStore = defineStore('address', () => {
       changeEditAddressHandler();
       router.go(-1);
     } catch (error) {
-      console.log(error);
       swalError(error);
     }
   };
@@ -208,7 +207,7 @@ export const useAddressStore = defineStore('address', () => {
     addressAdmin.user.list = addressAdmin.list.filter(
       (item) => item.userId === userId
     );
-    router.push('/member/memberadminaddress');
+    router.push('/member/adminaddress');
   };
 
   return {

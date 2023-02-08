@@ -32,16 +32,6 @@ const router = createRouter({
           },
         },
         {
-          path: 'products',
-          name: 'products',
-          component: () => import('@/views/front/ProductsView.vue'),
-          meta: {
-            title: '團購趣 | 商城',
-            member: false,
-            admin: false,
-          },
-        },
-        {
           path: 'product:/:id',
           name: 'product',
           component: () => import('@/views/front/ProductView.vue'),
@@ -139,7 +129,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'membership',
+          path: 'ship',
           name: 'member-membership',
           component: () => import('@/views/back/user/MemberView.vue'),
           meta: {
@@ -221,9 +211,19 @@ const router = createRouter({
         {
           path: 'qanda',
           name: 'qanda',
-          component: () => import('@/views/back/qanda/QAandA.vue'),
+          component: () => import('@/views/back/question/QAandA.vue'),
           meta: {
             title: '團購趣 | 問與答',
+            member: true,
+            admin: false,
+          },
+        },
+        {
+          path: 'message',
+          name: 'message',
+          component: () => import('@/views/back/question/MessageView.vue'),
+          meta: {
+            title: '團購趣 | 回覆',
             member: true,
             admin: false,
           },
@@ -250,7 +250,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'membershipadmin',
+          path: 'shipadmin',
           name: 'member-admin',
           component: () => import('@/views/back/user/MemberAdminView.vue'),
           meta: {
@@ -260,7 +260,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'membershipadmininfo',
+          path: 'shipadmininfo',
           name: 'member-admininfo',
           component: () => import('@/views/back/user/MemberAdminInfoView.vue'),
           meta: {
@@ -270,7 +270,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'memberadminbank',
+          path: 'adminbank',
           name: 'member-adminbank',
           component: () => import('@/views/back/bank/BankListAdminView.vue'),
           meta: {
@@ -280,7 +280,7 @@ const router = createRouter({
           },
         },
         {
-          path: 'memberadminaddress',
+          path: 'adminaddress',
           name: 'member-adminaddress',
           component: () =>
             import('@/views/back/address/AddressListAdminView.vue'),
@@ -304,6 +304,16 @@ const router = createRouter({
           path: 'memberproductinfo',
           name: 'member-productinfo',
           component: () => import('@/views/back/product/ProductAdminView.vue'),
+          meta: {
+            title: '團購趣 | 商品',
+            member: true,
+            admin: true,
+          },
+        },
+        {
+          path: 'aboutmessage',
+          name: 'member-aboutmessage',
+          component: () => import('@/views/back/question/MessageAdminView.vue'),
           meta: {
             title: '團購趣 | 商品',
             member: true,

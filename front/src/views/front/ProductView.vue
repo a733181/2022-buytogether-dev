@@ -2,7 +2,7 @@
   <div class="container py-20">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/products" class="hover:scale-105">商城</RouterLink>
+        <RouterLink to="/" class="hover:scale-105">首頁</RouterLink>
         <p>&ensp;/&ensp;{{ sellProdcut.name }}</p>
       </div>
     </Breadcrumbs>

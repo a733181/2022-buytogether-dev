@@ -2,7 +2,7 @@
   <div class="container py-20">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/membershipadmin" class="hover:scale-105"
+        <RouterLink to="/member/shipadmin" class="hover:scale-105"
           >會員</RouterLink
         >
         <p>&ensp;/&ensp;編輯</p>
@@ -145,6 +145,6 @@ const submitHandler = async () => {
 
 const cancelEditUserHandler = () => {
   userAdmin.value.edit = {};
-  router.push('/member/membershipadmin');
+  router.push('/member/shipadmin');
 };
 </script>

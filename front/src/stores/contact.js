@@ -26,11 +26,37 @@ export const useContactStore = defineStore('contacts', () => {
     try {
       const { data } = await apiAuth.get('/contact');
       contact.list = data.result;
-      console.log(contact.list);
     } catch (error) {
       swalError(error);
     }
   };
 
-  return { sumbitContactHandler, getMemberContactHandler };
+  const getAdminContactHandler = async () => {
+    try {
+      const { data } = await apiAuth.get('/contact/admin');
+      contact.list = data.result;
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
+  const replayContactHandler = async (from) => {
+    try {
+      await apiAuth.patch('/contact', from);
+      const index = contact.list.findIndex((item) => item._id === from.id);
+
+      contact.list[index].reply = from.reply;
+      swalSuccess('回覆成功');
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
+  return {
+    contact,
+    sumbitContactHandler,
+    getMemberContactHandler,
+    getAdminContactHandler,
+    replayContactHandler,
+  };
 });

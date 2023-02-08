@@ -2,9 +2,7 @@
   <div class="container py-20">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/membership" class="hover:scale-105"
-          >帳戶</RouterLink
-        >
+        <RouterLink to="/member/ship" class="hover:scale-105">帳戶</RouterLink>
         <p>&ensp;/&ensp;黑名單</p>
       </div>
     </Breadcrumbs>

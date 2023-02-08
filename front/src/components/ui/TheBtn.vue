@@ -60,9 +60,9 @@ const props = defineProps({
 }
 
 .btn-outline {
-  @apply border-2 text-primary rounded-lg py-2 px-3;
+  @apply border-2 text-primary rounded-lg py-2 px-3 border-primary;
 }
 .btn-outline:hover {
-  @apply border-gray-600;
+  @apply border-gray-600 text-gray-600;
 }
 </style>

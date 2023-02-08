@@ -5,7 +5,7 @@
     </Breadcrumbs>
     <div v-if="!cart.length" class="text-2xl flex gap-8 justify-center">
       <h1>購物車內沒有商品</h1>
-      <RouterLink to="/products" class="text-primary">前往商城</RouterLink>
+      <RouterLink to="/" class="text-primary">前往購物</RouterLink>
     </div>
     <form @submit.prevent="submitHandler">
       <table v-if="cart.length" class="w-full">

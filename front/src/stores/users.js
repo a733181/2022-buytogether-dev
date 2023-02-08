@@ -59,7 +59,7 @@ export const useUserStore = defineStore(
     const isLoginHandler = () => {
       if (!isMember.value) {
         swalError('請先登入');
-        router.push('/member/membership');
+        router.push('/member/ship');
         return false;
       }
       return true;
@@ -102,7 +102,7 @@ export const useUserStore = defineStore(
         isLogin.value = true;
         if (userAdmin.list.length) {
           await getAdminAllUserHanlder();
-          router.push('/member/membershipadmin');
+          router.push('/member/shipadmin');
         }
       } catch (error) {
         swalError(error);
@@ -155,6 +155,10 @@ export const useUserStore = defineStore(
         bank.banks.list = data.result.banks;
         address.address.list = data.result.address;
         await getAllMemberProductMessageHanlder();
+
+        if (isAdmin.value) {
+          await getAdminAllUserHanlder();
+        }
       } catch (error) {
         logoutHandler();
       }
@@ -175,7 +179,7 @@ export const useUserStore = defineStore(
         }
 
         swalSuccess('修改成功');
-        router.push('/member/membership');
+        router.push('/member/ship');
       } catch (error) {
         swalError(error);
       }
@@ -189,7 +193,7 @@ export const useUserStore = defineStore(
         );
         userAdmin.list[index] = data.result;
         swalSuccess('修改成功');
-        router.push('/member/membershipadmin');
+        router.push('/member/shipadmin');
       } catch (error) {
         swalError(error);
       }

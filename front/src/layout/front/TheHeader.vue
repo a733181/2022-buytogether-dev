@@ -1,7 +1,7 @@
 <template>
   <header class="bg-primary text-white py-3">
     <div
-      class="container flex justify-between items-center relative flex-col lg:flex-row"
+      class="container flex justify-between items-center flex-col lg:flex-row"
     >
       <RouterLink to="/" class="flex gap-2 items-center mb-2 lg:mb-0">
         <i class="logo"></i>
@@ -15,14 +15,6 @@
               class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/about')"
               >關於我</RouterLink
-            >
-          </li>
-          <li>
-            <RouterLink
-              to="/products"
-              class="px-3 py-2 rounded-lg hover:opacity-60"
-              :class="activeClass('/products')"
-              >商城</RouterLink
             >
           </li>
           <li v-if="user.isMember">
@@ -49,24 +41,23 @@
               會員中心
             </p>
           </li>
+          <li>
+            <div class="relative hover:opacity-50" @click="toCart">
+              <p
+                v-if="cart.length"
+                class="absolute -top-3 left-[59%] -translate-x-1/2 font-bold text-white"
+              >
+                {{ cart.length }}
+              </p>
+              <img
+                v-else
+                src="@/assets/svg/cart-plus.svg"
+                class="w-4 absolute -top-2 right-2 animate-bounce"
+              />
+              <img src="@/assets/svg/cart.svg" class="w-10" />
+            </div>
+          </li>
         </ul>
-        <div
-          class="absolute right-6 -bottom-16 hover:opacity-50"
-          @click="toCart"
-        >
-          <p
-            v-if="cart.length"
-            class="absolute -top-3 left-[59%] -translate-x-1/2 font-bold text-primary"
-          >
-            {{ cart.length }}
-          </p>
-          <img
-            v-else
-            src="@/assets/svg/cart-plus.svg"
-            class="w-4 absolute -top-2 right-2 animate-bounce"
-          />
-          <img src="@/assets/svg/cart.svg" class="w-10" />
-        </div>
       </nav>
     </div>
   </header>
@@ -93,7 +84,7 @@ const { listBank } = storeToRefs(useBankStore());
 const { swalError } = useSwalStore();
 
 const activeClass = (active) => {
-  return route.path === active ? 'text-gray-500 bg-white' : null;
+  return route.path === active ? 'text-primary bg-white' : null;
 };
 
 const toMember = () => {

@@ -46,6 +46,14 @@
               >商品管理</RouterLink
             >
           </li>
+          <li v-if="user.isAdmin">
+            <RouterLink
+              to="/member/aboutmessage"
+              class="px-3 py-2 rounded-lg hover:opacity-60"
+              :class="activeClass('/member/aboutmessage')"
+              >留言</RouterLink
+            >
+          </li>
           <li v-if="!user.isAdmin" class="relative">
             <RouterLink
               to="/member/qanda"
@@ -54,7 +62,7 @@
               >問與答</RouterLink
             >
             <p
-              class="absolute -top-4 -right-2 bg-red-400 rounded-full px-2"
+              class="absolute -top-4 -right-2 bg-gray-600 rounded-full px-2"
               v-if="messageAllProduct.length"
             >
               {{ messageAllProduct.length }}
@@ -62,17 +70,17 @@
           </li>
           <li v-if="!user.isAdmin">
             <RouterLink
-              to="/member/membership"
+              to="/member/ship"
               class="px-3 py-2 rounded-lg hover:opacity-60"
-              :class="activeClass('/member/membership')"
+              :class="activeClass('/member/ship')"
               >帳戶</RouterLink
             >
           </li>
           <li v-if="user.isAdmin">
             <RouterLink
-              to="/member/membershipadmin"
+              to="/member/shipadmin"
               class="px-3 py-2 rounded-lg hover:opacity-60"
-              :class="activeClass('/member/membershipadmin')"
+              :class="activeClass('/member/shipadmin')"
               >會員</RouterLink
             >
           </li>

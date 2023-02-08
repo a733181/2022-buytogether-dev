@@ -75,10 +75,10 @@
       <div
         class="mb-4 flex lg:items-center flex-col lg:flex-row gap-2 border-b-2 pb-4"
       >
-        <p class="lg:w-2/12">聯絡我們-回覆</p>
+        <p class="lg:w-2/12">團購網回覆</p>
         <p>{{ defaultAddress }}</p>
         <div class="flex-1 flex justify-between items-center">
-          <RouterLink to="/member" class="ml-auto hover:opacity-50">
+          <RouterLink to="/member/message" class="ml-auto hover:opacity-50">
             <img src="@/assets/svg/arrow.svg" class="w-4 h-full rotate-180" />
           </RouterLink>
         </div>
@@ -134,5 +134,3 @@ const defaultAddress = computed(() => {
   }
 });
 </script>
-
-<style scoped></style>

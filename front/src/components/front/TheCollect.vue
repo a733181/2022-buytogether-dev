@@ -2,7 +2,7 @@
   <div>
     <div v-if="!sellFatorite.length" class="text-2xl flex gap-8 justify-center">
       <h2>沒有收藏商品</h2>
-      <RouterLink to="/products" class="text-primary">前往商城</RouterLink>
+      <RouterLink to="/" class="text-primary">前往購物</RouterLink>
     </div>
     <div v-if="sellFatorite.length" class="flex">
       <div class="flex gap-5 flex-col mr-10">

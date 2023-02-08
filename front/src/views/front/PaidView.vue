@@ -124,7 +124,7 @@ const { paidOrderHandler } = order;
 const { listBank } = storeToRefs(useBankStore());
 const { listAddress } = storeToRefs(useAddressStore());
 
-if (!orderPaid.value._id) router.push('/products');
+if (!orderPaid.value._id) router.push('/');
 
 const sumTotal = computed(() => {
   return orderPaid.value.list.reduce(
