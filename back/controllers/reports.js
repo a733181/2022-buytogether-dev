@@ -13,20 +13,15 @@ const showError = (error, res) => {
 };
 
 export const createReports = async (req, res) => {
-  const result = await reports.create({
+  await reports.create({
     userId: req.user._id,
-    prodcutId: req.body.prodcutId,
+    productId: req.body.productId,
     message: req.body.message,
   });
 
   res.status(200).json({
     success: true,
     message: '',
-    result: {
-      userId: result.userId,
-      prodcutId: result.prodcutId,
-      message: result.message,
-    },
   });
   try {
   } catch (error) {

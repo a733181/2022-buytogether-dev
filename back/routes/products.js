@@ -14,6 +14,7 @@ import {
   getSellMemberProduct,
   getFatoriteProduct,
   getAdminProduct,
+  changeStatusProduct,
 } from '../controllers/products.js';
 
 const router = Router();
@@ -35,5 +36,7 @@ router.get('/:id', getSellProduct);
 router.delete('/:id', jwt, deletProduct);
 
 router.patch('/:id', content('multipart/form-data'), jwt, upload, editProdcut);
+
+router.patch('/admin/:id', content('application/json'), jwt, admin, changeStatusProduct);
 
 export default router;

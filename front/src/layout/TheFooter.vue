@@ -1,6 +1,6 @@
 <template>
-  <footer class="bg-primary">
-    <div class="container py-4 text-white flex gap-6 justify-center">
+  <footer class="bg-primary text-white">
+    <div class="container py-4 flex gap-6 justify-center">
       <p>2023 泰山職訓局前端班作品</p>
       <a
         class="hover:opacity-60"

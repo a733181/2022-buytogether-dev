@@ -7,10 +7,12 @@ import router from '@/router/index';
 import { useSwalStore } from '@/stores/swal';
 import { useUserStore } from '@/stores/users';
 import { useBankStore } from '@/stores/bank';
+import { useReportsStore } from '@/stores/reports';
 
 export const useProductsStore = defineStore('products', () => {
   const user = useUserStore();
   const bank = useBankStore();
+  const report = useReportsStore();
   const { swalSuccess, swalError } = useSwalStore();
 
   const product = reactive({
@@ -36,7 +38,6 @@ export const useProductsStore = defineStore('products', () => {
       member: {},
     },
     sellFatorite: [],
-    adminList: [],
   });
 
   const productPage = reactive({
@@ -284,6 +285,18 @@ export const useProductsStore = defineStore('products', () => {
       const { data } = await apiAuth.get('/products/all');
       product.list = data.result.products;
       bank.banksAdmin.list = data.result.banks;
+      report.reports = data.result.reports;
+    } catch (error) {
+      swalError(error);
+    }
+  };
+
+  const changeStatusProductHandler = async (form) => {
+    try {
+      await apiAuth.patch(`/products/admin/${form.id}`, form);
+      const index = product.list.findIndex((item) => item._id === form.id);
+      product.list[index].status = form.status;
+      swalSuccess('修改成功');
     } catch (error) {
       swalError(error);
     }
@@ -309,5 +322,6 @@ export const useProductsStore = defineStore('products', () => {
     getMemberSellProductHandler,
     getFatoriteHandler,
     getAdminProductHandler,
+    changeStatusProductHandler,
   };
 });

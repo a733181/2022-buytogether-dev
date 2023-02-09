@@ -2,6 +2,7 @@ import products from '../models/products.js';
 import users from '../models/users.js';
 import banks from '../models/banks.js';
 import orders from '../models/orders.js';
+import reports from '../models/reports.js';
 
 const showError = (error, res) => {
   if (error.name === 'ValidationError') {
@@ -247,9 +248,8 @@ export const getAdminProduct = async (req, res) => {
   try {
     const result = await products
       .find({
-        status: 0,
+        $or: [{ status: 0 }, { status: 2 }],
       })
-      .select(' -status')
       .populate({
         path: 'userId',
         select: '_id',
@@ -270,7 +270,9 @@ export const getAdminProduct = async (req, res) => {
       reProd.sales = total;
     });
 
+    const productIdList = Object.values(newResult).map((item) => item._id);
     const banksList = await banks.find({ status: 0 }).select('-status');
+    const reportsList = await reports.find({ productId: productIdList });
 
     res.status(200).json({
       success: true,
@@ -278,6 +280,7 @@ export const getAdminProduct = async (req, res) => {
       result: {
         products: newResult,
         banks: banksList,
+        reports: reportsList,
       },
     });
   } catch (error) {
@@ -289,16 +292,21 @@ export const editProdcut = async (req, res) => {
   try {
     const mainImage = req?.files?.image ? req?.files?.image[0].path : req.body.image;
     const imagePath = [];
-    if (!!req?.files.images) {
+
+    if (req.files.images) {
       req.files.images.forEach((item) => {
         imagePath.push(item.path);
       });
-    } else if (!!req.body.images) {
-      if (typeof req.body.images === 'string') {
-        imagePath.push(req.body.images);
-      } else {
-        imagePath.push(...req.body.images);
-      }
+    }
+    if (typeof req.body.images === 'string') {
+      imagePath.push(req.body.images);
+    }
+    if (typeof req.body.images === 'object') {
+      req.body.images.forEach((item) => {
+        if (item !== '' && item !== undefined && item !== null) {
+          imagePath.push(item);
+        }
+      });
     }
 
     const data = {
@@ -306,7 +314,7 @@ export const editProdcut = async (req, res) => {
       price: req.body.price,
       description: req.body.description,
       image: mainImage,
-      images: imagePath,
+      images: [...imagePath],
       isSell: req.body.isSell,
       category: req.body.category,
       bankId: req.body.bankId,
@@ -316,8 +324,29 @@ export const editProdcut = async (req, res) => {
     if (req.user.role === 1) {
       data.maxNumber = req.body.maxNumber;
     }
+
     const result = await products
       .findByIdAndUpdate(req.params.id, data, { new: true })
+      .select('-likes -status');
+
+    if (!result) {
+      res.status(404).json({ success: false, message: '找不到' });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: '',
+        result,
+      });
+    }
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const changeStatusProduct = async (req, res) => {
+  try {
+    const result = await products
+      .findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true })
       .select('-likes -status');
 
     if (!result) {

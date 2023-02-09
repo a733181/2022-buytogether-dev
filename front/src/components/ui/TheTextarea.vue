@@ -1,6 +1,10 @@
 <template>
   <div class="lable-text">
-    <textarea class="textarea-text" v-model.trim="proxy"></textarea>
+    <textarea
+      class="textarea-text"
+      v-model.trim="proxy"
+      :class="props.textName"
+    ></textarea>
     <label
       class="textarea-text-title"
       :class="{ 'textarea-text-title-active': proxy }"
@@ -29,6 +33,9 @@ const props = defineProps({
   errorText: {
     type: String,
     default: '',
+  },
+  textName: {
+    type: String,
   },
 });
 

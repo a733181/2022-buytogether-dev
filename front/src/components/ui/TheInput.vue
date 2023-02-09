@@ -14,11 +14,6 @@
         @click="toggleShowSelectHandler"
       />
       <label :class="titleClass" :for="props.id">
-        <!-- <span
-          v-if="props.select !== undefined && filterSelect.length === 0"
-          class="text-red-400"
-          >沒有</span
-        > -->
         {{ props.title }}
       </label>
     </div>

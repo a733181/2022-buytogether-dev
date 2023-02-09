@@ -6,7 +6,7 @@ const reportSchema = new Schema(
       type: ObjectId,
       ref: 'users',
     },
-    prodcutId: {
+    productId: {
       type: ObjectId,
       ref: 'products',
       trim: true,

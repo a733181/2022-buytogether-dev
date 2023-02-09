@@ -9,7 +9,7 @@
         @click="inputText"
       />
     </div>
-    <div class="w-1/3 ml-auto">
+    <div class="lg:w-1/3 ml-auto">
       <Btn
         status="submit"
         text="確定"

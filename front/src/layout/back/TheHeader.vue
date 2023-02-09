@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-primary text-white py-3">
+  <header class="bg-primary py-3 text-white">
     <div
       class="container flex justify-between items-center flex-col lg:flex-row"
     >
