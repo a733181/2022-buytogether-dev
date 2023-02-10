@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container py-10">
     <div class="flex justify-between items-center mb-8">
       <Breadcrumbs>
         <p>會員</p>

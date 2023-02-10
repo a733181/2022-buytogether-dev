@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container py-10">
     <Breadcrumbs class="mb-10">
       <div class="flex">
         <RouterLink to="/member/productalllist" class="hover:scale-105"

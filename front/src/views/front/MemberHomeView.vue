@@ -1,16 +1,18 @@
 <template>
-  <div class="container py-20">
+  <div class="container pt-32 pb-10">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/" class="hover:scale-105">首頁</RouterLink>
+        <RouterLink to="/" class="text-primary font-bold hover:opacity-60"
+          >精選商品</RouterLink
+        >
         <span>&ensp;/&ensp;{{ memberHomeProduct?.member?.name || '' }}</span>
         <span v-if="breadSearch">&ensp;/&ensp;{{ breadSearch }}</span>
       </div>
     </Breadcrumbs>
     <div class="flex flex-row items-center gap-4 mb-10">
       <img
-        :src="memberHomeProduct?.member?.image || ''"
-        :alt="memberHomeProduct?.member?.name || ''"
+        :src="memberHomeProduct?.member.image || ''"
+        :alt="memberHomeProduct?.member.name || ''"
         class="w-16 h-16 rounded-full object-cover"
       />
       <p class="text-xl">{{ memberHomeProduct?.member?.name || '' }}</p>
@@ -20,6 +22,7 @@
           addFromUserHandler({
             id: memberHomeProduct?.member?._id,
             name: memberHomeProduct?.member?.name,
+            image: memberHomeProduct?.member?.image,
           })
         "
       />
@@ -43,34 +46,18 @@
         />
       </div>
     </div>
-    <div class="flex items-center mb-6 gap-7">
-      <Select v-model="filter" :select="sortProduct" />
-      <Tab
-        v-if="!!breadSearch"
-        tab="取消搜尋"
-        class="mb-2"
-        @click="cancelSearchHandler"
-      />
+    <div class="flex mb-6 gap-7 items-center justify-between">
+      <Select v-model="filter" :select="sortProduct" class="w-32 h-[44px]" />
+
       <div class="-mt-12 relative ml-auto">
-        <form @submit.prevent="submitHandler">
-          <Input
-            v-model="searchKey"
-            :error="error.error"
-            :errorText="error.value"
-            @click="error.error = false"
-          />
-          <button
-            type="sumbit"
-            class="hover:opacity-50 absolute bottom-[0.6rem] right-2"
-            :class="{ 'bottom-[2.1rem]': error.error }"
-          >
-            <img src="@/assets/svg/search.svg" class="w-6 h-full" />
-          </button>
+        <form @submit.prevent="submitHandler" class="flex gap-5 items-center">
+          <Input v-model="searchKey" class="-mt-10" />
+          <Btn type="submit" className="btn-gray" text="搜尋" />
         </form>
       </div>
     </div>
     <div class="flex">
-      <div v-if="!breadSearch" class="flex gap-5 flex-col mr-10">
+      <div class="flex gap-5 flex-col mr-10 w-32">
         <Tab
           tab="全部"
           :active="activeTab"
@@ -104,8 +91,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
-import { ref, computed, reactive, onUnmounted } from 'vue';
-import validator from 'validator';
+import { ref, computed, onUnmounted } from 'vue';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Select from '@/components/ui/TheSelect.vue';
@@ -136,10 +122,6 @@ const activeTab = ref('全部');
 const filter = ref(sortProduct[0]);
 const breadSearch = ref('');
 const searchKey = ref('');
-const error = reactive({
-  error: false,
-  value: '',
-});
 
 const filterData = computed(() => {
   if (filter.value === sortProduct[0]) {
@@ -201,16 +183,6 @@ const showBlackBtn = computed(() => {
   return !(trackBtnText.value === '取消追蹤');
 });
 
-const validatorFormHandler = () => {
-  if (validator.isEmpty(searchKey.value)) {
-    error.value = '搜尋為必填';
-    error.error = true;
-    return true;
-  }
-
-  return false;
-};
-
 const changeCategoryHandler = (tab) => {
   activeTab.value = tab;
   getMemberSellProductHandler({
@@ -228,7 +200,6 @@ const changePageHandler = (page) => {
 };
 
 const submitHandler = () => {
-  if (validatorFormHandler()) return;
   getMemberSellProductHandler({
     userId: route.params.id,
     key: searchKey.value,

@@ -59,7 +59,7 @@ const porductsSchema = new Schema(
       type: String,
       required: [true, '缺少分類'],
       enum: {
-        values: ['3C', '家電', '日用', '食品', '生活', '戶外', '美妝', '衣鞋包錶', '飾品', '書'],
+        values: ['3C', '家電', '日用', '食品', '戶外', '美妝', '服飾'],
         message: '分類錯誤',
       },
     },

@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-primary text-white">
+  <footer class="bg-orange-300 text-gray-700">
     <div class="container py-4 flex gap-6 justify-center">
       <p>2023 泰山職訓局前端班作品</p>
       <a

@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container py-10">
     <Breadcrumbs class="mb-10">
       <span>訂單管理</span>
       <span>&ensp;/&ensp;{{ activeTab }}</span>
@@ -26,6 +26,7 @@
     </div>
     <BuyOrder v-if="activeTab === '購買'" />
     <SellOrder v-if="activeTab === '銷售'" />
+    <ChartOrder v-if="activeTab === '圖表'" />
   </div>
 </template>
 
@@ -36,6 +37,7 @@ import Tab from '@/components/ui/TheTab.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import BuyOrder from '@/components/back/BuyOrder.vue';
 import SellOrder from '@/components/back/SellOrder.vue';
+import ChartOrder from '@/components/back/ChartOrder.vue';
 
 import { useOrderStore } from '@/stores/orders';
 

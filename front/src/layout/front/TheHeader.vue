@@ -1,12 +1,22 @@
 <template>
-  <header class="bg-primary py-3 text-white">
+  <header
+    class="fixed w-full bg-primary py-3 text-white border-b-8 border-orange-300 z-20"
+  >
     <div
       class="container flex justify-between items-center flex-col lg:flex-row"
     >
       <RouterLink to="/" class="flex gap-2 items-center mb-2 lg:mb-0">
-        <i class="logo"></i>
-        <p class="mb-2">團購趣</p>
+        <div class="relative">
+          <img
+            src="@/assets/svg/cart-plus.svg"
+            class="w-4 absolute -top-2 right-2 animate-bounce"
+          />
+          <img src="@/assets/svg/cart.svg" class="w-10" />
+        </div>
+        <p class="text-[2rem] font-bold">團購趣</p>
+        <p class="ml-2">盡情享受團購樂趣</p>
       </RouterLink>
+
       <nav>
         <ul class="flex gap-4 py-2 items-center justify-center">
           <li>
@@ -14,7 +24,7 @@
               to="/about"
               class="px-3 py-2 rounded-lg hover:opacity-60"
               :class="activeClass('/about')"
-              >關於我</RouterLink
+              >關於團購趣</RouterLink
             >
           </li>
           <li v-if="user.isMember">
@@ -25,15 +35,7 @@
               >收藏/追蹤</RouterLink
             >
           </li>
-          <li v-if="!user.isMember">
-            <RouterLink
-              to="/membership"
-              class="px-3 py-2 rounded-lg"
-              :class="activeClass('/membership')"
-              >登入</RouterLink
-            >
-          </li>
-          <li v-else>
+          <li v-if="user.isMember">
             <p
               class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
               @click="toMember"
@@ -45,17 +47,20 @@
             <div class="relative hover:opacity-50" @click="toCart">
               <p
                 v-if="cart.length"
-                class="absolute -top-3 left-[59%] -translate-x-1/2 font-bold text-white"
+                class="absolute -top-4 left-[59%] -translate-x-1/2 font-bold text-white"
               >
                 {{ cart.length }}
               </p>
-              <img
-                v-else
-                src="@/assets/svg/cart-plus.svg"
-                class="w-4 absolute -top-2 right-2 animate-bounce"
-              />
-              <img src="@/assets/svg/cart.svg" class="w-10" />
+              <img src="@/assets/svg/cart.svg" class="w-6" />
             </div>
+          </li>
+          <li v-if="!user.isMember">
+            <RouterLink
+              to="/membership"
+              class="px-3 py-2 rounded-lg hover:opacity-60 bg-white text-primary"
+              :class="activeClass('/membership')"
+              >會員登入</RouterLink
+            >
           </li>
         </ul>
       </nav>

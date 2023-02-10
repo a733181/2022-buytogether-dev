@@ -1,53 +1,20 @@
 import charts from '../models/chats.js';
 
-io.on('connection', (socket) => {
-  console.log('User connected');
+const showError = (error, res) => {
+  if (error.name === 'ValidationError') {
+    res
+      .status(400)
+      .json({ success: false, message: error.errors[Object.keys(error.errors)[0]].message });
+  } else if (error.code === 11000) {
+    res.status(400).json({ success: false, message: '重複' });
+  } else {
+    res.status(500).json({ success: false, message: '未知錯誤' });
+  }
+};
 
-  socket.on('create chart', async (data) => {
-    try {
-      const { fromUserId, toUserId, message } = data;
-
-      const result = await charts.create({
-        fromUserId,
-        toUserId,
-        message,
-      });
-
-      socket.emit('create chart success', {
-        success: true,
-        message: '',
-      });
-    } catch (error) {
-      socket.emit('create chart failed', {
-        success: false,
-        message: error.message,
-      });
-    }
-  });
-
-  socket.on('get chart', async (data) => {
-    try {
-      const { fromUserId, toUserId } = data;
-
-      const result = await charts
-        .find({
-          $or: [
-            { fromUserId, toUserId },
-            { fromUserId: toUserId, toUserId: fromUserId },
-          ],
-        })
-        .sort({ createdAt: 1 });
-
-      socket.emit('get chart success', {
-        success: true,
-        message: '',
-        result,
-      });
-    } catch (error) {
-      socket.emit('get chart failed', {
-        success: false,
-        message: error.message,
-      });
-    }
-  });
-});
+export const getAllMessage = async (req, res) => {
+  try {
+  } catch (error) {
+    showError(error, res);
+  }
+};

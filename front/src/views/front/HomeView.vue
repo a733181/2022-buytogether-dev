@@ -1,40 +1,22 @@
 <template>
-  <div class="container py-20">
+  <div class="container pt-32 pb-10">
     <div class="mb-10">
       <Breadcrumbs>
-        <span>首頁</span>
+        <span class="text-primary font-bold">精選團購</span>
         <span v-if="breadSearch">&ensp;/&ensp;{{ breadSearch }}</span>
       </Breadcrumbs>
     </div>
-    <div class="flex items-center mb-6 gap-7">
-      <Select v-model="filter" :select="sortProduct" />
-      <Tab
-        v-if="!!breadSearch"
-        tab="取消搜尋"
-        class="mb-2"
-        @click="cancelSearchHandler"
-      />
-      <div class="-mt-12 relative ml-auto">
-        <form @submit.prevent="submitHandler">
-          <Input
-            v-model="searchKey"
-            :error="error.error"
-            :errorText="error.value"
-            @click="error.error = false"
-          />
-          <button
-            type="sumbit"
-            class="hover:opacity-50 absolute bottom-[0.6rem] right-2"
-            :class="{ 'bottom-[2.1rem]': error.error }"
-          >
-            <img src="@/assets/svg/search.svg" class="w-6 h-full" />
-          </button>
-        </form>
-      </div>
+    <div class="flex mb-6 gap-7 items-center justify-between">
+      <Select v-model="filter" :select="sortProduct" class="w-32 h-[44px]" />
+
+      <form @submit.prevent="submitHandler" class="flex gap-5 items-center">
+        <Input v-model="searchKey" class="-mt-10" />
+        <Btn type="submit" className="btn-gray" text="搜尋" />
+      </form>
     </div>
 
     <div class="flex">
-      <div v-if="!breadSearch" class="flex gap-5 flex-col mr-10">
+      <div class="flex gap-5 flex-col mr-10 w-32">
         <Tab
           tab="全部"
           :active="activeTab"
@@ -72,8 +54,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { ref, reactive, computed, onUnmounted } from 'vue';
-import validator from 'validator';
+import { ref, computed, onUnmounted } from 'vue';
 
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Tab from '@/components/ui/TheTab.vue';
@@ -81,6 +62,7 @@ import Select from '@/components/ui/TheSelect.vue';
 import Card from '@/components/ui/TheCard.vue';
 import Input from '@/components/ui/TheInput.vue';
 import Pagination from '@/components/ui/ThePagination.vue';
+import Btn from '@/components/ui/TheBtn.vue';
 
 import { useCategoryStore } from '@/stores/category';
 import { useProductsStore } from '@/stores/products';
@@ -96,10 +78,6 @@ const activeTab = ref('全部');
 const breadSearch = ref('');
 const filter = ref(sortProduct[0]);
 const searchKey = ref('');
-const error = reactive({
-  error: false,
-  value: '',
-});
 
 const filterData = computed(() => {
   if (filter.value === sortProduct[0]) {
@@ -129,21 +107,14 @@ const filterData = computed(() => {
   }
 });
 
-const validatorFormHandler = () => {
-  if (validator.isEmpty(searchKey.value)) {
-    error.value = '搜尋為必填';
-    error.error = true;
-    return true;
-  }
-
-  return false;
-};
-
 const submitHandler = () => {
-  if (validatorFormHandler()) return;
-  getAllSellProdcutHandler({ key: searchKey.value });
-  breadSearch.value = searchKey.value;
-  searchKey.value = '';
+  if (searchKey.value) {
+    getAllSellProdcutHandler({ key: searchKey.value });
+    breadSearch.value = searchKey.value;
+    searchKey.value = '';
+  } else {
+    cancelSearchHandler();
+  }
 };
 
 const changeCategoryHandler = (tab) => {

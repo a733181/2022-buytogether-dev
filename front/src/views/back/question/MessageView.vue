@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container py-10">
     <Breadcrumbs class="mb-10">
       <p>團購網回覆</p>
     </Breadcrumbs>

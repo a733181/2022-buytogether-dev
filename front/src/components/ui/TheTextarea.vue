@@ -57,7 +57,7 @@ watch(props, (value) => {
   @apply relative mt-10;
 }
 .textarea-text {
-  @apply border-2 border-gray-500 w-full py-2 px-2 rounded-md outline-none;
+  @apply border-2 border-gray-500 w-full py-2 px-2 rounded-md outline-none text-gray-500;
 }
 
 .textarea-text-title {

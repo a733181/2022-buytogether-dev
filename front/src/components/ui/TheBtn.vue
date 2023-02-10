@@ -53,7 +53,7 @@ const props = defineProps({
 
 <style scoped>
 .btn {
-  @apply border-2 text-white rounded-lg py-2 px-3 bg-primary  border-primary;
+  @apply border-2 text-white rounded-lg py-2 px-3 bg-primary  border-primary duration-200;
 }
 .btn:hover {
   @apply bg-white text-primary;
@@ -64,5 +64,11 @@ const props = defineProps({
 }
 .btn-outline:hover {
   @apply border-gray-600 text-gray-600;
+}
+.btn-gray {
+  @apply border-2 text-gray-400 rounded-lg py-2 px-3 border-gray-400;
+}
+.btn-gray::before {
+  @apply border-primary text-primary;
 }
 </style>

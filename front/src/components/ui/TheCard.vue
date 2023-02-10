@@ -3,7 +3,7 @@
     <div class="relative">
       <RouterLink :to="`/product/${data._id}`">
         <img
-          class="w-full rounded-lg hover:scale-105 h-60 object-cover"
+          class="w-full rounded-lg hover:scale-105 h-60 object-cover duration-200"
           :src="data.image"
         />
       </RouterLink>
@@ -29,26 +29,29 @@
       <div class="my-3">
         <div class="flex justify-between">
           <h3 class="text-xl mb-1">{{ data.name }}</h3>
-          <p class="text-xl text-gray-500">$ {{ data.price }}</p>
+          <p class="text-xl text-primary">$ {{ data.price }}</p>
         </div>
         <div class="flex justify-between">
           <p class="word-break w-[76%]">
             {{ data.description }}
           </p>
-          <p class="w-[30%] text-end">剩餘數量：{{ data.remaining }}</p>
+          <p class="w-[30%] text-end">
+            銷售數量：{{ data.maxNumber - data.remaining }}
+          </p>
         </div>
       </div>
     </RouterLink>
     <div class="flex items-center mt-auto">
       <RouterLink v-if="data.userId" :to="`/memberhome/${data.userId._id}`">
-        <p class="hover:text-primary">團主：{{ data.userId.name }}</p>
+        <p class="hover:text-primary text-gray-500">
+          團主：{{ data.userId.name }}
+        </p>
       </RouterLink>
       <Btn
         text="加入購物車"
         class="ml-auto"
         @click="addCartBtnHandler(data._id)"
         :disabled="isLoading"
-        :loading="isLoading"
       />
     </div>
   </div>

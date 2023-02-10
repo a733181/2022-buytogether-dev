@@ -54,6 +54,7 @@ app.use('/orders', orderRouter);
 app.use('/messages', messageRouter);
 app.use('/contacts', contactRouter);
 app.use('/reports', reportRouter);
+// app.use('/chat');
 
 app.all('*', (req, res) => {
   res.status(400).json({ success: false, message: '找不到' });

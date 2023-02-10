@@ -2,10 +2,10 @@
   <div>
     <div v-if="!sellFatorite.length" class="text-2xl flex gap-8 justify-center">
       <h2>沒有收藏商品</h2>
-      <RouterLink to="/" class="text-primary">前往購物</RouterLink>
+      <RouterLink to="/" class="text-primary">前往首頁</RouterLink>
     </div>
     <div v-if="sellFatorite.length" class="flex">
-      <div class="flex gap-5 flex-col mr-10">
+      <div class="flex gap-5 flex-col mr-10 w-32">
         <Tab tab="全部" :active="activeTab" @click="activeTab = '全部'" />
         <Tab
           v-for="(item, index) in productCategory"
@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Tab from '@/components/ui/TheTab.vue';

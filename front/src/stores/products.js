@@ -212,7 +212,8 @@ export const useProductsStore = defineStore('products', () => {
       );
       product.member = data.result;
       productPage.total = data.result.totalPages;
-      if (!product.member?.image) {
+
+      if (!product.member.member.image) {
         product.member.member.image = `https://source.boringavatars.com/beam/256/${product.member.member.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`;
       }
 
@@ -226,6 +227,7 @@ export const useProductsStore = defineStore('products', () => {
         }
       }
     } catch (error) {
+      console.log(error);
       swalError(error);
     }
   };

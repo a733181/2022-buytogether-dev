@@ -158,10 +158,10 @@ watch(props, (value) => {
   @apply relative mt-10;
 }
 .input-text {
-  @apply border-2 border-gray-500 w-full py-2 px-2 rounded-md outline-none;
+  @apply border-2 border-gray-300 w-full py-2 px-2 rounded-md outline-none;
 }
 .input-text-title {
-  @apply absolute top-1/2 -translate-y-1/2 left-2 ease-in duration-200 text-xl;
+  @apply absolute top-1/2 -translate-y-1/2 left-2 ease-in duration-200 text-xl text-gray-500;
 }
 
 .input-text:focus + .input-text-title {
@@ -171,7 +171,7 @@ watch(props, (value) => {
   @apply -top-4 left-0 text-primary text-lg;
 }
 .input-text:focus {
-  @apply border-primary;
+  @apply border-orange-300;
 }
 .input-text-error {
   @apply border-red-400;

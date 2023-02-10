@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-[calc(100vh-56px)]">
     <Header />
-
     <RouterView v-slot="{ Component }">
       <transition name="router" mode="out-in">
         <component :is="Component" />

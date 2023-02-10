@@ -4,8 +4,16 @@
     class="fixed right-0 bottom-0 bg-white min-h-[500px] border-2 w-[300px]"
   >
     <ul class="h-[calc(500px-44px)] overflow-auto">
-      <li>
-        <p>To：{{ chats.toUserName }}</p>
+      <li class="flex items-center justify-between p-2">
+        <div class="flex gap-3">
+          <img :src="chats.image" :alt="chats.toUserName" class="w-6" />
+          <p>{{ chats.toUserName }}</p>
+        </div>
+        <img
+          src="@/assets/svg/close.svg"
+          @click="showChat = false"
+          class="w-6"
+        />
       </li>
       <li v-for="message in chats.messages" :key="message._id">
         {{ message.message }}

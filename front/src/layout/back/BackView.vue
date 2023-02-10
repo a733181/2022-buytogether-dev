@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[calc(100vh-56px)]">
+  <div class="min-h-[calc(100vh-56px)] flex">
     <Header />
     <RouterView v-slot="{ Component }">
       <transition name="router" mode="out-in">

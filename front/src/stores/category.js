@@ -6,12 +6,9 @@ export const useCategoryStore = defineStore('category', () => {
     '家電',
     '日用',
     '食品',
-    '生活',
     '戶外',
     '美妝',
-    '衣鞋包錶',
-    '飾品',
-    '書',
+    '服飾',
   ];
 
   const bankNumberLists = [
@@ -1830,8 +1827,8 @@ export const useCategoryStore = defineStore('category', () => {
     '綜合排名',
     '價格由高至低',
     '價格由低至高',
-    '剩餘數量由高至低',
-    '剩餘數量由低至高',
+    '銷售數量由高至低',
+    '銷售數量由低至高',
   ];
 
   const sortOrder = [

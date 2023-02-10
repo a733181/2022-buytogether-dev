@@ -18,12 +18,12 @@ const props = defineProps({
 
 <style scoped>
 .tab {
-  @apply border-2 rounded-lg px-3 py-2 text-center;
+  @apply border-2 rounded-lg px-3 py-2 text-center duration-200;
 }
 .tab:hover {
   @apply border-primary;
 }
 .tab-active {
-  @apply bg-primary text-white border-primary;
+  @apply bg-primary text-white border-primary duration-200;
 }
 </style>

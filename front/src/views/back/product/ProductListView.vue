@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container py-10">
     <div class="flex items-center justify-between mb-10">
       <Breadcrumbs>
         <p>商品管理</p>

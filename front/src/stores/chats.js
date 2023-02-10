@@ -13,14 +13,23 @@ export const useChats = defineStore('chats', () => {
   const chats = reactive({
     fromUserId: '',
     toUserId: '',
+    image: '',
     message: '',
     messages: [],
     toUserName: '',
   });
 
+  const getAllMessageHandler = async () => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const addFromUserHandler = (item) => {
     chats.toUserId = item.id;
     chats.toUserName = item.name;
+    chats.image = item.image;
     showChat.value = true;
   };
 
@@ -32,6 +41,7 @@ export const useChats = defineStore('chats', () => {
       message: chats.message,
     });
     chats.messages.push(chats.message);
+    console.log(chats.messages);
     chats.message = '';
     getMessageHandler();
   };

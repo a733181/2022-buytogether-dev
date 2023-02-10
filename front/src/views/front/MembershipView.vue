@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-20">
+  <div class="container pt-32 pb-10">
     <Breadcrumbs>
       <p>
         {{ isLogin ? '登入' : '註冊' }}

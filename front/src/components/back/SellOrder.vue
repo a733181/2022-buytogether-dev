@@ -185,13 +185,35 @@
             <Btn
               text="出貨"
               class="w-full mt-6"
-              :disabled="!item.paid.isPaid || item.shippingStatus === 1"
+              :disabled="
+                !item.paid.isPaid ||
+                item.shippingStatus === 1 ||
+                item.shippingStatus === 2
+              "
               :class="{
                 'disabled: opacity-50':
-                  !item.paid.isPaid || item.shippingStatus === 1,
+                  !item.paid.isPaid ||
+                  item.shippingStatus === 1 ||
+                  item.shippingStatus === 2,
               }"
               @click="
                 shipOrderHandler({
+                  orderId: showProduct.list._id,
+                  productId: item.productId._id,
+                })
+              "
+            />
+            <Btn
+              text="取消訂單"
+              class="w-full mt-6"
+              className="btn-outline"
+              :disabled="item.shippingStatus === 2 || item.shippingStatus === 1"
+              :class="{
+                'disabled: opacity-50':
+                  item.shippingStatus === 2 || item.shippingStatus === 1,
+              }"
+              @click="
+                cancelOrderHandler({
                   orderId: showProduct.list._id,
                   productId: item.productId._id,
                 })
@@ -220,7 +242,8 @@ import { useCategoryStore } from '@/stores/category';
 const order = useOrderStore();
 const user = useUserStore();
 const { orderSell, showProduct } = storeToRefs(order);
-const { shipOrderHandler, changeStatusOrderHandler } = order;
+const { shipOrderHandler, changeStatusOrderHandler, cancelOrderHandler } =
+  order;
 const { toggleShow } = storeToRefs(useModelStore());
 const { users, isMember } = storeToRefs(user);
 const { clickListHandler } = user;
