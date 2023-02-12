@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container pt-32 pb-10">
+    <div class="container pt-44 lg:pt-32 pb-10">
       <Breadcrumbs class="mb-10">
         <div class="flex items-center">
           <RouterLink to="/" class="text-primary font-bold hover:opacity-60"

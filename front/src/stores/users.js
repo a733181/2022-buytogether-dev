@@ -119,7 +119,6 @@ export const useUserStore = defineStore(
         bank.banks.list = data.result.banks;
         address.address.list = data.result.address;
         await getAllMemberProductMessageHanlder();
-
         swalSuccess('登入成功');
 
         if (isAdmin.value) {
@@ -152,7 +151,6 @@ export const useUserStore = defineStore(
       try {
         const { data } = await apiAuth.get('/users/me');
         changeUserDataHandler(data.result);
-
         cart.value.length = data.result.cart;
         bank.banks.list = data.result.banks;
         address.address.list = data.result.address;

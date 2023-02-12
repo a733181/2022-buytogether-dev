@@ -1,11 +1,13 @@
 <template>
   <div class="min-h-[calc(100vh-56px)] flex">
     <Header />
-    <RouterView v-slot="{ Component }">
-      <transition name="router" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </RouterView>
+    <div class="flex-1 overflow-auto">
+      <RouterView v-slot="{ Component }">
+        <transition name="router" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </RouterView>
+    </div>
   </div>
 </template>
 

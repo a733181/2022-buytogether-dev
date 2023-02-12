@@ -1,71 +1,120 @@
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { defineStore } from 'pinia';
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
+import { apiAuth } from '@/axios/index';
 
+import { useSwalStore } from '@/stores/swal';
 import { useUserStore } from '@/stores/users';
 
 export const useChats = defineStore('chats', () => {
-  const socket = io(import.meta.env.VITE_API);
-
   const user = useUserStore();
+  const { swalSuccess, swalError } = useSwalStore();
+  const socket = reactive({});
+  socket.current = io(import.meta.env.VITE_API);
+  const showList = ref(false);
   const showChat = ref(false);
-
-  const chats = reactive({
-    fromUserId: '',
-    toUserId: '',
+  const fromUserId = ref();
+  const toUser = reactive({
+    _id: '',
+    name: '',
     image: '',
-    message: '',
-    messages: [],
-    toUserName: '',
   });
+  const message = ref('');
+  const messages = ref([]);
+  const chatUserList = ref([]);
 
-  const getAllMessageHandler = async () => {
+  const getChatAllHandler = async () => {
     try {
+      const { data } = await apiAuth.post('/chat/all', {
+        fromUserId: fromUserId.value,
+        toUserId: toUser._id,
+      });
+      messages.value = data.result;
     } catch (error) {
-      console.log(error);
+      swalError(error);
     }
   };
 
-  const addFromUserHandler = (item) => {
-    chats.toUserId = item.id;
-    chats.toUserName = item.name;
-    chats.image = item.image;
+  watch(showList, (value) => {
+    if (value) {
+      getChatAllUserHandler();
+    }
+  });
+
+  watch(showChat, (value) => {
+    if (value) {
+      socket.current.emit('add-user', user.users._id);
+    }
+  });
+
+  const addChatUserHandler = (item) => {
+    if (!user.isLoginHandler()) return;
     showChat.value = true;
+    toUser._id = item.toUserId;
+    toUser.name = item.name;
+    toUser.image = item.image;
+    fromUserId.value = user.users._id;
+    getChatAllHandler();
   };
 
-  const sendMessageHandler = () => {
-    chats.fromUserId = user.users._id;
-    socket.emit('sendMessage', {
-      fromUserId: chats.fromUserId,
-      toUserId: chats.toUserId,
-      message: chats.message,
-    });
-    chats.messages.push(chats.message);
-    console.log(chats.messages);
-    chats.message = '';
-    getMessageHandler();
+  const sendChatHandler = async () => {
+    try {
+      await apiAuth.post('/chat', {
+        fromUserId: fromUserId.value,
+        toUserId: toUser._id,
+        message: message.value,
+      });
+      socket.current.emit('send-msg', {
+        fromUserId: fromUserId.value,
+        toUserId: toUser._id,
+        message: message.value,
+      });
+
+      socket.current.on('msg-recieve', (message) => {
+        messages.value.push({
+          fromSelf: false,
+          message,
+        });
+      });
+
+      messages.value.push({
+        fromSelf: true,
+        message: message.value,
+      });
+      message.value = '';
+      return true;
+    } catch (error) {
+      swalError(error);
+    }
   };
 
-  const getMessageHandler = () => {
-    socket.emit('getMessage', {
-      fromUserId: chats.fromUserId,
-      toUserId: chats.toUserId,
-    });
-    socket.on('messages', (messages) => {
-      console.log(messages, 'messages');
-      chats.messages = messages;
-    });
-    socket.on('newMessage', (message) => {
-      console.log(message, 'message');
-      chats.messages.push(message);
-    });
+  const getChatAllUserHandler = async () => {
+    try {
+      fromUserId.value = user.users._id;
+      const { data } = await apiAuth.post('/chat/users', {
+        fromUserId: fromUserId.value,
+      });
+
+      chatUserList.value = data.result;
+      chatUserList.value.forEach((item) => {
+        item.image =
+          item.image ||
+          `https://source.boringavatars.com/beam/256/${item.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`;
+      });
+    } catch (error) {
+      swalError(error);
+    }
   };
 
   return {
     showChat,
-    chats,
-    addFromUserHandler,
-    sendMessageHandler,
-    getMessageHandler,
+    showList,
+    toUser,
+    chatUserList,
+    message,
+    messages,
+    addChatUserHandler,
+    sendChatHandler,
+    getChatAllUserHandler,
   };
 });

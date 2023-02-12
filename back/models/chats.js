@@ -3,18 +3,20 @@ import { Schema, model, ObjectId } from 'mongoose';
 const ChatSchema = new Schema(
   {
     fromUserId: {
-      type: String,
+      type: ObjectId,
+      ref: 'users',
       required: true,
     },
     toUserId: {
-      type: String,
+      type: ObjectId,
+      ref: 'users',
       required: true,
     },
     message: {
       type: String,
       required: true,
     },
-    createdAt: {
+    createDate: {
       type: Date,
       default: Date.now,
     },

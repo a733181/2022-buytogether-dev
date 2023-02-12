@@ -1,5 +1,5 @@
 <template>
-  <div class="container pt-32 pb-10">
+  <div class="container pt-44 lg:pt-32 pb-10">
     <div class="flex gap-8 mb-10">
       <Tab
         tab="收藏"

@@ -43,88 +43,61 @@ ChartJS.register(
 );
 
 const select = ['購買圖表', '銷售圖表'];
-const selectActive = ref(select[0]);
+const selectActive = ref(select[1]);
 const years = ref(['全部']);
 const yearsActive = ref('全部');
 const chartData = ref();
 
-const categoryQuantity = computed(() => {
+const getOrderAll = (data) => {
   const orderAll = [];
+  data.forEach((prod) => {
+    const orderYears = new Date(prod.createDate).getFullYear();
+    if (!years.value.includes(orderYears)) {
+      years.value.push(orderYears);
+    }
+    prod.products.forEach((item) => {
+      orderAll.push({
+        paid: item.paid.isPaid,
+        category: item.productId.category,
+        quantity: item.quantity,
+        shippingStatus: item.shippingStatus,
+        orderYears,
+      });
+    });
+  });
+  return orderAll;
+};
+
+const getNewData = (data) => {
   const newData = [];
-  if (selectActive.value === '購買圖表') {
-    orderBuy.value.forEach((prod) => {
-      const orderYears = new Date(prod.createDate).getFullYear();
-      const yearsIndex = years.value.findIndex((item) => item === orderYears);
-      if (yearsIndex === -1) {
-        years.value.push(orderYears);
-      }
+  productCategory.forEach((category) => {
+    data.forEach((item) => {
+      const activeYear = yearsActive.value || '全部';
+      const isYear =
+        activeYear === '全部' ? true : yearsActive.value === item.orderYears;
 
-      prod.products.forEach((item) => {
-        orderAll.push({
-          paid: item.paid.isPaid,
-          category: item.productId.category,
-          quantity: item.quantity,
-          shippingStatus: item.shippingStatus,
-          orderYears,
-        });
-      });
-    });
-    productCategory.forEach((category) => {
-      orderAll.forEach((item) => {
-        const activeYear = yearsActive.value || '全部';
-        const isYear =
-          activeYear === '全部' ? true : yearsActive.value === item.orderYears;
-        if (item.category === category && isYear) {
-          const index = newData.findIndex((item) => item.category === category);
-          if (index === -1) {
-            newData.push({
-              category,
-              sum: item.quantity,
-            });
-          } else {
-            newData[index].sum += item.quantity;
-          }
+      if (item.category === category && isYear) {
+        const index = newData.findIndex((item) => item.category === category);
+        if (index === -1) {
+          newData.push({
+            category,
+            sum: item.quantity,
+          });
+        } else {
+          newData[index].sum += item.quantity;
         }
-      });
-    });
-  } else {
-    orderSell.value.forEach((prod) => {
-      const orderYears = new Date(prod.createDate).getFullYear();
-      const yearsIndex = years.value.findIndex((item) => item === orderYears);
-      if (yearsIndex === -1) {
-        years.value.push(orderYears);
       }
-      prod.products.forEach((item) => {
-        orderAll.push({
-          paid: item.paid.isPaid,
-          category: item.productId.category,
-          quantity: item.quantity,
-          shippingStatus: item.shippingStatus,
-          orderYears,
-        });
-      });
     });
-    productCategory.forEach((category) => {
-      orderAll.forEach((item) => {
-        const activeYear = yearsActive.value || '全部';
-        const isYear =
-          activeYear === '全部' ? true : yearsActive.value === item.orderYears;
-        if (item.category === category && isYear) {
-          const index = newData.findIndex((item) => item.category === category);
-          if (index === -1) {
-            newData.push({
-              category,
-              sum: item.quantity,
-            });
-          } else {
-            newData[index].sum += item.quantity;
-          }
-        }
-      });
-    });
-  }
-
+  });
   return newData;
+};
+
+const categoryQuantity = computed(() => {
+  if (selectActive.value === '購買圖表') {
+    return getNewData(getOrderAll(orderBuy.value));
+  } else {
+    return getNewData(getOrderAll(orderSell.value));
+  }
 });
 
 const randerChart = () => {

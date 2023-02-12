@@ -2,14 +2,14 @@ import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import userRoute from './routes/users.js';
 import productRouter from './routes/products.js';
 import orderRouter from './routes/orders.js';
 import messageRouter from './routes/messages.js';
 import contactRouter from './routes/contacts.js';
 import reportRouter from './routes/reports.js';
-import chats from './models/chats.js';
+import chatRouter from './routes/chats.js';
 
 import './passport/passport.js';
 
@@ -54,7 +54,7 @@ app.use('/orders', orderRouter);
 app.use('/messages', messageRouter);
 app.use('/contacts', contactRouter);
 app.use('/reports', reportRouter);
-// app.use('/chat');
+app.use('/chat', chatRouter);
 
 app.all('*', (req, res) => {
   res.status(400).json({ success: false, message: '找不到' });
@@ -81,26 +81,19 @@ const io = new Server(server, {
   },
 });
 
-io.on('connection', (socket = Socket) => {
-  console.log('User connected');
+global.onlineUsers = new Map();
 
-  socket.on('sendMessage', async (data) => {
-    const { fromUserId, toUserId, message } = data;
-    const newMessage = new chats({ fromUserId, toUserId, message });
-    await newMessage.save();
-    socket.broadcast.emit('newMessage', newMessage);
+io.on('connection', (socket) => {
+  global.chatSocket = socket;
+
+  socket.on('add-user', (userId) => {
+    onlineUsers.set(userId, socket.id);
   });
 
-  socket.on('getMessage', async (data) => {
-    const { fromUserId, toUserId } = data;
-    const messages = await chats
-      .find({
-        $or: [
-          { fromUserId, toUserId },
-          { fromUserId: toUserId, toUserId: fromUserId },
-        ],
-      })
-      .sort({ createdAt: 1 });
-    socket.emit('messages', messages);
+  socket.on('send-msg', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toUserId);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit('msg-recieve', data.message);
+    }
   });
 });

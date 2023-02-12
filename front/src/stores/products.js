@@ -227,7 +227,6 @@ export const useProductsStore = defineStore('products', () => {
         }
       }
     } catch (error) {
-      console.log(error);
       swalError(error);
     }
   };

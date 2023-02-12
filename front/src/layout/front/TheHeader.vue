@@ -38,6 +38,14 @@
           <li v-if="user.isMember">
             <p
               class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
+              @click="showList = true"
+            >
+              悄悄話
+            </p>
+          </li>
+          <li v-if="user.isMember">
+            <p
+              class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
               @click="toMember"
             >
               會員中心
@@ -77,6 +85,7 @@ import { useCartStore } from '@/stores/carts';
 import { useBankStore } from '@/stores/bank';
 import { useAddressStore } from '@/stores/address';
 import { useSwalStore } from '@/stores/swal';
+import { useChats } from '@/stores/chats';
 
 const route = useRoute();
 const router = useRouter();
@@ -87,6 +96,7 @@ const { cart } = storeToRefs(carts);
 const { listAddress } = storeToRefs(useAddressStore());
 const { listBank } = storeToRefs(useBankStore());
 const { swalError } = useSwalStore();
+const { showList } = storeToRefs(useChats());
 
 const activeClass = (active) => {
   return route.path === active ? 'text-primary bg-white' : null;

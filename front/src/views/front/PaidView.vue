@@ -1,5 +1,5 @@
 <template>
-  <div class="container pt-32 pb-10">
+  <div class="container pt-44 lg:pt-32 pb-10">
     <Breadcrumbs class="mb-10">
       <p>購物車&ensp;/&ensp;付款</p>
     </Breadcrumbs>

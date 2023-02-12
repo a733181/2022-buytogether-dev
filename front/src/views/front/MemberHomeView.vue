@@ -1,5 +1,5 @@
 <template>
-  <div class="container pt-32 pb-10">
+  <div class="container pt-44 lg:pt-32 pb-10">
     <Breadcrumbs class="mb-10">
       <div class="flex">
         <RouterLink to="/" class="text-primary font-bold hover:opacity-60"
@@ -17,12 +17,13 @@
       />
       <p class="text-xl">{{ memberHomeProduct?.member?.name || '' }}</p>
       <Btn
-        text="聊天"
+        v-if="users._id !== memberHomeProduct.member._id"
+        text="悄悄話"
         @click="
-          addFromUserHandler({
-            id: memberHomeProduct?.member?._id,
-            name: memberHomeProduct?.member?.name,
-            image: memberHomeProduct?.member?.image,
+          addChatUserHandler({
+            toUserId: memberHomeProduct.member._id,
+            name: memberHomeProduct.member.name,
+            image: memberHomeProduct.member.image,
           })
         "
       />
@@ -114,7 +115,7 @@ const { getMemberSellProductHandler } = product;
 const { memberHomeProduct, productPage } = storeToRefs(product);
 const { clickListHandler } = user;
 const { users, isMember } = storeToRefs(user);
-const { addFromUserHandler } = useChats();
+const { addChatUserHandler } = useChats();
 
 getMemberSellProductHandler({ userId: route.params.id });
 

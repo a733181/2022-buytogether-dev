@@ -68,6 +68,14 @@
             {{ messageAllProduct.length }}
           </p>
         </li>
+        <li>
+          <p
+            class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
+            @click="showList = true"
+          >
+            悄悄話
+          </p>
+        </li>
         <li v-if="!user.isAdmin">
           <RouterLink
             to="/member/ship"
@@ -104,12 +112,14 @@ import { storeToRefs } from 'pinia';
 
 import { useUserStore } from '@/stores/users';
 import { useMessageStore } from '@/stores/messages';
+import { useChats } from '@/stores/chats';
 
 const route = useRoute();
 
 const user = useUserStore();
 const { logoutHandler } = user;
 const { messageAllProduct } = storeToRefs(useMessageStore());
+const { showList } = storeToRefs(useChats());
 
 const activeClass = (active) => {
   return route.path === active ? 'text-gray-500 bg-white' : null;
