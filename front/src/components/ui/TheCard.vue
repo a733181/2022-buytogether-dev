@@ -20,16 +20,18 @@
           class="w-7 mb-2"
           @click="clickLikesHandler(data._id)"
         />
-        <p class="text-white font-bold text-xl">
+        <p class="font-bold text-xl text-orange-500">
           {{ likesLength }}
         </p>
       </div>
     </div>
     <RouterLink :to="`/product/${data._id}`" class="hover:text-primary">
-      <div class="my-3">
+      <div class="mt-3 mb-4">
         <div class="flex justify-between">
-          <h3 class="text-xl mb-1">{{ data.name }}</h3>
-          <p class="text-xl text-primary">$ {{ data.price }}</p>
+          <h3 class="text-xl mb-1 ml-2">{{ data.name }}</h3>
+          <p class="text-xl text-primary whitespace-nowrap">
+            $ {{ data.price }}
+          </p>
         </div>
         <div class="flex justify-between">
           <p class="word-break w-[76%]">

@@ -9,50 +9,103 @@
           <p>&ensp;/&ensp;{{ sellProdcut.name }}</p>
         </div>
       </Breadcrumbs>
-      <div class="flex gap-8">
-        <div class="w-2/5">
+      <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+        <div class="lg:w-2/5 flex flex-col">
           <h1 class="font-bold text-2xl mb-3">{{ sellProdcut.name }}</h1>
-          <p class="mb-6">${{ sellProdcut.price }}</p>
-          <p class="mb-2">{{ sellProdcut.description }}</p>
-          <p class="mb-2">
+          <p class="mb-4 text-primary text-xl">${{ sellProdcut.price }}</p>
+          <p class="mb-6">
             銷量：{{ sellProdcut.maxNumber - sellProdcut.remaining }}
           </p>
-          <div class="flex items-center justify-between mb-4">
-            <img
-              src="@/assets/svg/minus.svg"
-              class="w-5 hover:opacity-60"
-              @click="changeQuantity(-1)"
-              alt="減少數量"
-              title="減少數量"
-            />
-            <p>{{ quantity }}</p>
-            <img
-              src="@/assets/svg/plus.svg"
-              class="w-5 hover:opacity-60"
-              @click="changeQuantity(1)"
-              alt="增加數量"
-              title="增加數量"
+          <p class="mb-6 whitespace-pre-line">
+            {{ sellProdcut.description }}
+          </p>
+          <div v-if="sellProdcut.userId" class="flex items-center gap-4 my-5">
+            <p>團購主：</p>
+            <!-- <img
+              :src="sellProdcut.userId.image"
+              :alt="sellProdcut.userId.name"
+              class="w-16 h-16 rounded-full object-cover"
+            /> -->
+            <p>{{ sellProdcut.userId.name }}</p>
+            <RouterLink
+              :to="`/memberhome/${sellProdcut.userId._id}`"
+              class="text-primary"
+              >更多商品</RouterLink
+            >
+          </div>
+          <div class="mt-auto w-full">
+            <div class="flex items-center justify-between mb-6">
+              <img
+                src="@/assets/svg/minus.svg"
+                class="w-5 hover:opacity-60"
+                @click="changeQuantity(-1)"
+                alt="減少數量"
+                title="減少數量"
+              />
+              <p>{{ quantity }}</p>
+              <img
+                src="@/assets/svg/plus.svg"
+                class="w-5 hover:opacity-60"
+                @click="changeQuantity(1)"
+                alt="增加數量"
+                title="增加數量"
+              />
+            </div>
+            <Btn
+              text="加入購物車"
+              class="w-full"
+              :disabled="isLoadingAddCart"
+              :loading="isLoadingAddCart"
+              @click="clickAddCartBtnHanlder({ id: sellProdcut._id, quantity })"
             />
           </div>
-          <Btn
-            text="加入購物車"
-            class="w-full"
-            :disabled="isLoadingAddCart"
-            :loading="isLoadingAddCart"
-            @click="clickAddCartBtnHanlder({ id: sellProdcut._id, quantity })"
-          />
         </div>
-        <div class="flex-1">
-          <img
-            class="rounded-xl h-96 object-cover w-full"
-            :src="sellProdcut.image"
-            :alt="sellProdcut.name"
-          />
+        <div class="flex-1 -order-1 lg:order-1">
+          <div class="relative">
+            <img
+              class="rounded-xl object-contain w-full h-96 mb-5"
+              :src="activeImage"
+              :alt="sellProdcut.name"
+            />
+            <img
+              src="@/assets/svg/arrow.svg"
+              alt="arrow"
+              class="w-6 absolute top-1/2 left-0 -translate-y-1/2 hover:opacity-60"
+              @click="changeImageIndex(-1)"
+            />
+            <img
+              src="@/assets/svg/arrow.svg"
+              alt="arrow"
+              class="w-6 absolute rotate-180 top-1/2 right-0 -translate-y-1/2 hover:opacity-60"
+              @click="changeImageIndex(1)"
+            />
+          </div>
+          <div class="grid" :style="gridRow">
+            <div>
+              <img
+                class="w-full h-full"
+                :src="sellProdcut.image"
+                :alt="sellProdcut.name"
+                @click="activeIndex = 0"
+              />
+            </div>
+            <div
+              v-if="sellProdcut.images"
+              v-for="(src, index) in sellProdcut.images"
+            >
+              <img
+                :src="src"
+                :key="index"
+                class="w-full h-full object-cover"
+                @click="activeIndex = index + 1"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="container pt-32 pb-10">
+    <!-- <div class="container pt-32 pb-10">
       <Breadcrumbs class="mb-10">
         <div class="flex">
           <RouterLink to="/" class="text-primary font-bold hover:opacity-60"
@@ -73,7 +126,7 @@
             <p>價格</p>
             <p>
               銷量：
-              <!-- <span>{{ sellProdcut.remaining }}</span> -->
+              <span>{{ sellProdcut.remaining }}</span>
             </p>
             <div class="flex items-center justify-between">
               <img
@@ -109,7 +162,7 @@
           @click="clickBtnShowReportHandler"
         />
       </div>
-      <!-- <div class="h-2 bg-gray-500 my-5 rounded-md"></div> -->
+      <div class="h-2 bg-gray-500 my-5 rounded-md"></div>
       <div v-if="sellProdcut.userId" class="flex items-center gap-4 my-5">
         <p>團購主：</p>
         <img
@@ -124,7 +177,7 @@
           >更多商品</RouterLink
         >
       </div>
-      <!-- <div class="h-2 bg-gray-500 my-5 rounded-md"></div> -->
+      <div class="h-2 bg-gray-500 my-5 rounded-md"></div>
       <div class="flex gap-8 mb-10">
         <Tab
           tab="商品詳情"
@@ -189,14 +242,14 @@
       <Model>
         <SendMessage @message="submitReportHandler" />
       </Model>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { ref, onUnmounted } from 'vue';
+import { ref, onUnmounted, computed } from 'vue';
 
 import Btn from '@/components/ui/TheBtn.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
@@ -234,6 +287,40 @@ const isLoadingAddCart = ref(false);
 const quantity = ref(1);
 
 const activeTab = ref('商品詳情');
+
+const activeIndex = ref(0);
+
+const activeImage = computed(() => {
+  console.log(activeIndex.value);
+  if (activeIndex.value === 0) {
+    return sellProdcut.value.image;
+  } else {
+    return sellProdcut.value.images[activeIndex.value - 1];
+  }
+});
+
+const gridRow = computed(() => {
+  if (sellProdcut?.value.images) {
+    const length = sellProdcut?.value.images.length;
+    return `grid-template-columns: repeat(${length + 1}, minmax(0, 1fr));`;
+  }
+});
+
+const changeImageIndex = (index) => {
+  const length = sellProdcut?.value.images.length;
+  if (index === 1) {
+    if (activeIndex.value >= length) {
+      activeImage.value = length;
+    } else {
+      activeIndex.value++;
+    }
+  } else {
+    activeIndex.value--;
+    if (activeIndex.value <= 0) {
+      activeIndex.value = 0;
+    }
+  }
+};
 
 const changeQuantity = (num) => {
   if (quantity.value + num <= 0) {
