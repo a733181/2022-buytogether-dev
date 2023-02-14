@@ -336,6 +336,7 @@ const router = createRouter({
 
 router.afterEach((to, from) => {
   document.title = to.meta.title;
+  window.scrollTo(0, 0);
 });
 
 router.beforeEach(async (to, from, next) => {

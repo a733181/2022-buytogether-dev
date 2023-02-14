@@ -2,7 +2,9 @@
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/productlist" class="hover:scale-105"
+        <RouterLink
+          to="/member/productlist"
+          class="text-primary font-bold hover:scale-105"
           >商品管理</RouterLink
         >
         <p>

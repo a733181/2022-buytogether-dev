@@ -1,7 +1,9 @@
 <template>
   <div class="container pt-44 lg:pt-32 pb-10">
     <Breadcrumbs class="mb-10">
-      <p>購物車&ensp;/&ensp;付款</p>
+      <span class="text-primary font-bold">購物車</span>
+      <span>&ensp;/&ensp;</span>
+      <span>付款</span>
     </Breadcrumbs>
 
     <table class="w-full">

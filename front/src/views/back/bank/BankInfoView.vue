@@ -2,7 +2,11 @@
   <div class="container py-10">
     <Breadcrumbs v-if="editBank.type != 'admin'" class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/ship" class="hover:scale-105">帳戶</RouterLink>
+        <RouterLink
+          to="/member/ship"
+          class="text-primary font-bold hover:scale-105"
+          >帳戶</RouterLink
+        >
         <p>&ensp;/&ensp;</p>
         <RouterLink to="/member/banklist" class="hover:scale-105"
           >帳戶列表</RouterLink
@@ -44,6 +48,7 @@
         :error="error.bankNumber.error"
         :errorText="error.bankNumber.value"
         @click="error.bankNumber.error = false"
+        maxlength="16"
       />
       <Input
         title="預設"

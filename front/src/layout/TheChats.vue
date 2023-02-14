@@ -51,7 +51,7 @@
         />
       </div>
       <div class="overflow-y-auto h-[calc(100%-56px)]">
-        <div ref="scrollRef">
+        <div ref="scrollRef" class="scroll">
           <p
             v-for="(message, index) in messages"
             :key="index"
@@ -80,10 +80,12 @@ import Input from '@/components/ui/TheInput.vue';
 import Btn from '@/components/ui/TheBtn.vue';
 
 import { useChats } from '@/stores/chats';
+
 const chat = useChats();
 const { sendChatHandler, addChatUserHandler } = chat;
 const { showChat, showList, message, messages, toUser, chatUserList } =
   storeToRefs(chat);
+
 const scrollRef = ref(null);
 
 const closeChatHandler = () => {
@@ -91,16 +93,13 @@ const closeChatHandler = () => {
   showList.value = false;
 };
 
-watch(scrollRef, (value) => {
-  if (value) {
-    scrollRef.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
+watch([showChat, scrollRef], ([newShowChat, newScrollRef]) => {
+  if (newShowChat && newScrollRef !== null) {
+    newScrollRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 });
 
 const submitHandler = async () => {
-  const scroll = await sendChatHandler();
-  if (scroll) {
-    scrollRef.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }
+  await sendChatHandler();
 };
 </script>

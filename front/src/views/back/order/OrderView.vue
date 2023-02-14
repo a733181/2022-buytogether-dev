@@ -1,28 +1,31 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <span>訂單管理</span>
+      <span class="text-primary font-bold">訂單管理</span>
       <span>&ensp;/&ensp;{{ activeTab }}</span>
     </Breadcrumbs>
-    <div class="flex gap-8 mb-10">
-      <Tab
-        tab="購買"
-        class="w-1/3"
-        :active="activeTab"
+    <div class="flex gap-8 mb-10 border-b-2 border-primary">
+      <p
+        class="text-lg py-3 px-8"
+        :class="{ 'bg-primary text-white rounded-t-lg': activeTab === '購買' }"
         @click="activeTab = '購買'"
-      />
-      <Tab
-        tab="銷售"
-        class="w-1/3"
-        :active="activeTab"
+      >
+        購買
+      </p>
+      <p
+        class="text-lg py-3 px-8"
+        :class="{ 'bg-primary text-white rounded-t-lg': activeTab === '銷售' }"
         @click="activeTab = '銷售'"
-      />
-      <Tab
-        tab="圖表"
-        class="w-1/3"
-        :active="activeTab"
+      >
+        銷售
+      </p>
+      <p
+        class="text-lg py-3 px-8"
+        :class="{ 'bg-primary text-white rounded-t-lg': activeTab === '圖表' }"
         @click="activeTab = '圖表'"
-      />
+      >
+        圖表
+      </p>
     </div>
     <BuyOrder v-if="activeTab === '購買'" />
     <SellOrder v-if="activeTab === '銷售'" />

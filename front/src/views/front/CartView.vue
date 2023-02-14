@@ -1,7 +1,7 @@
 <template>
   <div class="container pt-44 lg:pt-32 pb-10">
     <Breadcrumbs class="mb-10">
-      <p>購物車</p>
+      <p class="text-primary font-bold">購物車</p>
     </Breadcrumbs>
     <div v-if="!cart.length" class="text-2xl flex gap-8 justify-center">
       <h1>購物車內沒有商品</h1>

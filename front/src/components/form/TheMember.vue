@@ -7,6 +7,7 @@
       :error="error.phone.error"
       :errorText="error.phone.value"
       @click="error.phone.error = false"
+      maxlength="10"
     />
     <Input
       title="密碼"

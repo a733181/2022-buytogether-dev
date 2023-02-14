@@ -1,7 +1,7 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <p>問與答</p>
+      <p class="text-primary font-bold">問與答</p>
     </Breadcrumbs>
     <div class="overflow-auto">
       <table class="w-full table-auto">

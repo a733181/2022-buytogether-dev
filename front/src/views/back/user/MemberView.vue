@@ -1,7 +1,7 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <p>帳戶</p>
+      <p class="text-primary font-bold">帳戶</p>
     </Breadcrumbs>
 
     <div class="lg:w-1/2 mx-auto border-2 px-5 py-4 mb-8">
@@ -76,7 +76,6 @@
         class="mb-4 flex lg:items-center flex-col lg:flex-row gap-2 border-b-2 pb-4"
       >
         <p class="lg:w-2/12">團購網回覆</p>
-        <p>{{ defaultAddress }}</p>
         <div class="flex-1 flex justify-between items-center">
           <RouterLink to="/member/message" class="ml-auto hover:opacity-50">
             <img src="@/assets/svg/arrow.svg" class="w-4 h-full rotate-180" />

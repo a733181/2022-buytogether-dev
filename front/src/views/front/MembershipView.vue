@@ -1,7 +1,7 @@
 <template>
   <div class="container pt-44 lg:pt-32 pb-10">
     <Breadcrumbs>
-      <p>
+      <p class="text-primary font-bold">
         {{ isLogin ? '登入' : '註冊' }}
       </p>
     </Breadcrumbs>

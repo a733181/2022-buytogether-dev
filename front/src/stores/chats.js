@@ -47,6 +47,20 @@ export const useChats = defineStore('chats', () => {
     }
   });
 
+  watch(
+    () => toUser._id,
+    (value) => {
+      if (value !== '') {
+        socket.current.on('msg-recieve', (message) => {
+          messages.value.push({
+            fromSelf: false,
+            message,
+          });
+        });
+      }
+    }
+  );
+
   const addChatUserHandler = (item) => {
     if (!user.isLoginHandler()) return;
     showChat.value = true;
@@ -70,19 +84,11 @@ export const useChats = defineStore('chats', () => {
         message: message.value,
       });
 
-      socket.current.on('msg-recieve', (message) => {
-        messages.value.push({
-          fromSelf: false,
-          message,
-        });
-      });
-
       messages.value.push({
         fromSelf: true,
         message: message.value,
       });
       message.value = '';
-      return true;
     } catch (error) {
       swalError(error);
     }

@@ -11,6 +11,7 @@
         :name="props.name"
         :id="props.id"
         :disabled="props.disabled"
+        :maxlength="props.maxlength"
         @click="toggleShowSelectHandler"
       />
       <label :class="titleClass" :for="props.id">
@@ -76,6 +77,9 @@ const props = defineProps({
     type: Boolean,
   },
   value: {
+    type: String,
+  },
+  maxlength: {
     type: String,
   },
 });

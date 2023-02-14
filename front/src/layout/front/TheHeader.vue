@@ -38,7 +38,7 @@
           <li v-if="user.isMember">
             <p
               class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
-              @click="showList = true"
+              @click="toggleChatHandler"
             >
               悄悄話
             </p>
@@ -96,7 +96,7 @@ const { cart } = storeToRefs(carts);
 const { listAddress } = storeToRefs(useAddressStore());
 const { listBank } = storeToRefs(useBankStore());
 const { swalError } = useSwalStore();
-const { showList } = storeToRefs(useChats());
+const { showList, showChat } = storeToRefs(useChats());
 
 const activeClass = (active) => {
   return route.path === active ? 'text-primary bg-white' : null;
@@ -124,5 +124,10 @@ const toCart = () => {
     }
   }
   router.push('/cart');
+};
+
+const toggleChatHandler = () => {
+  showList.value = !showList.value;
+  showChat.value = false;
 };
 </script>

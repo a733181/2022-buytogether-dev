@@ -1,7 +1,7 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <span>訂單管理</span>
+      <span class="text-primary font-bold">訂單管理</span>
     </Breadcrumbs>
     <adminOrder />
   </div>

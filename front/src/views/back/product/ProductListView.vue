@@ -2,7 +2,7 @@
   <div class="container py-10">
     <div class="flex items-center justify-between mb-10">
       <Breadcrumbs>
-        <p>商品管理</p>
+        <p class="text-primary font-bold">商品管理</p>
       </Breadcrumbs>
       <Btn text="新增商品" @click="addProductHandler" />
     </div>

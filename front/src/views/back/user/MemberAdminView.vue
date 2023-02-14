@@ -2,7 +2,7 @@
   <div class="container py-10">
     <div class="flex justify-between items-center mb-8">
       <Breadcrumbs>
-        <p>會員</p>
+        <p class="text-primary font-bold">會員</p>
       </Breadcrumbs>
       <RouterLink to="/member/memberadminadd">
         <Btn text="新增會員" />

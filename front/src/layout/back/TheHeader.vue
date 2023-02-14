@@ -71,7 +71,7 @@
         <li>
           <p
             class="px-3 py-2 rounded-lg cursor-pointer hover:text-gray-500 hover:bg-white"
-            @click="showList = true"
+            @click="toggleChatHandler"
           >
             悄悄話
           </p>
@@ -119,9 +119,14 @@ const route = useRoute();
 const user = useUserStore();
 const { logoutHandler } = user;
 const { messageAllProduct } = storeToRefs(useMessageStore());
-const { showList } = storeToRefs(useChats());
+const { showList, showChat } = storeToRefs(useChats());
 
 const activeClass = (active) => {
   return route.path === active ? 'text-gray-500 bg-white' : null;
+};
+
+const toggleChatHandler = () => {
+  showList.value = !showList.value;
+  showChat.value = false;
 };
 </script>

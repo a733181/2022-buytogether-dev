@@ -1,6 +1,6 @@
 <template>
   <div class="container pt-44 lg:pt-32 pb-10">
-    <Breadcrumbs class="mb-10">
+    <Breadcrumbs class="mb-10 text-primary font-bold hover:opacity-60">
       <p>關於我</p>
     </Breadcrumbs>
     <div class="flex flex-col lg:flex-row gap-9 items-center mb-10">
@@ -29,8 +29,14 @@
         <p class="mt-5">地址： 243新北市泰山區貴子里致遠新村55之1號</p>
       </div>
     </div>
-    <h2 class="text-4xl">聯絡我們</h2>
-    <SendMessage @message="submitHandler" :isLoading="isLoading" />
+    <div>
+      <h2 class="text-4xl">聯絡我們</h2>
+      <SendMessage
+        class="w-1/2 mx-auto"
+        @message="submitHandler"
+        :isLoading="isLoading"
+      />
+    </div>
   </div>
 </template>
 

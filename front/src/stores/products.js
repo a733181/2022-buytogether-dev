@@ -189,6 +189,10 @@ export const useProductsStore = defineStore('products', () => {
     try {
       const { data } = await api.get(`/products/${id}`);
       product.item = data.result;
+      product.item.userId.image =
+        product.item.userId.image ||
+        `https://source.boringavatars.com/beam/256/${product.item.userId.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`;
+
       if (user.isMember) {
         const isBlack = product.item.userId.black.some(
           (item) => item === user.users._id

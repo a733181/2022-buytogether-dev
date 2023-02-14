@@ -1,7 +1,7 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <p>商品管理</p>
+      <p class="text-primary font-bold">商品管理</p>
     </Breadcrumbs>
     <Select v-model="sortType" :select="sortMemberProduct" class="mb-8" />
     <div class="overflow-auto">

@@ -5,7 +5,7 @@
       <RouterLink to="/" class="text-primary">前往首頁</RouterLink>
     </div>
     <div v-if="sellFatorite.length" class="flex">
-      <div class="flex gap-5 flex-col mr-10 w-32">
+      <div class="flex gap-5 flex-col mr-10 lg:w-32">
         <Tab tab="全部" :active="activeTab" @click="activeTab = '全部'" />
         <Tab
           v-for="(item, index) in productCategory"
@@ -16,7 +16,7 @@
         />
       </div>
       <div class="flex-1">
-        <div class="grid lg:grid-cols-3 gap-5 mb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-10">
           <Card v-for="item in filterProduct" :key="item._id" :data="item" />
         </div>
       </div>

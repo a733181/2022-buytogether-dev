@@ -9,14 +9,24 @@
         @click="inputText"
       />
     </div>
-    <div class="lg:w-1/3 ml-auto">
-      <Btn
-        status="submit"
-        text="確定"
-        class="w-full"
-        :disabled="isLoading"
-        :loading="isLoading"
-      />
+    <div class="flex justify-between">
+      <div class="lg:w-1/3">
+        <Btn
+          text="清除"
+          class="w-full"
+          className="btn-outline"
+          @click="clearHandler"
+        />
+      </div>
+      <div class="lg:w-1/3">
+        <Btn
+          status="submit"
+          text="確定"
+          class="w-full"
+          :disabled="isLoading"
+          :loading="isLoading"
+        />
+      </div>
     </div>
   </form>
 </template>
@@ -66,6 +76,10 @@ const validatorFormHandler = () => {
     return true;
   }
   return false;
+};
+
+const clearHandler = () => {
+  form.message = '';
 };
 
 const submitHandler = () => {

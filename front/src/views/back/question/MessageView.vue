@@ -1,7 +1,13 @@
 <template>
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
-      <p>團購網回覆</p>
+      <RouterLink
+        to="/member/ship"
+        class="text-primary font-bold hover:scale-105"
+        >帳戶</RouterLink
+      >
+      <span>&ensp;/&ensp;</span>
+      <span>團購網回覆</span>
     </Breadcrumbs>
 
     <div class="overflow-auto">

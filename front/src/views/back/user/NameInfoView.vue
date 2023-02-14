@@ -2,7 +2,11 @@
   <div class="container py-10">
     <Breadcrumbs class="mb-10">
       <div class="flex">
-        <RouterLink to="/member/ship" class="hover:scale-105">帳戶</RouterLink>
+        <RouterLink
+          to="/member/ship"
+          class="text-primary font-bold hover:scale-105"
+          >帳戶</RouterLink
+        >
         <p>&ensp;/&ensp;名稱編輯</p>
       </div>
     </Breadcrumbs>
@@ -22,6 +26,7 @@
           :error="error.error"
           :errorText="error.value"
           @click="error.error = false"
+          maxlength="12"
         />
         <div class="flex justify-between mt-8">
           <RouterLink to="/member/ship" class="w-1/3 block">

@@ -85,8 +85,9 @@ export const getSellProducts = async (req, res) => {
 
     const result = await products
       .find(find)
-      .select('-status -bankId -createDate')
-      .populate('userId', '_id name black');
+      .select('-status -bankId')
+      .populate('userId', '_id name black')
+      .sort({ createDate: -1 });
     const getOrder = await orders.find();
 
     let newResult = JSON.parse(JSON.stringify(result));
@@ -100,6 +101,7 @@ export const getSellProducts = async (req, res) => {
         });
       });
       reProd.remaining = reProd.maxNumber - total;
+      delete reProd.createDate;
       return reProd.remaining > 0;
     });
 
@@ -194,7 +196,7 @@ export const getSellMemberProduct = async (req, res) => {
   try {
     const category = req.query.category || '全部';
     const page = req.query.page || 1;
-    const limit = req.query.limit || 24;
+    const limit = req.query.limit || 12;
     const key = req.query.key || '';
 
     const startIndex = (page - 1) * limit;
@@ -318,7 +320,7 @@ export const editProdcut = async (req, res) => {
       isSell: req.body.isSell,
       category: req.body.category,
       bankId: req.body.bankId,
-      youtubeId: req.body.youtubeId,
+      youtubeId: req.body.youtubeId || '',
     };
 
     if (req.user.role === 1) {
