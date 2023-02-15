@@ -98,7 +98,8 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('show-user', (data) => {
-    const sendUserSocket = onlineUsers.get(data.toUser._id);
+    const sendUserSocket = onlineUsers.get(data.toUserId);
+    console.log(sendUserSocket);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit('show-user', data);
     }

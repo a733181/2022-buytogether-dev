@@ -4,7 +4,7 @@ name: Deploy
 on:
   push:
     branches: [master]
-    paths: -'front/**'
+    paths: 'front/**'
 # 執行的工作
 jobs:
   # 工作名稱

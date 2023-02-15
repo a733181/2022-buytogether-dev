@@ -37,15 +37,25 @@ export const useChats = defineStore('chats', () => {
   };
 
   watch([showList, showChat], ([list, chat]) => {
-    if (list || chat) {
-      socket.current.emit('add-user', user.users._id);
-      socket.current.on('show-user', (data) => {
-        listUser.value = data;
-      });
-    }
     if (list) {
       getChatAllUserHandler();
     }
+    if (list || chat) {
+      socket.current.emit('add-user', user.users._id);
+    }
+    socket.current.on('show-user', (data) => {
+      listUser.value = data;
+      const index = chatUserList.value.findIndex((item) => {
+        return item._id === data.fromUser._id;
+      });
+      if (index === -1) {
+        chatUserList.value.push({
+          _id: data.fromUser._id,
+          name: data.fromUser.name,
+          image: data.fromUser.image,
+        });
+      }
+    });
   });
 
   watch(
@@ -78,13 +88,7 @@ export const useChats = defineStore('chats', () => {
           user.users.image ||
           `https://source.boringavatars.com/beam/256/${user.users.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`,
       },
-      toUser: {
-        _id: item.toUserId,
-        name: item.name,
-        image:
-          item.image ||
-          `https://source.boringavatars.com/beam/256/${item.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`,
-      },
+      toUserId: item.toUserId,
     });
   };
 
