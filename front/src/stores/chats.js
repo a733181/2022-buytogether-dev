@@ -38,11 +38,6 @@ export const useChats = defineStore('chats', () => {
   watch(showList, (value) => {
     if (value) {
       getChatAllUserHandler();
-    }
-  });
-
-  watch(showChat, (value) => {
-    if (value) {
       socket.current.emit('add-user', user.users._id);
     }
   });
