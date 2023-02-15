@@ -8,14 +8,14 @@
           >精選團購</RouterLink
         >
         <p>&ensp;/&ensp;</p>
-        <p>{{ sellProdcut.name }}</p>
+        <p>{{ sellProduct.name }}</p>
       </div>
     </Breadcrumbs>
     <div class="flex flex-col lg:flex-row gap-8 items-stretch mb-20">
       <div class="lg:w-2/5 flex flex-col">
-        <h1 class="font-bold text-2xl mb-3">{{ sellProdcut.name }}</h1>
+        <h1 class="font-bold text-2xl mb-3">{{ sellProduct.name }}</h1>
         <div class="mb-4 flex justify-between items-center">
-          <p class="text-primary text-xl">${{ sellProdcut.price }}</p>
+          <p class="text-primary text-xl">${{ sellProduct.price }}</p>
           <p
             class="-mb-2 hover:opacity-60 text-gray-400"
             @click="clickBtnShowReportHandler"
@@ -24,21 +24,21 @@
           </p>
         </div>
         <p class="mb-6">
-          銷量：{{ sellProdcut.maxNumber - sellProdcut.remaining }}
+          銷量：{{ sellProduct.maxNumber - sellProduct.remaining }}
         </p>
         <p class="mb-6 whitespace-pre-line">
-          {{ sellProdcut.description }}
+          {{ sellProduct.description }}
         </p>
-        <div v-if="sellProdcut.userId" class="flex items-center gap-4 my-5">
+        <div v-if="sellProduct.userId" class="flex items-center gap-4 my-5">
           <p>團購主：</p>
           <img
-            :src="sellProdcut.userId.image"
-            :alt="sellProdcut.userId.name"
+            :src="sellProduct.userId.image"
+            :alt="sellProduct.userId.name"
             class="w-16 h-16 rounded-full object-cover"
           />
-          <p>{{ sellProdcut.userId.name }}</p>
+          <p>{{ sellProduct.userId.name }}</p>
           <RouterLink
-            :to="`/memberhome/${sellProdcut.userId._id}`"
+            :to="`/memberhome/${sellProduct.userId._id}`"
             class="text-primary"
             >更多商品</RouterLink
           >
@@ -66,20 +66,20 @@
             class="w-full"
             :disabled="isLoadingAddCart"
             :loading="isLoadingAddCart"
-            @click="clickAddCartBtnHanlder({ id: sellProdcut._id, quantity })"
+            @click="clickAddCartBtnHanlder({ id: sellProduct._id, quantity })"
           />
         </div>
       </div>
       <div class="flex-1 -order-1 lg:order-1">
         <div class="relative h-[490px] mb-5">
           <div v-if="activeIndex === imagesLength + 1">
-            <Youtube :data="sellProdcut.youtubeId" />
+            <Youtube :data="sellProduct.youtubeId" />
           </div>
           <img
             v-else
             class="rounded-xl object-contain w-full h-full mb-5"
             :src="activeImage"
-            :alt="sellProdcut.name"
+            :alt="sellProduct.name"
           />
           <img
             src="@/assets/svg/arrow.svg"
@@ -98,14 +98,14 @@
           <div>
             <img
               class="w-full h-full object-cover"
-              :src="sellProdcut.image"
-              :alt="sellProdcut.name"
+              :src="sellProduct.image"
+              :alt="sellProduct.name"
               @click="activeIndex = 0"
             />
           </div>
           <div
-            v-if="sellProdcut.images"
-            v-for="(src, index) in sellProdcut.images"
+            v-if="sellProduct.images"
+            v-for="(src, index) in sellProduct.images"
           >
             <img
               :src="src"
@@ -117,7 +117,7 @@
         </div>
       </div>
     </div>
-    <div>
+    <div class="mb-20">
       <p class="mb-6 text-2xl pb-2 border-b-2 border-primary">問與答</p>
       <ul v-if="messageProduct.length" class="mb-6">
         <li
@@ -147,23 +147,32 @@
       />
       <div class="bg-gray-100 rounded-lg p-6">
         <p class="text-xl mb-4">提出問題</p>
-        <SendMessage
-          class="lg:w-1/2 mx-auto bg-white py-4 px-8 rounded-lg"
-          @message="submitMessageHandler"
-          :isLoading="isLoadingMessage"
-        />
+        <p class="mb-4">為保障會員交易安全，留言請勿填寫個人資料。</p>
+        <div class="bg-white rounded-lg">
+          <SendMessage
+            class="lg:w-1/2 mx-auto pt-2 pb-12 px-8"
+            classText="h-52"
+            @message="submitMessageHandler"
+            :isLoading="isLoadingMessage"
+          />
+        </div>
       </div>
     </div>
     <Model>
-      <SendMessage @message="submitReportHandler" />
+      <SendMessage
+        @message="submitReportHandler"
+        class="lg:w-1/2 mx-auto"
+        classText="h-40"
+      />
     </Model>
+    <TheMoreProduct :category="sellProduct.category" />
   </div>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { ref, onUnmounted, computed } from 'vue';
+import { ref, onUnmounted, computed, watch } from 'vue';
 
 import Btn from '@/components/ui/TheBtn.vue';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
@@ -171,6 +180,7 @@ import Youtube from '@/components/ui/YouToLink.vue';
 import SendMessage from '@/components/ui/SendProductMessage.vue';
 import Pagination from '@/components/ui/ThePagination.vue';
 import Model from '@/components/ui/TheModel.vue';
+import TheMoreProduct from '@/components/front/TheMoreProduct.vue';
 
 import { useProductsStore } from '@/stores/products';
 import { useCartStore } from '@/stores/carts';
@@ -185,7 +195,7 @@ const { clickAddCartHandler } = useCartStore();
 const product = useProductsStore();
 const message = useMessageStore();
 const { getSellProdctHander } = product;
-const { sellProdcut } = storeToRefs(product);
+const { sellProduct } = storeToRefs(product);
 const { sumbitMessageHandler, getProductMessageHandler } = message;
 const { messageProduct, messagePage } = storeToRefs(message);
 const { toggleShow } = storeToRefs(useModelStore());
@@ -194,29 +204,39 @@ const { createReporteHandler } = useReportsStore();
 getSellProdctHander(route.params.id);
 getProductMessageHandler(route.params.id);
 
+watch(
+  () => route.params.id,
+  (value) => {
+    if (value && route.path.includes('/products')) {
+      getSellProdctHander(value);
+      getProductMessageHandler(value);
+    }
+  }
+);
+
 const isLoadingMessage = ref(false);
 const isLoadingAddCart = ref(false);
 
 const quantity = ref(1);
 
 const imagesLength = computed(() => {
-  return sellProdcut?.value.images ? sellProdcut?.value.images.length : 0;
+  return sellProduct?.value.images ? sellProduct?.value.images.length : 0;
 });
 
 const activeIndex = ref(
-  sellProdcut.value.youtubeId ? imagesLength.value + 1 : 0
+  sellProduct.value.youtubeId ? imagesLength.value + 1 : 0
 );
 
 const activeImage = computed(() => {
   if (activeIndex.value === 0) {
-    return sellProdcut.value.image;
+    return sellProduct.value.image;
   } else {
-    return sellProdcut.value.images[activeIndex.value - 1];
+    return sellProduct.value.images[activeIndex.value - 1];
   }
 });
 
 const gridRow = computed(() => {
-  if (sellProdcut?.value.images) {
+  if (sellProduct?.value.images) {
     return `grid-template-columns: repeat(${
       imagesLength.value + 1
     }, minmax(0, 1fr));`;
@@ -224,7 +244,7 @@ const gridRow = computed(() => {
 });
 
 const changeImageIndex = (index) => {
-  const isVedio = sellProdcut.value.youtubeId ? true : false;
+  const isVedio = sellProduct.value.youtubeId ? true : false;
   const length = isVedio ? imagesLength.value + 1 : imagesLength.value;
   if (index === 1) {
     if (activeIndex.value >= length) {
@@ -246,8 +266,8 @@ const changeQuantity = (num) => {
     quantity.value = 1;
     return;
   }
-  if (quantity.value + num > sellProdcut.value.remaining) {
-    quantity.value = sellProdcut.value.remaining;
+  if (quantity.value + num > sellProduct.value.remaining) {
+    quantity.value = sellProduct.value.remaining;
     return;
   }
   quantity.value += num;

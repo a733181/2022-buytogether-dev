@@ -38,6 +38,7 @@ export const useProductsStore = defineStore('products', () => {
       member: {},
     },
     sellFatorite: [],
+    more: [],
   });
 
   const productPage = reactive({
@@ -46,16 +47,12 @@ export const useProductsStore = defineStore('products', () => {
   });
 
   const editProduct = computed(() => product.edit);
-
   const listProduct = computed(() => product.list);
-
   const allSellProduct = computed(() => product.allSell);
-
-  const sellProdcut = computed(() => product.item);
-
+  const sellProduct = computed(() => product.item);
   const memberHomeProduct = computed(() => product.member);
-
   const sellFatorite = computed(() => product.sellFatorite);
+  const sellMoreProduct = computed(() => product.more);
 
   const changeEditProductHander = (
     data = {
@@ -166,7 +163,7 @@ export const useProductsStore = defineStore('products', () => {
     }
   };
 
-  const getAllSellProdcutHandler = async (form) => {
+  const getAllsellProductHandler = async (form) => {
     try {
       const category = form?.category || '全部';
       const key = form?.key || '';
@@ -203,6 +200,17 @@ export const useProductsStore = defineStore('products', () => {
         }
       }
     } catch (error) {
+      console.log(error);
+      swalError(error);
+    }
+  };
+
+  const getMoreSellProductsHandler = async (category) => {
+    try {
+      const newCategory = category || '全部';
+      const { data } = await api.get(`/products/more?category=${newCategory}`);
+      product.more = data.result;
+    } catch (error) {
       swalError(error);
     }
   };
@@ -231,6 +239,7 @@ export const useProductsStore = defineStore('products', () => {
         }
       }
     } catch (error) {
+      console.log(error);
       swalError(error);
     }
   };
@@ -311,22 +320,24 @@ export const useProductsStore = defineStore('products', () => {
     allSellProduct,
     listProduct,
     editProduct,
-    sellProdcut,
+    sellProduct,
     memberHomeProduct,
     sellFatorite,
     productPage,
+    sellMoreProduct,
     addProductHandler,
     sumbitProductHandler,
     getAllProductHandler,
     cancelProductHandler,
     editProductHandler,
     deleteProductHandler,
-    getAllSellProdcutHandler,
+    getAllsellProductHandler,
     getSellProdctHander,
     clickLikesHandler,
     getMemberSellProductHandler,
     getFatoriteHandler,
     getAdminProductHandler,
     changeStatusProductHandler,
+    getMoreSellProductsHandler,
   };
 });

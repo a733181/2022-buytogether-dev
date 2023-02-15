@@ -2,14 +2,14 @@
   <form @submit.prevent="submitHandler">
     <div class="mb-6">
       <Textarea
+        :classText="props.classText"
         v-model="form.message"
-        title="訊息"
         :error="error.message.error"
         :errorText="error.message.value"
         @click="inputText"
       />
     </div>
-    <div class="flex justify-between">
+    <div class="flex justify-center gap-4">
       <div class="lg:w-1/3">
         <Btn
           text="清除"
@@ -48,6 +48,9 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
     default: false,
+  },
+  classText: {
+    type: String,
   },
 });
 

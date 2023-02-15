@@ -7,8 +7,8 @@
       <h1>購物車內沒有商品</h1>
       <RouterLink to="/" class="text-primary">前往購物</RouterLink>
     </div>
-    <form @submit.prevent="submitHandler">
-      <table v-if="cart.length" class="w-full">
+    <form @submit.prevent="submitHandler" v-if="cart.length" class="mb-20">
+      <table class="w-full">
         <thead>
           <tr>
             <th class="border-2 p-2">圖片</th>
@@ -114,6 +114,7 @@
         </tbody>
       </table>
     </form>
+    <TheMoreProduct :category="'全部'" v-if="cart.length" />
   </div>
 </template>
 
@@ -125,6 +126,7 @@ import validator from 'validator';
 import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Btn from '@/components/ui/TheBtn.vue';
 import Input from '@/components/ui/TheInput.vue';
+import TheMoreProduct from '@/components/front/TheMoreProduct.vue';
 
 import { useCartStore } from '@/stores/carts';
 import { useOrderStore } from '@/stores/orders';

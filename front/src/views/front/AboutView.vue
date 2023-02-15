@@ -33,6 +33,7 @@
       <h2 class="text-4xl">聯絡我們</h2>
       <SendMessage
         class="w-1/2 mx-auto"
+        classText="h-40"
         @message="submitHandler"
         :isLoading="isLoading"
       />

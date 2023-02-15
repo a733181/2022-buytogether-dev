@@ -23,6 +23,10 @@ export const useCartStore = defineStore('carts', () => {
     try {
       const { data } = await apiAuth.post('/users/cart', { id, quantity });
       cart.length = data.result;
+
+      if (router.currentRoute.value.path === '/cart') {
+        await getCartList();
+      }
     } catch (error) {
       swalError(error);
     }

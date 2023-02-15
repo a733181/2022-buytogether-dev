@@ -74,7 +74,7 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import { watch, ref } from 'vue';
+import { watch, ref, onMounted } from 'vue';
 
 import Input from '@/components/ui/TheInput.vue';
 import Btn from '@/components/ui/TheBtn.vue';
@@ -96,10 +96,21 @@ const closeChatHandler = () => {
 watch([showChat, scrollRef], ([newShowChat, newScrollRef]) => {
   if (newShowChat && newScrollRef !== null) {
     newScrollRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    console.log('watch');
+    if (newScrollRef.scrollTop < newScrollRef.offsetHeight) {
+      newScrollRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+    console.log(newScrollRef.scrollTop, newScrollRef.offsetHeight);
   }
 });
 
 const submitHandler = async () => {
   await sendChatHandler();
 };
+
+onMounted(() => {
+  if (showChat && scrollRef.value !== null) {
+    console.log('onMounted');
+  }
+});
 </script>

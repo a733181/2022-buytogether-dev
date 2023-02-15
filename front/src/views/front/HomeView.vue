@@ -75,7 +75,7 @@ import { useProductsStore } from '@/stores/products';
 
 const products = useProductsStore();
 const { productCategory, sortProduct } = useCategoryStore();
-const { getAllSellProdcutHandler } = products;
+const { getAllsellProductHandler } = products;
 const { allSellProduct, productPage } = storeToRefs(products);
 
 const activeTab = ref('全部');
@@ -85,7 +85,7 @@ const searchKey = ref('');
 const isLoad = ref(true);
 
 (async () => {
-  await getAllSellProdcutHandler();
+  await getAllsellProductHandler();
   isLoad.value = false;
 })();
 
@@ -121,7 +121,7 @@ const filterData = computed(() => {
 
 const submitHandler = () => {
   if (searchKey.value) {
-    getAllSellProdcutHandler({ key: searchKey.value });
+    getAllsellProductHandler({ key: searchKey.value });
     breadSearch.value = searchKey.value;
     searchKey.value = '';
   } else {
@@ -131,17 +131,17 @@ const submitHandler = () => {
 
 const changeCategoryHandler = (tab) => {
   activeTab.value = tab;
-  getAllSellProdcutHandler({ category: activeTab.value });
+  getAllsellProductHandler({ category: activeTab.value });
 };
 
 const cancelSearchHandler = () => {
-  getAllSellProdcutHandler();
+  getAllsellProductHandler();
   breadSearch.value = '';
 };
 
 const changePageHandler = (page) => {
   productPage.value.current = page;
-  getAllSellProdcutHandler({ category: activeTab.value });
+  getAllsellProductHandler({ category: activeTab.value });
 };
 
 onUnmounted(() => {

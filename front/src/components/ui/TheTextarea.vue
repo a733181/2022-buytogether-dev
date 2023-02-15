@@ -1,9 +1,9 @@
 <template>
   <div class="lable-text">
     <textarea
-      class="textarea-text"
       v-model.trim="proxy"
-      :class="props.textName"
+      class="textarea-text"
+      :class="[props.textName, props.classText]"
     ></textarea>
     <label
       class="textarea-text-title"
@@ -37,6 +37,9 @@ const props = defineProps({
   textName: {
     type: String,
   },
+  classText: {
+    type: String,
+  },
 });
 
 const proxy = ref(props.modelValue);
@@ -57,7 +60,7 @@ watch(props, (value) => {
   @apply relative mt-10;
 }
 .textarea-text {
-  @apply border-2 border-gray-500 w-full py-2 px-2 rounded-md outline-none text-gray-500;
+  @apply border-[1px] border-gray-300 w-full py-2 px-2 rounded-md outline-none text-gray-500;
 }
 
 .textarea-text-title {

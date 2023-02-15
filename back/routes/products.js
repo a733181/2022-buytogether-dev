@@ -15,6 +15,7 @@ import {
   getFatoriteProduct,
   getAdminProduct,
   changeStatusProduct,
+  getMoreSellProducts,
 } from '../controllers/products.js';
 
 const router = Router();
@@ -30,6 +31,7 @@ router.get('/memberhome/:id', getSellMemberProduct);
 router.patch('/likes', jwt, toggleLikeProduct);
 
 router.get('/', getSellProducts);
+router.get('/more', getMoreSellProducts);
 
 router.get('/:id', getSellProduct);
 

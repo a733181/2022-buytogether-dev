@@ -22,13 +22,12 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
-import Breadcrumbs from '@/components/ui/TheBreadcrumbs.vue';
 import Btn from '@/components/ui/TheBtn.vue';
 
 import { useUserStore } from '@/stores/users';
 
 const user = useUserStore();
-const { clickListHandler } = user;
+const { clickListHandler, getTrackListHandler } = user;
 const { trackList } = storeToRefs(user);
 
 const unTrack = async (id) => {

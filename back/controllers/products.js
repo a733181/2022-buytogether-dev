@@ -85,7 +85,7 @@ export const getSellProducts = async (req, res) => {
 
     const result = await products
       .find(find)
-      .select('-status -bankId')
+      .select('-status -bankId -images -youtubeId -isSell')
       .populate('userId', '_id name black')
       .sort({ createDate: -1 });
     const getOrder = await orders.find();
@@ -153,6 +153,51 @@ export const getSellProduct = async (req, res) => {
         result,
       });
     }
+  } catch (error) {
+    showError(error, res);
+  }
+};
+
+export const getMoreSellProducts = async (req, res) => {
+  try {
+    const find = { isSell: true, status: 0 };
+    const category = req.query.category || '全部';
+
+    if (category !== '全部') {
+      find.category = category;
+    }
+
+    const result = await products
+      .find(find)
+      .select('-status -bankId -images -youtubeId -isSell')
+      .populate('userId', '_id name black')
+      .limit(8)
+      .sort({ createDate: -1 });
+
+    const productId = result.map((item) => item._id);
+
+    const getOrder = await orders.find({ productId });
+    let newResult = JSON.parse(JSON.stringify(result));
+
+    newResult = newResult.filter((reProd) => {
+      let total = 0;
+      getOrder.forEach((item) => {
+        item.products.forEach((prod) => {
+          if (reProd._id.toString() === prod.productId.toString()) {
+            total += prod.quantity;
+          }
+        });
+      });
+      reProd.remaining = reProd.maxNumber - total;
+      delete reProd.createDate;
+      return reProd.remaining > 0;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: '',
+      result: newResult,
+    });
   } catch (error) {
     showError(error, res);
   }
@@ -370,7 +415,6 @@ export const deletProduct = async (req, res) => {
     const data = {
       status: 1,
     };
-
     const result = await products.findByIdAndUpdate(req.params.id, data, { new: true });
 
     if (!result) {
