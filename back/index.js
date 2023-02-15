@@ -10,6 +10,7 @@ import messageRouter from './routes/messages.js';
 import contactRouter from './routes/contacts.js';
 import reportRouter from './routes/reports.js';
 import chatRouter from './routes/chats.js';
+import { getAllUser } from './controllers/chats.js';
 
 import './passport/passport.js';
 
@@ -94,6 +95,12 @@ io.on('connection', (socket) => {
     const sendUserSocket = onlineUsers.get(data.toUserId);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit('msg-recieve', data.message);
+    }
+  });
+  socket.on('show-user', (data) => {
+    const sendUserSocket = onlineUsers.get(data.toUser._id);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit('show-user', data);
     }
   });
 });

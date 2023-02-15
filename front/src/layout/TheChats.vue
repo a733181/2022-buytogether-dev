@@ -31,6 +31,7 @@
             class="w-6 h-6 rounded-full object-cover"
           />
           <p>{{ user.name }}</p>
+          <p>{{ listUser }}</p>
         </li>
       </ul>
     </div>
@@ -83,8 +84,15 @@ import { useChats } from '@/stores/chats';
 
 const chat = useChats();
 const { sendChatHandler, addChatUserHandler } = chat;
-const { showChat, showList, message, messages, toUser, chatUserList } =
-  storeToRefs(chat);
+const {
+  showChat,
+  showList,
+  message,
+  messages,
+  toUser,
+  chatUserList,
+  listUser,
+} = storeToRefs(chat);
 
 const scrollRef = ref(null);
 
@@ -99,7 +107,7 @@ const submitHandler = async () => {
 
 onUpdated(() => {
   if (scrollRef.value !== null) {
-    newScrollRef.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    scrollRef.value.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 });
 </script>

@@ -22,6 +22,7 @@ export const useChats = defineStore('chats', () => {
   const message = ref('');
   const messages = ref([]);
   const chatUserList = ref([]);
+  const listUser = ref('');
 
   const getChatAllHandler = async () => {
     try {
@@ -35,10 +36,15 @@ export const useChats = defineStore('chats', () => {
     }
   };
 
-  watch(showList, (value) => {
-    if (value) {
-      getChatAllUserHandler();
+  watch([showList, showChat], ([list, chat]) => {
+    if (list || chat) {
       socket.current.emit('add-user', user.users._id);
+      socket.current.on('show-user', (data) => {
+        listUser.value = data;
+      });
+    }
+    if (list) {
+      getChatAllUserHandler();
     }
   });
 
@@ -64,6 +70,22 @@ export const useChats = defineStore('chats', () => {
     toUser.image = item.image;
     fromUserId.value = user.users._id;
     getChatAllHandler();
+    socket.current.emit('show-user', {
+      fromUser: {
+        _id: user.users._id,
+        name: user.users.name,
+        image:
+          user.users.image ||
+          `https://source.boringavatars.com/beam/256/${user.users.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`,
+      },
+      toUser: {
+        _id: item.toUserId,
+        name: item.name,
+        image:
+          item.image ||
+          `https://source.boringavatars.com/beam/256/${item.name}?colors=ffabab,ffdaab,ddffab,abe4ff,d9abff`,
+      },
+    });
   };
 
   const sendChatHandler = async () => {
@@ -97,6 +119,7 @@ export const useChats = defineStore('chats', () => {
       });
 
       chatUserList.value = data.result;
+      console.log(chatUserList.value);
       chatUserList.value.forEach((item) => {
         item.image =
           item.image ||
@@ -114,6 +137,8 @@ export const useChats = defineStore('chats', () => {
     chatUserList,
     message,
     messages,
+    socket,
+    listUser,
     addChatUserHandler,
     sendChatHandler,
     getChatAllUserHandler,

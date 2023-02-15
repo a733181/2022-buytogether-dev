@@ -4,7 +4,7 @@ name: Deploy
 on:
   push:
     branches: [master]
-    paths: -'font/**'
+    paths: -'front/**'
 # 執行的工作
 jobs:
   # 工作名稱
@@ -20,6 +20,7 @@ jobs:
       # 步驟二：編譯
       - name: Install and Build
         run: |
+          cd front
           npm install
           npm run build
         env:
